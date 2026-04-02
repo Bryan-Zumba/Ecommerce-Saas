@@ -2,13 +2,16 @@
  * Componente Principal: Products
  * Maneja la estructura global de la sección de productos.
  */
+import ProductCard from "../components/products/ProductCard";
+import { productsData } from "../data/products";
+
 function Products() {
   // Datos de prueba con la estructura List<Map<String, Object>> que prefieres
-  const listData = [
-    { id: 1, nombre: "Coca Cola", precio: 1.50, stock: 10, categoria: "Bebidas" , imagen: "https://static.vecteezy.com/system/resources/previews/054/314/897/non_2x/bottles-and-can-coca-cola-free-png.png"},
-    { id: 2, nombre: "Hambuguesa Yogurt", precio: 3.50, stock: 5, categoria: "Comida" },
-    { id: 3, nombre: "Papas Fritas", precio: 1.25, stock: 20, categoria: "Snacks" }
-  ];
+  // const listData = [
+  //   { id: 1, nombre: "Coca Cola", precio: 1.50, stock: 10, categoria: "Bebidas" , imagen: "https://static.vecteezy.com/system/resources/previews/054/314/897/non_2x/bottles-and-can-coca-cola-free-png.png"},
+  //   { id: 2, nombre: "Hambuguesa Yogurt", precio: 3.50, stock: 5, categoria: "Comida" },
+  //   { id: 3, nombre: "Papas Fritas", precio: 1.25, stock: 20, categoria: "Snacks" }
+  // ];
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -41,8 +44,8 @@ function Products() {
 
         {/* Grid de Cards: Se ajusta automáticamente al contenido */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listData.length > 0 ? (
-            listData.map((item) => (
+          {productsData.length > 0 ? (
+            productsData.map((item) => (
               <ProductCard key={item.id} data={item} />
             ))
           ) : (
@@ -60,39 +63,39 @@ function Products() {
  * Sub-componente: ProductCard
  * Responsabilidad Única: Renderizar la información de un producto individual.
  */
-function ProductCard({ data }) {
-  // Lógica simple para color de stock (Psicología del color)
-  const stockColor = data.stock < 10 ? 'text-orange-500 font-bold' : 'text-gray-900';
+// function ProductCard({ data }) {
+//   // Lógica simple para color de stock (Psicología del color)
+//   const stockColor = data.stock < 10 ? 'text-orange-500 font-bold' : 'text-gray-900';
 
-  return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-300 flex flex-col justify-between">
-      <div>
-        <img 
-          src={data.imagen} 
-          alt={data.nombre}
-          className="w-full h-40 object-cover rounded-xl mb-4"
-        />
-        {/* Badge de Categoría */}
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 mb-4">
-          {data.categoria}
-        </span>
+//   return (
+//     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-300 flex flex-col justify-between">
+//       <div>
+//         <img 
+//           src={data.imagen} 
+//           alt={data.nombre}
+//           className="w-full h-40 object-cover rounded-xl mb-4"
+//         />
+//         {/* Badge de Categoría */}
+//         <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 mb-4">
+//           {data.categoria}
+//         </span>
         
-        <h3 className="text-xl font-bold text-gray-900 mb-2">{data.nombre}</h3>
+//         <h3 className="text-xl font-bold text-gray-900 mb-2">{data.nombre}</h3>
         
-        {/* Detalles del Producto */}
-        <div className="space-y-1 text-sm text-gray-600">
-          <p className="flex justify-between border-b border-gray-50 pb-1">
-            <span>Precio:</span>
-            <span className="font-bold text-gray-900">${data.precio.toFixed(2)}</span>
-          </p>
-          <p className="flex justify-between pt-1">
-            <span>Stock:</span>
-            <span className={`font-medium ${stockColor}`}>
-              {data.stock} unidades
-            </span>
-          </p>
-        </div>
-      </div>
+//         {/* Detalles del Producto */}
+//         <div className="space-y-1 text-sm text-gray-600">
+//           <p className="flex justify-between border-b border-gray-50 pb-1">
+//             <span>Precio:</span>
+//             <span className="font-bold text-gray-900">${data.precio.toFixed(2)}</span>
+//           </p>
+//           <p className="flex justify-between pt-1">
+//             <span>Stock:</span>
+//             <span className={`font-medium ${stockColor}`}>
+//               {data.stock} unidades
+//             </span>
+//           </p>
+//         </div>
+//       </div>
       
       {/* Microinteracciones en Botones de Acción */}
       {/* <div className="mt-6 pt-4 border-t border-gray-50 flex gap-3">
@@ -108,9 +111,9 @@ function ProductCard({ data }) {
         >
           Eliminar
         </button>
-      </div> */}
+      </div> }
     </div>
-  );
+  );*/
 }
 
 export default Products;
