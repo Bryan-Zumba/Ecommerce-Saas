@@ -3,6 +3,7 @@ export interface Product {
   nombre: string;
   precio: number;
   stock: number;
+  cantidad: number
   categoria: string;
   imagen?: string; // opcional
 }
@@ -14,6 +15,7 @@ export const productsData: Product[] = [
     precio: 1.5,
     stock: 10,
     categoria: "Bebidas",
+    cantidad: 2,
     imagen: "/assets/coca_cola_sin_azu_300ml.png"
   },
   {
@@ -22,6 +24,17 @@ export const productsData: Product[] = [
     precio: 3.5,
     stock: 5,
     categoria: "Comida",
+    cantidad: 4,
     imagen: "/assets/hamburguer.jpg"
-  }
+  },
+
+   {
+    id: 3,
+    nombre: "Coca Cola",
+    precio: 1.5,
+    stock: 10,
+    categoria: "Bebidas",
+    cantidad: 2,
+    imagen: "/assets/coca_cola_sin_azu_300ml.png"
+  },
 ];
