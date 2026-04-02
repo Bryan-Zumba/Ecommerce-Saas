@@ -15,6 +15,7 @@ function Cart() {
           <CartItem key={item.id} item={item} />
         ))}
       </div>
+
       <CartTotal subtotal={subtotal} />
     </div>
   );
