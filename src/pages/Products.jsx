@@ -5,7 +5,7 @@
 function Products() {
   // Datos de prueba con la estructura List<Map<String, Object>> que prefieres
   const listData = [
-    { id: 1, nombre: "Coca Cola", precio: 1.50, stock: 10, categoria: "Bebidas" },
+    { id: 1, nombre: "Coca Cola", precio: 1.50, stock: 10, categoria: "Bebidas" , imagen: "https://static.vecteezy.com/system/resources/previews/054/314/897/non_2x/bottles-and-can-coca-cola-free-png.png"},
     { id: 2, nombre: "Hambuguesa Yogurt", precio: 3.50, stock: 5, categoria: "Comida" },
     { id: 3, nombre: "Papas Fritas", precio: 1.25, stock: 20, categoria: "Snacks" }
   ];
@@ -67,6 +67,11 @@ function ProductCard({ data }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-300 flex flex-col justify-between">
       <div>
+        <img 
+          src={data.imagen} 
+          alt={data.nombre}
+          className="w-full h-40 object-cover rounded-xl mb-4"
+        />
         {/* Badge de Categoría */}
         <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 mb-4">
           {data.categoria}
@@ -90,7 +95,7 @@ function ProductCard({ data }) {
       </div>
       
       {/* Microinteracciones en Botones de Acción */}
-      <div className="mt-6 pt-4 border-t border-gray-50 flex gap-3">
+      {/* <div className="mt-6 pt-4 border-t border-gray-50 flex gap-3">
         <button 
           className="flex-1 text-sm font-semibold text-blue-600 hover:bg-blue-50 py-2 rounded-lg transition-colors border border-transparent hover:border-blue-100"
           onClick={() => console.log("Editando:", data.id)}
@@ -103,7 +108,7 @@ function ProductCard({ data }) {
         >
           Eliminar
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
