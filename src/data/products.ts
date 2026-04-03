@@ -11,7 +11,7 @@ export interface Product {
 export const productsData: Product[] = [
   {
     id: 1,
-    nombre: "Coca Cola",
+    nombre: "Coca Cola 300ml",
     precio: 1.5,
     stock: 10,
     categoria: "Bebidas",
