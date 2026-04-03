@@ -15,7 +15,7 @@ function CartItem({ item }: CartItemProps) {
           <span className="font-medium">{item.nombre}</span>
           {/* Precio */}
           <p className="text-xs mt-3">Precio</p>
-          <span className="font-semibold text-1xl ">
+          <span className="font-semibold text-3xl ">
           ${(item.precio * item.cantidad).toFixed(2)}
             </span>
         
