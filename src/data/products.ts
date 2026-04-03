@@ -34,7 +34,7 @@ export const productsData: Product[] = [
     precio: 1.5,
     stock: 10,
     categoria: "Bebidas",
-    cantidad: 2,
+    cantidad: 10,
     imagen: "/assets/coca_cola_sin_azu_300ml.png"
   },
 ];
