@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+/* REGLAS PARA IMPRESIÓN DEL TICKET (Optimizado para impresoras térmicas de 80mm) */
+@media print {
+  @page {
+    size: 80mm auto; /* Tamaño estándar de ticketera */
+    margin: 0;
+  }
+
+  body {
+    background: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Mostrar solo el ticket y sus hijos */
+  .printable-ticket, .printable-ticket * {
+    visibility: visible;
+  }
+
+  /* Posicionar el ticket arriba a la izquierda para impresión */
+  .printable-ticket {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Forzar colores de fondo e impresiones */
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* Scrollbar personalizada para el resumen de orden */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
