@@ -1,46 +1,65 @@
+import { useCart } from "../../context/CartContext.tsx";
 import { Product } from "../../data/products.ts";
 
+interface CartItemData extends Product {
+  quantity: number;
+}
+
 type CartItemProps = {
-  item: Product;
+  item: CartItemData;
 };
 
 function CartItem({ item }: CartItemProps) {
+  const { updateQuantity, removeFromCart } = useCart();
+
   return (
-    <div className=" flex items-center justify-between bg-white p-2 rounded-xl shadow">
+    <div className="flex items-center gap-2 bg-white p-2.5 rounded-2xl shadow-sm border border-gray-100">
+      <img 
+        src={item.imagen} 
+        alt={item.nombre} 
+        className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
+      />
       
-      <img src={item.imagen} alt={item.nombre} className="w-16 h-16 object-cover rounded"/>
-      
-      <div className="flex-1 flex  flex-col text-center ">
-        {/* Nombre */}
-          <span className="font-medium">{item.nombre}</span>
-          {/* Precio */}
-          <p className="text-xs mt-3">Precio</p>
-          <span className="font-semibold text-3xl ">
-          ${(item.precio * item.cantidad).toFixed(2)}
-            </span>
+      <div className="flex-1 min-w-0 py-0.5">
+        <h4 className="font-bold text-gray-800 text-[13px] leading-tight break-words pr-2">
+          {item.nombre}
+        </h4>
+        <p className="text-emerald-600 font-bold text-xs mt-1">
+          ${(item.precio * item.quantity).toFixed(2)}
+        </p>
         
-         <p className=" text-xs mt-2">Cantidad</p>
-              {/* Controles */}
-              <div className="flex  items-center justify-center">
-              {/* Botones + - */}
-                  <div className="flex items-center gap-4 rounded-full shadow-sm border border-gray-400 p-0.5 r ">
-                    <button className=" bg-sky-100  w-7 h-7 rounded-full hover:bg-gray-300  ">
-                    - </button>
-
-                    <span className="font-semibold  ">{item.cantidad}</span>
-
-                    <button className="bg-sky-100  w-7 h-7 rounded-full hover:bg-gray-300 ">
-                      + </button>
-                  </div>
-              </div>
+        <div className="flex items-center gap-2 mt-1.5">
+          <div className="flex items-center bg-gray-50 rounded-lg p-0.5 border border-gray-100">
+            <button 
+              onClick={() => updateQuantity(item.id, -1)}
+              className="w-5 h-5 flex items-center justify-center rounded-md hover:bg-gray-200 text-gray-600 transition-colors font-bold text-xs"
+            >
+              -
+            </button>
+            <span className="w-6 text-center text-[10px] font-black text-gray-700">
+              {item.quantity}
+            </span>
+            <button 
+              onClick={() => updateQuantity(item.id, 1)}
+              className="w-5 h-5 flex items-center justify-center rounded-md hover:bg-gray-200 text-gray-600 transition-colors font-bold text-xs"
+            >
+              +
+            </button>
+          </div>
         </div>
-
-      <div className="flex gap-1">
-
-        <button className="w-6 h-6">
-          <img src="/assets/ico-eliminar.png" alt="eliminar" />
-        </button>
       </div>
+
+      <button 
+        onClick={() => removeFromCart(item.id)}
+        className="p-1.5 text-gray-300 hover:text-red-500 transition-colors flex-shrink-0"
+        aria-label="Eliminar"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 6h18"></path>
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+        </svg>
+      </button>
     </div>
   );
 }
