@@ -1,27 +1,12 @@
-import { useCart } from "../../context/CartContext.tsx";
-import { Product } from "../../data/products.ts";
-
-type Props = {
-    data: Product;
-};
-
-function ProductCard({data}:Props){
+import { useCart } from "../../context/CartContext";
+function ProductCard({ data }) {
     const { addToCart } = useCart();
-
-    return(
-      <div 
-        onClick={() => addToCart(data)}
-        className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:scale-[1.01] active:scale-95 transition-all duration-200 flex flex-col"
-      >
+    return (<div onClick={() => addToCart(data)} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:scale-[1.01] active:scale-95 transition-all duration-200 flex flex-col">
         <span className="bg-emerald-50 text-emerald-700 font-semibold text-[10px] px-2 py-0.5 rounded-full self-start mb-2">
           {data.categoria}
         </span>
         
-        <img
-          src={data.imagen} 
-          alt={data.nombre} 
-          className="w-full h-40 object-cover rounded-xl mb-4"
-        />
+        <img src={data.imagen} alt={data.nombre} className="w-full h-40 object-cover rounded-xl mb-4"/>
         
         {/*Div para detalles de producto*/}
         <div>
@@ -37,8 +22,6 @@ function ProductCard({data}:Props){
             <span className="font-semibold">{data.stock} unidades</span>
           </p>
         </div>
-      </div>  
-    );
+      </div>);
 }
-
 export default ProductCard;

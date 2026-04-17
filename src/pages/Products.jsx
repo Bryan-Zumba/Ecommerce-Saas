@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ProductCard from "../components/products/ProductCard";
 import Cart from "../components/cart/Cart";
 import { useCart } from "../context/CartContext";
@@ -7,6 +8,7 @@ import { productsData } from "../data/products";
 function Products() {
   const { cart } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gray-50 flex overflow-x-hidden relative">
@@ -18,9 +20,17 @@ function Products() {
           {/* Encabezado */}
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <h1 className="text-3xl font-bold text-gray-800">Gestión de Productos</h1>
-            <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-md active:scale-95">
-              + Agregar Producto
-            </button>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => navigate('/clientes')}
+                className="bg-white border border-gray-200 hover:border-emerald-500 text-gray-700 hover:text-emerald-700 px-6 py-2.5 rounded-xl font-medium transition-all shadow-sm active:scale-95"
+              >
+                👥 Gestionar Clientes
+              </button>
+              <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-md active:scale-95">
+                + Agregar Producto
+              </button>
+            </div>
           </div>
 
           {/* Buscador */}

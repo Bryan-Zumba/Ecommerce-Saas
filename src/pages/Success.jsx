@@ -1,28 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-
 function Success() {
-  const navigate = useNavigate();
-  const { cart, total, subtotal, iva, clearCart } = useCart();
-  
-  // Guardamos una copia local de los datos antes de limpiar el carrito (opcional)
-  // En una app real, traeríamos esto de una base de datos o estado global
-  const [orderId] = useState(() => Math.floor(100000 + Math.random() * 900000));
-  const [date] = useState(new Date().toLocaleString());
-
-  // Al presionar "Nueva Venta", limpiamos y volvemos al inicio
-  const handleNuevaVenta = () => {
-    clearCart();
-    navigate("/");
-  };
-
-  const handleImprimir = () => {
-    window.print();
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
+    const navigate = useNavigate();
+    const { cart, total, subtotal, iva, clearCart } = useCart();
+    // Guardamos una copia local de los datos antes de limpiar el carrito (opcional)
+    // En una app real, traeríamos esto de una base de datos o estado global
+    const [orderId] = useState(() => Math.floor(100000 + Math.random() * 900000));
+    const [date] = useState(new Date().toLocaleString());
+    // Al presionar "Nueva Venta", limpiamos y volvemos al inicio
+    const handleNuevaVenta = () => {
+        clearCart();
+        navigate("/");
+    };
+    const handleImprimir = () => {
+        window.print();
+    };
+    return (<div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
       
       {/* MENSAJE DE ÉXITO (Oculto al imprimir) */}
       <div className="print:hidden w-full max-w-md text-center mb-8">
@@ -37,7 +31,7 @@ function Success() {
       <div className="bg-white w-full max-w-[400px] shadow-2xl p-8 border border-gray-200 printable-ticket relative overflow-hidden">
         
         {/* Decoración superior estética */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 print:hidden" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 print:hidden"/>
 
         {/* Encabezado del Ticket */}
         <div className="text-center border-b-2 border-dashed border-gray-100 pb-6 mb-6">
@@ -55,15 +49,13 @@ function Success() {
             <span>Producto / Cant.</span>
             <span>Total</span>
           </div>
-          {cart.map((item) => (
-            <div key={item.id} className="flex justify-between items-start text-sm">
+          {cart.map((item) => (<div key={item.id} className="flex justify-between items-start text-sm">
               <div className="text-left font-medium text-gray-700 leading-tight">
                 <p>{item.nombre}</p>
                 <p className="text-[11px] text-gray-400">{item.quantity} x ${item.precio.toFixed(2)}</p>
               </div>
               <span className="font-bold text-gray-900">${(item.precio * item.quantity).toFixed(2)}</span>
-            </div>
-          ))}
+            </div>))}
         </div>
 
         {/* Desglose de Totales */}
@@ -93,22 +85,14 @@ function Success() {
 
       {/* ACCIONES (Oculto al imprimir) */}
       <div className="print:hidden mt-8 flex flex-col sm:flex-row gap-4 w-full max-w-md">
-        <button 
-          onClick={handleImprimir}
-          className="flex-1 bg-gray-800 hover:bg-black text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
-        >
+        <button onClick={handleImprimir} className="flex-1 bg-gray-800 hover:bg-black text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
           🖨️ Imprimir Ticket
         </button>
-        <button 
-          onClick={handleNuevaVenta}
-          className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 shadow-emerald-200"
-        >
+        <button onClick={handleNuevaVenta} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 shadow-emerald-200">
           + Nueva Venta
         </button>
       </div>
 
-    </div>
-  );
+    </div>);
 }
-
 export default Success;
