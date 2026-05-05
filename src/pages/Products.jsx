@@ -20,12 +20,18 @@ function Products() {
           {/* Encabezado */}
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <h1 className="text-3xl font-bold text-gray-800">Gestión de Productos</h1>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <button 
                 onClick={() => navigate('/clientes')}
                 className="bg-white border border-gray-200 hover:border-emerald-500 text-gray-700 hover:text-emerald-700 px-6 py-2.5 rounded-xl font-medium transition-all shadow-sm active:scale-95"
               >
                 👥 Gestionar Clientes
+              </button>
+              <button 
+                onClick={() => navigate('/ingreso-stock')}
+                className="bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 px-6 py-2.5 rounded-xl font-medium transition-all shadow-sm active:scale-95 flex items-center gap-2"
+              >
+                📦 Solicitar Ingreso Stock
               </button>
               <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-md active:scale-95">
                 + Agregar Producto
