@@ -5,18 +5,21 @@ import Checkout from "./pages/Checkout";
 import Success from "./pages/Success";
 import CustomersPage from "./pages/CustomersPage";
 import IngresoStock from "./pages/IngresoStock";
+import MainLayout from "./components/layout/MainLayout";
 
 function App() {
   return (
     <BrowserRouter>
       <CartProvider>
-        <Routes>
-          <Route path="/" element={<Products />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/success" element={<Success />} />
-          <Route path="/clientes" element={<CustomersPage />} />
-          <Route path="/ingreso-stock" element={<IngresoStock />} />
-        </Routes>
+        <MainLayout>
+          <Routes>
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/clientes" element={<CustomersPage />} />
+            <Route path="/ingreso-stock" element={<IngresoStock />} />
+            <Route path="/productos" element={<Products />} />
+          </Routes>
+        </MainLayout>
       </CartProvider>
     </BrowserRouter>
   );

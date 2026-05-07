@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-const MOCK_CLIENTS = [
-    { id: "1712345678", nombre: "Bryan Zumba", email: "bryan@ecuador.com", telefono: "0991234567" },
-    { id: "0912345678", nombre: "Maria Lopez", email: "maria.l@gmail.com", telefono: "0987654321" },
-    { id: "1799999999", nombre: "Empresa ABC", email: "ventas@abc.com", telefono: "02-234567" },
-];
+import { customerService } from "../services/customerService";
+
 function Checkout() {
     const navigate = useNavigate();
     const { cart, total, subtotal, iva } = useCart();
@@ -13,6 +10,7 @@ function Checkout() {
     const [clientMode, setClientMode] = useState("idle");
     const [searchQuery, setSearchQuery] = useState("");
     const [searchError, setSearchError] = useState("");
+    const [searchLoading, setSearchLoading] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
     // Form temporal para Crear / Editar
     const [clientForm, setClientForm] = useState({ id: "", nombre: "", email: "", telefono: "" });
@@ -26,17 +24,21 @@ function Checkout() {
     // ─────────────────────────────────────────
     // LÓGICA: Panel de Gestión de Clientes
     // ─────────────────────────────────────────
-    const handleSearch = () => {
+    const handleSearch = async () => {
         setSearchError("");
-        const found = MOCK_CLIENTS.find(c => c.id === searchQuery.trim());
-        if (found) {
-            setSelectedClient(found);
-            setClientMode("search_result");
-        }
-        else {
-            setSelectedClient(null);
-            setClientMode("idle");
-            setSearchError("No se encontró ningún cliente con esa cédula.");
+        setSearchLoading(true);
+        try {
+            const found = await customerService.getCustomerById(searchQuery.trim());
+            if (found) {
+                setSelectedClient(found);
+                setClientMode("search_result");
+            } else {
+                setSelectedClient(null);
+                setClientMode("idle");
+                setSearchError("No se encontró ningún cliente con esa cédula.");
+            }
+        } finally {
+            setSearchLoading(false);
         }
     };
     const handleSelectClient = (client) => {
@@ -56,12 +58,21 @@ function Checkout() {
             setClientMode("edit");
         }
     };
-    const handleSaveClient = () => {
-        // En la implementación real, aquí harías la llamada a la API
-        setSelectedClient(clientForm);
-        setCustomer({ nombre: clientForm.nombre, dni: clientForm.id, email: clientForm.email, telefono: clientForm.telefono });
-        setIsConsumidorFinal(false);
-        setClientMode("search_result");
+    const handleSaveClient = async () => {
+        try {
+            let saved;
+            if (clientMode === "create") {
+                saved = await customerService.createCustomer(clientForm);
+            } else {
+                saved = await customerService.updateCustomer(clientForm.id, clientForm);
+            }
+            setSelectedClient(saved);
+            setCustomer({ nombre: saved.nombre, dni: saved.id, email: saved.email, telefono: saved.telefono });
+            setIsConsumidorFinal(false);
+            setClientMode("search_result");
+        } catch (err) {
+            alert(err.message);
+        }
     };
     const handleCancelClientAction = () => {
         setClientMode(selectedClient ? "search_result" : "idle");

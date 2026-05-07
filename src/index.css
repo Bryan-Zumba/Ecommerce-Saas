@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@layer base {
+  button, 
+  a, 
+  select, 
+  label,
+  input[type="button"], 
+  input[type="submit"], 
+  input[type="file"] {
+    cursor: pointer;
+  }
+}
+
 /* REGLAS PARA IMPRESIÓN DEL TICKET (Optimizado para impresoras térmicas de 80mm) */
 @media print {
   @page {
