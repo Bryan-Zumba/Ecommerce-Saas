@@ -1,6 +1,9 @@
 import React from 'react';
 
-const CustomerFilters = ({ searchQuery, setSearchQuery, onAddNew }) => {
+/**
+ * FiltrosClientes - Barra de búsqueda y botón de agregar nuevo cliente.
+ */
+const FiltrosClientes = ({ searchQuery, setSearchQuery, onAddNew }) => {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 pt-4">
       <div className="relative w-full sm:max-w-md">
@@ -23,4 +26,4 @@ const CustomerFilters = ({ searchQuery, setSearchQuery, onAddNew }) => {
   );
 };
 
-export default CustomerFilters;
+export default FiltrosClientes;

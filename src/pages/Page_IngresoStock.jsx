@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import FormularioFactura from '../components/stock/FormularioFactura';
 import MatrizProductos from '../components/stock/MatrizProductos';
 import { enviarSolicitudStock } from '../services/servicioStock';
+import { servicioHistorial } from '../services/servicioHistorial';
 
 function IngresoStock() {
   const navigate = useNavigate();
@@ -38,6 +39,17 @@ function IngresoStock() {
     setCargando(true);
     try {
       const resultado = await enviarSolicitudStock(datosFactura, productos);
+      
+      // Guardar en el historial personal
+      servicioHistorial.guardarOperacion({
+        tipo: 'stock',
+        ordenId: resultado.ordenIngreso,
+        datosFactura: { ...datosFactura },
+        productos: [...productos],
+        estado: 'Pendiente',
+        cajero: "Bryan Zumba"
+      });
+
       setExito(resultado);
     } catch (error) {
       console.error("Error al enviar la solicitud", error);

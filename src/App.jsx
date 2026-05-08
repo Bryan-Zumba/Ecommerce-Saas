@@ -1,26 +1,30 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { CartProvider } from "./context/CartContext";
-import Products from "./pages/Products";
-import Checkout from "./pages/Checkout";
-import Success from "./pages/Success";
-import CustomersPage from "./pages/CustomersPage";
-import IngresoStock from "./pages/IngresoStock";
+import { ProveedorCarrito } from "./context/ContextoCarrito";
+import Home from "./pages/Page_Inicio";
+import Productos from "./pages/Page_Productos";
+import Caja from "./pages/Page_Caja";
+import VentaExitosa from "./pages/Page_VentaExitosa";
+import ClientesPage from "./pages/Page_Clientes";
+import IngresoStock from "./pages/Page_IngresoStock";
+import HistorialPersonal from "./pages/Pages_Historial_Personal";
 import MainLayout from "./components/layout/MainLayout";
 
 function App() {
   return (
     <BrowserRouter>
-      <CartProvider>
+      <ProveedorCarrito>
         <MainLayout>
           <Routes>
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/clientes" element={<CustomersPage />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/checkout" element={<Caja />} />
+            <Route path="/success" element={<VentaExitosa />} />
+            <Route path="/clientes" element={<ClientesPage />} />
             <Route path="/ingreso-stock" element={<IngresoStock />} />
-            <Route path="/productos" element={<Products />} />
+            <Route path="/productos" element={<Productos />} />
+            <Route path="/historial" element={<HistorialPersonal />} />
           </Routes>
         </MainLayout>
-      </CartProvider>
+      </ProveedorCarrito>
     </BrowserRouter>
   );
 }

@@ -7,9 +7,10 @@ function Sidebar({ isOpen, setIsOpen }) {
 
   const menuItems = [
     { id: 'inicio', label: 'Inicio', icon: '🏠', path: '/' },
-    { id: 'productos', label: 'Gestión de Items', icon: '📦', path: '/productos' },    
+    { id: 'productos', label: 'Tienda de Productos', icon: '🛒', path: '/productos' },    
     { id: 'clientes', label: 'Gestión de Clientes', icon: '👥', path: '/clientes' },
     { id: 'stock', label: 'Ingreso de Stock', icon: '📦', path: '/ingreso-stock' },
+    { id: 'historial', label: 'Historial Personal', icon: '📜', path: '/historial' },
   ];
 
   return (

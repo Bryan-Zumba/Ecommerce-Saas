@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ProductCard from "../components/products/ProductCard";
-import Cart from "../components/cart/Cart";
-import { useCart } from "../context/CartContext";
+import TarjetaProducto from "../components/productos/TarjetaProducto";
+import Carrito from "../components/carrito/Carrito";
+import { useCarrito } from "../context/ContextoCarrito";
 import { productsData } from "../data/products";
 
-function Products() {
-  const { cart } = useCart();
-  const [isCartOpen, setIsCartOpen] = useState(false);
+/**
+ * Página de Productos (Tienda)
+ * Muestra el catálogo y permite gestionar el carrito.
+ */
+function Page_Productos() {
+  const { carrito } = useCarrito();
+  const [estaCarritoAbierto, setEstaCarritoAbierto] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -18,10 +22,13 @@ function Products() {
         <div className="max-w-6xl mx-auto">
           
           {/* Encabezado */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-            <h1 className="text-3xl font-bold text-gray-800">Gestión de Productos</h1>
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 text-left">
+            <h1 className="text-3xl font-black text-gray-800 tracking-tight">Gestión de Productos</h1>
             <div className="flex flex-wrap gap-3">
-              <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-md active:scale-95">
+              <button 
+                onClick={() => navigate('/add-product')}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md active:scale-95"
+              >
                 + Agregar Producto
               </button>
             </div>
@@ -33,7 +40,7 @@ function Products() {
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">🔍</span>
               <input
                 type="search"
-                className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-100 rounded-2xl bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm text-sm"
                 placeholder="Buscar producto por nombre..."
               />
             </div>
@@ -42,47 +49,47 @@ function Products() {
           {/* Grid de Productos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {productsData.map((item) => (
-              <ProductCard key={item.id} data={item} />
+              <TarjetaProducto key={item.id} data={item} />
             ))}
           </div>
         </div>
       </div>
 
       {/* BOTÓN FLOTANTE (Solo móvil) */}
-      {!isCartOpen && (
+      {!estaCarritoAbierto && (
         <button 
-          onClick={() => setIsCartOpen(true)}
+          onClick={() => setEstaCarritoAbierto(true)}
           className="lg:hidden fixed bottom-6 right-6 bg-emerald-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 transition-transform active:scale-90 hover:bg-emerald-700"
         >
           <div className="relative">
             <span className="text-xl">🛒</span>
             <span className="absolute -top-3 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">
-              {cart.reduce((acc, item) => acc + item.quantity, 0)}
+              {carrito.reduce((acc, item) => acc + item.quantity, 0)}
             </span>
           </div>
           <span className="font-bold text-sm">Carrito</span>
         </button>
       )}
 
-      {/* CAPA DE FONDO (Overlay para cerrar en móvil) */}
-      {isCartOpen && (
+      {/* CAPA DE FONDO (Overlay) */}
+      {estaCarritoAbierto && (
         <div 
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsCartOpen(false)}
+          onClick={() => setEstaCarritoAbierto(false)}
         />
       )}
 
-      {/* BARRA LATERAL DEL CARRITO - FIJA A LA DERECHA */}
+      {/* BARRA LATERAL DEL CARRITO */}
       <aside className={`
         fixed top-0 right-0 h-screen bg-white shadow-2xl z-50 transition-transform duration-300 ease-in-out
         w-[85%] sm:w-80 lg:w-96 flex flex-col
-        ${isCartOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+        ${estaCarritoAbierto ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
       `}>
-        <Cart />
+        <Carrito />
       </aside>
 
     </div>
   );
 }
 
-export default Products;
+export default Page_Productos;

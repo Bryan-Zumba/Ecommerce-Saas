@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
-  const isEditing = Boolean(initialData);
+/**
+ * FormularioCliente - Modal para crear o editar un cliente.
+ */
+const ModalFormularioCliente = ({ isOpen, onClose, onSave, initialData }) => {
+  const esEditando = Boolean(initialData);
 
-  const [formData, setFormData] = useState({
+  const [datosFormulario, setDatosFormulario] = useState({
     id: '',
     nombre: '',
     email: '',
@@ -16,9 +19,9 @@ const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
   useEffect(() => {
     if (isOpen) {
       if (initialData) {
-        setFormData(initialData);
+        setDatosFormulario(initialData);
       } else {
-        setFormData({ id: '', nombre: '', email: '', telefono: '' });
+        setDatosFormulario({ id: '', nombre: '', email: '', telefono: '' });
       }
       setError('');
     }
@@ -26,25 +29,24 @@ const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
 
   if (!isOpen) return null;
 
-  const handleChange = (e) => {
+  const manejarCambio = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setDatosFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const manejarEnvio = async (e) => {
     e.preventDefault();
-    if (!formData.id || !formData.nombre) {
+    if (!datosFormulario.id || !datosFormulario.nombre) {
         setError('Cédula y Nombre son obligatorios');
         return;
     }
     setError('');
     
-    // Llamar a la función del padre y esperar respuesta por si hay error (ej. cédula duplicada)
-    const result = await onSave(formData);
-    if (result?.error) {
-      setError(result.error);
+    const resultado = await onSave(datosFormulario);
+    if (resultado?.error) {
+      setError(resultado.error);
     } else {
-      onClose(); // Cerrar solo si fue exitoso
+      onClose();
     }
   };
 
@@ -55,7 +57,7 @@ const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
         {/* Header */}
         <div className="bg-gray-50 border-b border-gray-100 px-6 py-4 flex items-center justify-between">
           <h3 className="text-lg font-bold text-gray-800">
-            {isEditing ? 'Editar Cliente' : 'Nuevo Cliente'}
+            {esEditando ? 'Editar Cliente' : 'Nuevo Cliente'}
           </h3>
           <button 
             onClick={onClose}
@@ -66,70 +68,69 @@ const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
         </div>
 
         {/* Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={manejarEnvio} className="p-6 space-y-4">
           {error && (
             <div className="bg-red-50 text-red-600 text-xs font-bold p-3 rounded-xl border border-red-100">
               {error}
             </div>
           )}
 
-          <div className="space-y-1">
+          <div className="space-y-1 text-left">
             <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Cédula / RUC</label>
             <input
               required
               type="text"
               name="id"
-              value={formData.id}
-              onChange={handleChange}
-              disabled={isEditing} // No permitir cambiar cédula si edita
+              value={datosFormulario.id}
+              onChange={manejarCambio}
+              disabled={esEditando}
               placeholder="17xxxxxxxx"
               className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all disabled:bg-gray-50 disabled:text-gray-400"
             />
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1 text-left">
             <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Nombre Completo</label>
             <input
               required
               type="text"
               name="nombre"
-              value={formData.nombre}
-              onChange={handleChange}
+              value={datosFormulario.nombre}
+              onChange={manejarCambio}
               placeholder="Juan Pérez"
               className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
             />
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1 text-left">
             <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Email</label>
             <input
               type="email"
               name="email"
-              value={formData.email}
-              onChange={handleChange}
+              value={datosFormulario.email}
+              onChange={manejarCambio}
               placeholder="juan@ejemplo.com"
               className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
             />
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1 text-left">
             <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Teléfono</label>
             <input
               type="text"
               name="telefono"
-              value={formData.telefono}
-              onChange={handleChange}
+              value={datosFormulario.telefono}
+              onChange={manejarCambio}
               placeholder="099xxxxxxx"
               className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
             />
           </div>
 
-          {/* Footer actions */}
           <div className="pt-4 flex gap-3">
              <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 border border-gray-200 text-gray-500 text-sm font-bold rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-all font-medium flex-1 text-center"
+              className="px-4 py-2.5 border border-gray-200 text-gray-500 text-sm font-bold rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-all flex-1 text-center"
             >
               Cancelar
             </button>
@@ -146,4 +147,4 @@ const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
   );
 };
 
-export default CustomerFormModal;
+export default ModalFormularioCliente;

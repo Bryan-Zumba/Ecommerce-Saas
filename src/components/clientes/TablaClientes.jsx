@@ -1,6 +1,9 @@
 import React from 'react';
 
-const CustomerTable = ({ data, onEdit, onDelete, isLoading }) => {
+/**
+ * TablaClientes - Tabla que muestra la lista de clientes con acciones.
+ */
+const TablaClientes = ({ data, onEdit, onDelete, isLoading }) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -30,28 +33,28 @@ const CustomerTable = ({ data, onEdit, onDelete, isLoading }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
-          {data.map((client) => (
-            <tr key={client.id} className="hover:bg-emerald-50/30 transition-colors">
-              <td className="px-6 py-4 font-mono text-gray-900">{client.id}</td>
-              <td className="px-6 py-4 font-bold text-gray-800">{client.nombre}</td>
+          {data.map((cliente) => (
+            <tr key={cliente.id} className="hover:bg-emerald-50/30 transition-colors">
+              <td className="px-6 py-4 font-mono text-gray-900">{cliente.id}</td>
+              <td className="px-6 py-4 font-bold text-gray-800">{cliente.nombre}</td>
               <td className="px-6 py-4">
                 <div className="flex flex-col">
-                  <span className="text-gray-900">{client.email || '—'}</span>
-                  <span className="text-xs text-gray-400">{client.telefono || '—'}</span>
+                  <span className="text-gray-900">{cliente.email || '—'}</span>
+                  <span className="text-xs text-gray-400">{cliente.telefono || '—'}</span>
                 </div>
               </td>
               <td className="px-6 py-4 text-right">
                 <div className="flex justify-end gap-2">
                   <button
-                    onClick={() => onEdit(client)}
+                    onClick={() => onEdit(cliente)}
                     className="px-3 py-1.5 text-xs font-bold bg-white border border-gray-200 text-gray-600 rounded-lg hover:border-emerald-400 hover:text-emerald-600 transition-all"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => {
-                      if(window.confirm(`¿Seguro que deseas eliminar a ${client.nombre}?`)) {
-                        onDelete(client.id);
+                      if(window.confirm(`¿Seguro que deseas eliminar a ${cliente.nombre}?`)) {
+                        onDelete(cliente.id);
                       }
                     }}
                     className="px-3 py-1.5 text-xs font-bold bg-white border border-gray-200 text-red-500 rounded-lg hover:border-red-200 hover:bg-red-50 transition-all"
@@ -68,4 +71,4 @@ const CustomerTable = ({ data, onEdit, onDelete, isLoading }) => {
   );
 };
 
-export default CustomerTable;
+export default TablaClientes;
