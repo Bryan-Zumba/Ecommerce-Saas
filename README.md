@@ -1,16 +1,39 @@
-# React + Vite
+# SaaS Ecommerce Monorepo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto utiliza una arquitectura de Monorepo gestionada con `concurrently`.
 
-Currently, two official plugins are available:
+## Estructura del Proyecto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `web/`: Aplicación Frontend construida con React + TypeScript + Vite.
+- `api/`: API Backend construida con Node.js + Express + TypeScript.
 
-## React Compiler
+## Requisitos
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js (v18+)
+- NPM
 
-## Expanding the ESLint configuration
+## Configuración
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Instala las dependencias en la raíz:
+   ```bash
+   npm install
+   ```
+
+2. Instala las dependencias en cada subproyecto (opcional, el script raíz lo hace):
+   ```bash
+   npm install --prefix ./web
+   npm install --prefix ./api
+   ```
+
+3. Configura el archivo `.env` en la carpeta `api/` basándote en `.env.example`.
+
+## Ejecución
+
+Para ejecutar tanto el frontend como el backend simultáneamente en modo desarrollo:
+
+```bash
+npm run dev
+```
+
+- Frontend: [http://localhost:5173](http://localhost:5173)
+- Backend: [http://localhost:3001](http://localhost:3001)

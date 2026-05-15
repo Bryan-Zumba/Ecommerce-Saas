@@ -1,0 +1,1 @@
+Módulo de stock - Capas de dominio, aplicación e infraestructura.

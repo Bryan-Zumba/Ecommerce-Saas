@@ -1,0 +1,1 @@
+Configuraciones globales, base de datos y middlewares transversales.

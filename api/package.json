@@ -1,0 +1,27 @@
+{
+  "name": "api-ecommerce",
+  "version": "1.0.0",
+  "description": "Backend para SaaS Ecommerce con Arquitectura Hexagonal",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "@supabase/supabase-js": "^2.46.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.9.0",
+    "ts-node-dev": "^2.0.0"
+  }
+}

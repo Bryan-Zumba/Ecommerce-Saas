@@ -1,0 +1,1 @@
+Casos de uso para ventas y procesamiento de pedidos.

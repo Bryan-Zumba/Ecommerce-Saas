@@ -1,0 +1,1 @@
+Entidades y lógica pura del negocio de clientes. No depende de tecnología.

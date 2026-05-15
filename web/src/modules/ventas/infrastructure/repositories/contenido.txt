@@ -1,0 +1,1 @@
+Persistencia de ventas e historial de operaciones.

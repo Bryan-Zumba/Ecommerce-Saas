@@ -1,0 +1,1 @@
+Configuración técnica base para el frontend (ej. apiClient.ts).
