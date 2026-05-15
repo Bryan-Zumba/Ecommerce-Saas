@@ -1,1 +1,1 @@
-Módulo de productos - Capas de dominio, aplicación e infraestructura.
+Carpeta estructural del proyecto bajo Arquitectura Hexagonal.

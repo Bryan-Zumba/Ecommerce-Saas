@@ -1,0 +1,1 @@
+Vistas/Páginas: Punto de entrada de las rutas que ensambla los componentes de los módulos.

@@ -1,1 +1,1 @@
-Contextos globales de React (Estado compartido).
+Carpeta estructural del proyecto bajo Arquitectura Hexagonal.

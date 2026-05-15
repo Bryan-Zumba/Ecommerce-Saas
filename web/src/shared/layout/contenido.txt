@@ -1,1 +1,1 @@
-Componentes de layout compartidos (Sidebar, Navbar, etc).
+Carpeta estructural del proyecto bajo Arquitectura Hexagonal.

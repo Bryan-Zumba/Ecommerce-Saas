@@ -1,1 +1,1 @@
-Entidades para control de inventario y stock.
+Capa de Dominio: Contiene las entidades de negocio, interfaces de repositorios (puertos) y reglas de negocio puras.

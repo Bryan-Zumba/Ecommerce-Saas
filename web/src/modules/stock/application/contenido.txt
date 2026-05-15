@@ -1,1 +1,1 @@
-Casos de uso para gestiÃ³n de stock.
+Capa de Aplicación: Contiene los casos de uso, servicios de aplicación y la orquestación de la lógica de negocio.

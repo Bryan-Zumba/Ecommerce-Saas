@@ -1,1 +1,1 @@
-Casos de uso para ventas y procesamiento de pedidos.
+Capa de Aplicación: Contiene los casos de uso, servicios de aplicación y la orquestación de la lógica de negocio.

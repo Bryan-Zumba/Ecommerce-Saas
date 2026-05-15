@@ -1,1 +1,1 @@
-Módulo de ventas - Capas de dominio, aplicación e infraestructura.
+Carpeta estructural del proyecto bajo Arquitectura Hexagonal.

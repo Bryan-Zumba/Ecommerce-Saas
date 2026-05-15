@@ -1,1 +1,1 @@
-Componentes UI reutilizables y genéricos (Botones, Modales, etc).
+Carpeta estructural del proyecto bajo Arquitectura Hexagonal.

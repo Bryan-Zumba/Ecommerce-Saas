@@ -1,1 +1,1 @@
-Configuración técnica base para el frontend (ej. apiClient.ts).
+Core: Configuraciones transversales, utilitarios de red (apiClient) y configuraci�n de base de datos.

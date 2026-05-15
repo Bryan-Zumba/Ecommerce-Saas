@@ -1,1 +1,1 @@
-Componentes de carrito, checkout e historial.
+Capa de Infraestructura: Contiene las implementaciones concretas (adaptadores) como repositorios de base de datos, controladores HTTP y rutas.
