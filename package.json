@@ -2,6 +2,10 @@
   "name": "saas-ecommerce-monorepo",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "web",
+    "api"
+  ],
   "scripts": {
     "dev:web": "npm run dev --prefix ./web",
     "dev:api": "npm run dev --prefix ./api",
