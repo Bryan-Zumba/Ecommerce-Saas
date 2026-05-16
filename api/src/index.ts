@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import routerCliente from './modules/clientes/infrastructure/RoutesCliente';
 
 dotenv.config();
 
@@ -19,6 +20,9 @@ app.use(express.json());
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+//Rutas de aplicacion
+app.use('/api',routerCliente);
 
 // Inicio del servidor
 app.listen(PORT, () => {
