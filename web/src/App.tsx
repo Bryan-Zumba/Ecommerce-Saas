@@ -8,7 +8,7 @@ import ClientesPage from "./pages/Page_Clientes";
 import IngresoStock from "./pages/Page_IngresoStock";
 import HistorialPersonal from "./pages/Pages_Historial_Personal";
 import MainLayout from "@/shared/layout/MainLayout";
-import { PageClientes } from "./modules/clientes/infrastructure/components/PageClientes";
+import { PageClientes } from "./modules/clientes/infrastructure/pages/PageClientes";
 
 function App() {
   return (

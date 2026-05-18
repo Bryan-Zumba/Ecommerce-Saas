@@ -28,7 +28,8 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
         <thead className="bg-gray-50 font-semibold text-gray-700">
           <tr>
             <th className="px-6 py-4">Cédula</th>
-            <th className="px-6 py-4">Nombres y Apellidos</th>
+            <th className="px-6 py-4">Nombres</th>
+            <th className='px-6 py-4'>Apellidos</th>
             <th className="px-6 py-4">Email</th>
             <th className="px-6 py-4">Teléfono</th>
           </tr>
@@ -37,9 +38,10 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
           {clientes.map((cliente) => (
             <tr key={cliente.id} className="hover:bg-gray-50 transition-colors">
               <td className="px-6 py-4 font-medium text-gray-900">{cliente.cedula}</td>
-              <td className="px-6 py-4">{cliente.nombres} {cliente.apellidos}</td>
-              <td className="px-6 py-4">{cliente.email || '—'}</td>
-              <td className="px-6 py-4">{cliente.telefono || '—'}</td>
+              <td className="px-6 py-4">{cliente.nombres}</td>
+              <td className="px-6 py-4">{cliente.apellidos}</td>
+              <td className="px-6 py-4">{cliente.email || 'No registrado'}</td>
+              <td className="px-6 py-4">{cliente.telefono || 'No registrado'}</td>
             </tr>
           ))}
         </tbody>
