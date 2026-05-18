@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { RepositoryPrismaCliente } from "./RepositoryPrismaCliente";
-import { ServiceCliente } from "../application/servicesCliente";
-import { ControllerCliente } from "./ControllersCliente";
+import { ServiceCliente } from "../application/ServicesCliente";
+import { ControllerCliente } from "./ControllersCliente";   
 
 const routerCliente = Router();
 

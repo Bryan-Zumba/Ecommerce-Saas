@@ -8,6 +8,7 @@ import ClientesPage from "./pages/Page_Clientes";
 import IngresoStock from "./pages/Page_IngresoStock";
 import HistorialPersonal from "./pages/Pages_Historial_Personal";
 import MainLayout from "@/shared/layout/MainLayout";
+import { PageClientes } from "./modules/clientes/infrastructure/components/PageClientes";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/checkout" element={<Caja />} />
             <Route path="/success" element={<VentaExitosa />} />
             <Route path="/clientes" element={<ClientesPage />} />
+            <Route path="/clientes-api" element={<PageClientes />} />
             <Route path="/ingreso-stock" element={<IngresoStock />} />
             <Route path="/productos" element={<Productos />} />
             <Route path="/historial" element={<HistorialPersonal />} />

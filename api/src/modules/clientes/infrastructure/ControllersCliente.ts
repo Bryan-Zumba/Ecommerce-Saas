@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ServiceCliente } from "../application/servicesCliente";
+import { ServiceCliente } from "../application/ServicesCliente";
 
 export class ControllerCliente{
     private service: ServiceCliente;
@@ -9,11 +9,11 @@ export class ControllerCliente{
     }
 
     obtenerClientes=async (req: Request, res: Response)=>{
-        try{
+      try{
             const clientes = await this.service.obtenerTodos();
             return res.status(200).json(clientes);
-        }catch(error){
-            return res.status(500).json({message:"Error al obtener los clientes"});
-        }
+      }catch(error){
+          return res.status(500).json({message:"Error al obtener los clientes"});
+      }
     };
 }
