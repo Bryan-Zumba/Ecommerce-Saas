@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import { useClientes } from '@/modules/clientes/application/useClientes';
-import { useClientesApi } from '@/modules/clientes/application/useClientesApi';
+import { useClientesApi } from '@/modules/clientes/application/useClienteApi2';
 import { ApiClienteRepository } from '@/modules/clientes/infrastructure/ApiClienteRepository';
 
 import FiltrosClientes from '@/modules/clientes/infrastructure/components/FiltrosClientes';
