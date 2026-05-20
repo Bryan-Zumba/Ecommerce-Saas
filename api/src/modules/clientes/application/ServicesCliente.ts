@@ -12,4 +12,9 @@ export class ServiceCliente {
         const clientes = await this.repository.obtenerTodos();
         return clientes;
     }
+
+     async crear(datosCliente: Omit<Cliente, "id" | "created_at">): Promise<Cliente> {
+        const nuevoCliente = await this.repository.crear(datosCliente);
+        return nuevoCliente;
+    }
 }

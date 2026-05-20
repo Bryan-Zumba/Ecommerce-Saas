@@ -12,5 +12,5 @@ const serviceCliente = new ServiceCliente(repositoryCliente);
 const controllerCliente = new ControllerCliente(serviceCliente);
 
 routerCliente.get('/clientes', controllerCliente.obtenerClientes);
-
+routerCliente.post('/clientes', controllerCliente.crearCliente);
 export default routerCliente;

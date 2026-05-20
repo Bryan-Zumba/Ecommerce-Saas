@@ -1,89 +1,86 @@
-import { CLIENTES_PRUEBA } from "./clientes.data";
+import { apiClient } from "@/core/apiClient";
 
 export interface Cliente {
-  id: string;
+  id: string; // Cédula en el frontend
   nombre: string;
   email: string;
   telefono: string;
 }
 
-const STORAGE_KEY = "saas_customers";
-const STORAGE_VERSION = "v2";
-const VERSION_KEY = "saas_customers_version";
+// Estructura que retorna el Backend (Base de Datos / Prisma)
+interface BackendCliente {
+  id?: number;
+  cedula: string;
+  nombres: string;
+  apellidos: string;
+  email: string | null;
+  telefono: string | null;
+  created_at?: string;
+}
 
-const inicializarAlmacenamiento = () => {
-  const versionGuardada = localStorage.getItem(VERSION_KEY);
-  if (versionGuardada !== STORAGE_VERSION) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(CLIENTES_PRUEBA));
-    localStorage.setItem(VERSION_KEY, STORAGE_VERSION);
-  }
+// Mapeador de Backend a Frontend
+const mapearClienteAFronte = (c: BackendCliente): Cliente => {
+  return {
+    id: c.cedula,
+    nombre: `${c.nombres} ${c.apellidos}`.trim(),
+    email: c.email || "",
+    telefono: c.telefono || "",
+  };
+};
+
+// Mapeador de Frontend a Backend
+const mapearClienteABackend = (datosCliente: Cliente): Omit<BackendCliente, "id" | "created_at"> => {
+  const partesNombre = datosCliente.nombre.trim().split(/\s+/);
+  const nombres = partesNombre[0] || "";
+  const apellidos = partesNombre.slice(1).join(" ") || "-";
+
+  return {
+    cedula: datosCliente.id,
+    nombres,
+    apellidos,
+    email: datosCliente.email || null,
+    telefono: datosCliente.telefono || null,
+  };
 };
 
 export const servicioClientes = {
   obtenerClientes: async (): Promise<Cliente[]> => {
-    inicializarAlmacenamiento();
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        resolve(datos);
-      }, 500);
-    });
+    const respuesta = await apiClient.get<BackendCliente[]>("/api/clientes");
+    return respuesta.map(mapearClienteAFronte);
   },
 
-  obtenerClientePorId: async (id: string): Promise<Cliente | null> => {
-    inicializarAlmacenamiento();
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        resolve(datos.find((c: Cliente) => c.id === id) || null);
-      }, 300);
-    });
+  obtenerClientePorId: async (cedula: string): Promise<Cliente | null> => {
+    try {
+      const respuesta = await apiClient.get<BackendCliente>(`/api/clientes/${cedula}`);
+      return respuesta ? mapearClienteAFronte(respuesta) : null;
+    } catch {
+      return null;
+    }
   },
 
   crearCliente: async (datosCliente: Cliente): Promise<Cliente> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-
-        if (datos.some((c: Cliente) => c.id === datosCliente.id)) {
-          return reject(new Error("Ya existe un cliente con esta Cédula / RUC"));
-        }
-
-        const nuevosDatos = [...datos, datosCliente];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(nuevosDatos));
-        resolve(datosCliente);
-      }, 500);
-    });
+    const datosBackend = mapearClienteABackend(datosCliente);
+    const respuesta = await apiClient.post<BackendCliente>("/api/clientes", datosBackend);
+    return mapearClienteAFronte(respuesta);
   },
 
-  actualizarCliente: async (id: string, datosActualizados: Partial<Cliente>): Promise<Cliente | null> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        let datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        let itemActualizado: Cliente | null = null;
+  actualizarCliente: async (cedula: string, datosActualizados: Partial<Cliente>): Promise<Cliente | null> => {
+    let datosBackend: Partial<BackendCliente> = {};
+    
+    if (datosActualizados.nombre) {
+      const partesNombre = datosActualizados.nombre.trim().split(/\s+/);
+      datosBackend.nombres = partesNombre[0] || "";
+      datosBackend.apellidos = partesNombre.slice(1).join(" ") || "-";
+    }
+    if (datosActualizados.email !== undefined) datosBackend.email = datosActualizados.email;
+    if (datosActualizados.telefono !== undefined) datosBackend.telefono = datosActualizados.telefono;
 
-        datos = datos.map((c: Cliente) => {
-          if (c.id === id) {
-            itemActualizado = { ...c, ...datosActualizados, id };
-            return itemActualizado;
-          }
-          return c;
-        });
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
-        resolve(itemActualizado);
-      }, 500);
-    });
+    const respuesta = await apiClient.put<BackendCliente>(`/api/clientes/${cedula}`, datosBackend);
+    return respuesta ? mapearClienteAFronte(respuesta) : null;
   },
 
-  eliminarCliente: async (id: string): Promise<{ success: boolean; id: string }> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        let datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        datos = datos.filter((c: Cliente) => c.id !== id);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
-        resolve({ success: true, id });
-      }, 500);
-    });
+  eliminarCliente: async (cedula: string): Promise<{ success: boolean; id: string }> => {
+    await apiClient.delete(`/api/clientes/${cedula}`);
+    return { success: true, id: cedula };
   }
 };

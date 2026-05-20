@@ -6,4 +6,9 @@ export class ApiClienteRepository implements ClienteRepository {
   async obtenerTodos(): Promise<Cliente[]> {
     return apiClient.get<Cliente[]>('/api/clientes');
   }
+
+  async crear(cliente: Omit<Cliente, 'id' | 'created_at'>): Promise<Cliente> {
+    return apiClient.post<Cliente>('/api/clientes', cliente);
+  }
+
 }

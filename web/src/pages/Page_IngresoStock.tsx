@@ -51,7 +51,7 @@ function IngresoStock() {
       });
 
       setExito(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al enviar la solicitud", error);
       alert("Hubo un error al procesar la solicitud.");
     } finally {

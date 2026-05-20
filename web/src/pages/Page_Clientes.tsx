@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useClientes } from '@/modules/clientes/application/useClientes';
+//import { useClientes } from '@/modules/clientes/application/useClientes';
+import { useClientesApi } from '@/modules/clientes/application/useClientesApi';
+import { ApiClienteRepository } from '@/modules/clientes/infrastructure/ApiClienteRepository';
+
 import FiltrosClientes from '@/modules/clientes/infrastructure/components/FiltrosClientes';
 import TablaClientes from '@/modules/clientes/infrastructure/components/TablaClientes';
 import ModalFormularioCliente from '@/modules/clientes/infrastructure/components/FormularioCliente';
@@ -9,9 +12,25 @@ import ModalFormularioCliente from '@/modules/clientes/infrastructure/components
  * Página de Gestión de Clientes
  * Permite buscar, listar, crear, editar y eliminar clientes.
  */
+
+const apiClienteRepository = new ApiClienteRepository();
+
 function ClientesPage() {
   const navigate = useNavigate();
-  const { clientes, cargando, agregarCliente, actualizarCliente, eliminarCliente } = useClientes();
+  //const { clientes, cargando, agregarCliente, actualizarCliente, eliminarCliente } = useClientes();
+
+  const { clientes, cargando, agregarCliente } = useClientesApi(apiClienteRepository);
+
+  // Stubs temporales para evitar errores de compilación mientras probamos Crear/Listar
+  const actualizarCliente = async (id: string, datosActualizados: any) => {
+    console.log('Actualizar deshabilitado temporalmente para pruebas de creación:', id, datosActualizados);
+    return { success: false, error: 'Función no implementada aún en la API' };
+  };
+
+  const eliminarCliente = async (id: string) => {
+    console.log('Eliminar deshabilitado temporalmente para pruebas de creación:', id);
+    return { success: false, error: 'Función no implementada aún en la API' };
+  };
 
   const [consultaBusqueda, setConsultaBusqueda] = useState('');
 
