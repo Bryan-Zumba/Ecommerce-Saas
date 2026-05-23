@@ -5,6 +5,7 @@ import Productos from "./pages/Page_Productos";
 import Caja from "./pages/Page_Caja";
 import VentaExitosa from "./pages/Page_VentaExitosa";
 import ClientesPage from "./pages/Page_Clientes";
+import Page_Bodegas from "./pages/Page_Bodegas";
 import IngresoStock from "./pages/Page_IngresoStock";
 import HistorialPersonal from "./pages/Pages_Historial_Personal";
 import MainLayout from "@/shared/layout/MainLayout";
@@ -21,6 +22,7 @@ function App() {
             <Route path="/success" element={<VentaExitosa />} />
             <Route path="/clientes" element={<ClientesPage />} />
             <Route path="/clientes-api" element={<PageClientes />} />
+            <Route path="/bodegas" element={<Page_Bodegas />} />
             <Route path="/ingreso-stock" element={<IngresoStock />} />
             <Route path="/productos" element={<Productos />} />
             <Route path="/historial" element={<HistorialPersonal />} />

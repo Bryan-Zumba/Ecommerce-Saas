@@ -5,10 +5,10 @@ dist
 *.log
 
 # Frontend específicos
-web/node_modules
-web/dist
+frontend/node_modules
+frontend/dist
 
 # Backend específicos
-api/node_modules
-api/dist
-api/.env
+backend/node_modules
+backend/dist
+backend/.env

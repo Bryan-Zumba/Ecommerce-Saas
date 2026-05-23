@@ -9,6 +9,7 @@ function Sidebar({ isOpen, setIsOpen }) {
     { id: 'inicio', label: 'Inicio', icon: '🏠', path: '/' },
     { id: 'productos', label: 'Tienda de Productos', icon: '🛒', path: '/productos' },    
     { id: 'clientes', label: 'Gestión de Clientes', icon: '👥', path: '/clientes' },
+    { id: 'bodegas', label: 'Gestión de Bodegas', icon: '🏬', path: '/bodegas' },
     { id: 'stock', label: 'Ingreso de Stock', icon: '📦', path: '/ingreso-stock' },
     { id: 'historial', label: 'Historial Personal', icon: '📜', path: '/historial' },
   ];

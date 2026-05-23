@@ -31,6 +31,13 @@ function Home() {
       clase: 'bg-indigo-50 text-indigo-600' 
     },
     { 
+      titulo: 'Gestionar Bodegas', 
+      desc: 'Control y administración de almacenes y sucursales.', 
+      icon: '🏬', 
+      path: '/bodegas', 
+      clase: 'bg-emerald-50 text-emerald-600' 
+    },
+    { 
       titulo: 'Ingreso de Stock', 
       desc: 'Solicita reposición de mercadería al supervisor.', 
       icon: '📦', 
