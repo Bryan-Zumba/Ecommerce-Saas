@@ -1,18 +1,25 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-function Sidebar({ isOpen, setIsOpen }) {
+interface SidebarProps {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
   const menuItems = [
     { id: 'inicio', label: 'Inicio', icon: '🏠', path: '/' },
-    { id: 'productos', label: 'Tienda de Productos', icon: '🛒', path: '/productos' },    
+    { id: 'productos', label: 'Tienda de Productos', icon: '🛒', path: '/productos' },
+    { id: 'gestion-productos', label: 'Gestión Productos', icon: '🛠️', path: '/gestion-productos' },
     { id: 'clientes', label: 'Gestión de Clientes', icon: '👥', path: '/clientes' },
     { id: 'bodegas', label: 'Gestión de Bodegas', icon: '🏬', path: '/bodegas' },
     { id: 'stock', label: 'Ingreso de Stock', icon: '📦', path: '/ingreso-stock' },
     { id: 'historial', label: 'Historial Personal', icon: '📜', path: '/historial' },
-  ];
+  { id: 'gestion-categorias', label: 'Gestión Categorías', icon: '📂', path: '/gestion-categorias' },
+];
 
   return (
     <>
@@ -63,7 +70,7 @@ function Sidebar({ isOpen, setIsOpen }) {
                 key={item.id}
                 onClick={() => {
                   navigate(item.path);
-                  if (window.innerWidth < 1024) setIsOpen(false);
+                  setIsOpen(false);
                 }}
                 className={`
                   flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200

@@ -1,6 +1,7 @@
 export interface Operacion {
   tipo: 'venta' | 'stock';
-  ordenId: string | number;
+  ordenId?: string | number;
+  bodegaId?: number | null;
   fecha?: string;
   fechaRegistro: string;
   productos: any[];
@@ -76,7 +77,10 @@ export const servicioHistorial = {
           if (fechaOp !== fechaFiltro) cumple = false;
         }
         if (filtros.codigo) {
-          if (!op.ordenId.toString().toLowerCase().includes(filtros.codigo.toLowerCase())) cumple = false;
+          // If ordenId is missing, treat as non‑match
+          if (!op.ordenId || !op.ordenId.toString().toLowerCase().includes(filtros.codigo.toLowerCase())) {
+            cumple = false;
+          }
         }
         return cumple;
       });

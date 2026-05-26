@@ -1,5 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, FormEvent } from 'react';
+
+// Tipo para los productos ingresados en stock
+interface ProductoIngreso {
+  productoId: string;
+  cantidad: number;
+  costoUnitario: number;
+}
+
+// Tipo para los datos de la factura
+interface DatosFactura {
+  codigo: string;
+  fecha: string;
+  total: string;
+  imagenAdjunta: File | null;
+}
 import { useNavigate } from 'react-router-dom';
+import { LocalstorageBodegaRepository } from '@/modules/bodegas/infrastructure/repositories/LocalstorageBodegaRepository';
+import { useBodegas } from '@/modules/bodegas/application/useBodegas';
 import FormularioFactura from '@/modules/stock/infrastructure/components/FormularioFactura';
 import MatrizProductos from '@/modules/stock/infrastructure/components/MatrizProductos';
 import { enviarSolicitudStock } from '@/modules/stock/infrastructure/repositories/servicioStock';
@@ -7,8 +24,11 @@ import { servicioHistorial } from '@/modules/ventas/infrastructure/repositories/
 
 function IngresoStock() {
   const navigate = useNavigate();
+  const repositoryBodega = useMemo(() => new LocalstorageBodegaRepository(), []);
+  const { bodegas, cargando: cargandoBodegas } = useBodegas(repositoryBodega);
   const [cargando, setCargando] = useState(false);
-  const [exito, setExito] = useState(null);
+  const [exito, setExito] = useState<null | { ordenIngreso: string }>(null);
+  const [bodegaSeleccionada, setBodegaSeleccionada] = useState<number | null>(null);
 
   // Estado para los datos de la factura
   const [datosFactura, setDatosFactura] = useState({
@@ -19,12 +39,18 @@ function IngresoStock() {
   });
 
   // Estado para la matriz de productos
-  const [productos, setProductos] = useState([]);
+  // Estado para la matriz de productos
+  const [productos, setProductos] = useState<ProductoIngreso[]>([]);
 
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Validación básica
+    if (!bodegaSeleccionada) {
+      alert('Debe seleccionar una bodega antes de enviar la solicitud.');
+      return;
+    }
     if (productos.length === 0) {
       alert("Debe agregar al menos un producto a la matriz.");
       return;
@@ -38,8 +64,8 @@ function IngresoStock() {
 
     setCargando(true);
     try {
-      const resultado = await enviarSolicitudStock(datosFactura, productos);
-      
+      const resultado = await enviarSolicitudStock(datosFactura, productos, bodegaSeleccionada);
+
       // Guardar en el historial personal
       servicioHistorial.guardarOperacion({
         tipo: 'stock',
@@ -47,7 +73,8 @@ function IngresoStock() {
         datosFactura: { ...datosFactura },
         productos: [...productos],
         estado: 'Pendiente',
-        cajero: "Bryan Zumba"
+        cajero: "Bryan Zumba",
+        bodegaId: bodegaSeleccionada
       });
 
       setExito(resultado);
@@ -100,10 +127,10 @@ function IngresoStock() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-6xl mx-auto">
-        
+
         {/* Encabezado */}
         <div className="flex items-center gap-4 mb-8">
-          <button 
+          <button
             onClick={() => navigate('/')}
             className="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
           >
@@ -116,7 +143,23 @@ function IngresoStock() {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Formulario de Factura */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Seleccionar Bodega</label>
+            {cargandoBodegas ? (
+              <p className="text-gray-500">Cargando bodegas…</p>
+            ) : (
+              <select
+                value={bodegaSeleccionada ?? ''}
+                onChange={e => setBodegaSeleccionada(Number(e.target.value) || null)}
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                <option value="">-- Seleccione una bodega --</option>
+                {bodegas.map(b => (
+                  <option key={b.id_bodega} value={b.id_bodega}>{b.nombre}</option>
+                ))}
+              </select>
+            )}
+          </div>
           <FormularioFactura datos={datosFactura} setDatos={setDatosFactura} />
 
           {/* Matriz de Productos */}
