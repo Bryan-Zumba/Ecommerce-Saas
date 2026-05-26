@@ -16,6 +16,14 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Backend Ecommerce API funcionando',
+    health: '/health',
+    clientes: '/api/clientes',
+  });
+});
+
 // Ruta de salud
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
