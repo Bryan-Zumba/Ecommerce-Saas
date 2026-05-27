@@ -8,6 +8,7 @@ const FiltrosBusqueda = ({search, setSearch}: FiltrosBusquedaProps) => {
         <div className="relative w-full sm:max-w-md">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
             <input
+                id="busquedaCliente"
                 type="text" 
                 placeholder="Buscar por nombre o cédula" 
                 value={search}

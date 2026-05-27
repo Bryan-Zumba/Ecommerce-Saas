@@ -11,6 +11,7 @@ import { productsData } from "@/modules/productos/infrastructure/repositories/pr
  */
 function Page_Productos() {
   const { carrito } = useCarrito();
+  const hayProductosEnCarrito = carrito.length > 0;
   const [estaCarritoAbierto, setEstaCarritoAbierto] = useState(false);
   const navigate = useNavigate();
 
@@ -18,7 +19,7 @@ function Page_Productos() {
     <div className="min-h-screen bg-gray-50 flex overflow-x-hidden relative">
       
       {/* AREA DE PRODUCTOS */}
-      <div className="flex-1 p-6 lg:pr-96 transition-all duration-300">
+      <div className={`flex-1 p-6 transition-all duration-300 ${hayProductosEnCarrito ? 'lg:pr-96' : ''}`}>
         <div className="max-w-6xl mx-auto">
           
           {/* Encabezado */}
@@ -56,7 +57,7 @@ function Page_Productos() {
       </div>
 
       {/* BOTÓN FLOTANTE (Solo móvil) */}
-      {!estaCarritoAbierto && (
+      {hayProductosEnCarrito && !estaCarritoAbierto && (
         <button 
           onClick={() => setEstaCarritoAbierto(true)}
           className="lg:hidden fixed bottom-6 right-6 bg-emerald-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 transition-transform active:scale-90 hover:bg-emerald-700"
@@ -72,7 +73,7 @@ function Page_Productos() {
       )}
 
       {/* CAPA DE FONDO (Overlay) */}
-      {estaCarritoAbierto && (
+      {hayProductosEnCarrito && estaCarritoAbierto && (
         <div 
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setEstaCarritoAbierto(false)}
@@ -80,6 +81,7 @@ function Page_Productos() {
       )}
 
       {/* BARRA LATERAL DEL CARRITO */}
+      {hayProductosEnCarrito && (
       <aside className={`
         fixed top-0 right-0 h-screen bg-white shadow-2xl z-50 transition-transform duration-300 ease-in-out
         w-[85%] sm:w-80 lg:w-96 flex flex-col
@@ -87,6 +89,7 @@ function Page_Productos() {
       `}>
         <Carrito />
       </aside>
+      )}
 
     </div>
   );

@@ -1,13 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { TableClientes } from '../components/TableClientes';
 import { ApiClienteRepository } from '../ApiClienteRepository';
-import { useClientesApi } from '../../application/useClientesApi';
+import { useClientes } from '../../application/useClientes';
 import { Cliente } from '../../domain/Cliente';
 import PanelLateralDer from '@/shared/layout/PanelLateralDer';
 import FormularioCliente, { DatosFormularioCliente } from '../components/FormularioClientes';
 
 
 export const PageClientes: React.FC = () => {
+  const repository = useMemo(() => new ApiClienteRepository(), []);
+  const { clientes, cargando, error, refrescar, agregarCliente } = useClientes(repository);
+
   const permisoEditCliente= true;
   const permisoDeleteCliente=true;
   const permisoAddCliente=true;
@@ -28,11 +31,21 @@ export const PageClientes: React.FC = () => {
     setDrawerAbierto(false);
   };
 
-  const guardarCliente = (datos: DatosFormularioCliente) => {
+  const guardarCliente = async (datos: DatosFormularioCliente) => {
     if (clienteSeleccionado) {
       console.log('Editar cliente:', datos);
     } else {
       console.log('Agregar cliente:', datos);
+      const respuesta = await agregarCliente({
+        cedula: datos.cedula,
+        nombres: datos.nombres,
+        apellidos: datos.apellidos,
+        email: datos.email || null,
+        telefono: datos.telefono || null
+      })
+      if (respuesta.success) {
+        refrescar();
+      }
     }
     cerrarFormulario();
   };
@@ -40,9 +53,6 @@ export const PageClientes: React.FC = () => {
   const eliminarCliente = (cliente: Cliente) => {
     console.log('Eliminar:', cliente);
   };
-  
-  const repository = useMemo(() => new ApiClienteRepository(), []);
-  const { clientes, cargando, error, refrescar } = useClientesApi(repository);
 
   return (
     <div className="min-h-screen bg-gray-50 animate-in fade-in duration-500">
@@ -53,7 +63,8 @@ export const PageClientes: React.FC = () => {
           titulo="Formulario de Cliente"
           onCerrar={cerrarFormulario}
         >
-          <FormularioCliente 
+          <FormularioCliente
+            clienteActual={clienteSeleccionado}
             onGuardar={guardarCliente}
             onCancelar={cerrarFormulario}
           />

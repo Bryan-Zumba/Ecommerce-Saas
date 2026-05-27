@@ -24,13 +24,6 @@ function Home() {
       clase: 'bg-blue-50 text-blue-600' 
     },
     { 
-      titulo: 'prueba', 
-      desc: 'Consulta de clientes real con arquitectura hexagonal.', 
-      icon: '⚡', 
-      path: '/clientes-api', 
-      clase: 'bg-indigo-50 text-indigo-600' 
-    },
-    { 
       titulo: 'Gestionar Bodegas', 
       desc: 'Control y administración de almacenes y sucursales.', 
       icon: '🏬', 

@@ -6,7 +6,6 @@ import { PageGestionProductos } from "./modules/productos/infrastructure/pages/P
 import { PageGestionCategorias } from "./modules/productos/infrastructure/pages/PageGestionCategorias";
 import Caja from "./pages/Page_Caja";
 import VentaExitosa from "./pages/Page_VentaExitosa";
-import ClientesPage from "./pages/Page_Clientes";
 import { PageBodegas } from "./modules/bodegas/infrastructure/pages/PageBodegas";
 import IngresoStock from "./pages/Page_IngresoStock";
 import HistorialPersonal from "./pages/Pages_Historial_Personal";
@@ -26,8 +25,7 @@ function App() {
             <Route path="/gestion-categorias" element={<PageGestionCategorias />} />
             <Route path="/checkout" element={<Caja />} />
             <Route path="/success" element={<VentaExitosa />} />
-            <Route path="/clientes" element={<ClientesPage />} />
-            <Route path="/clientes-api" element={<PageClientes />} />
+            <Route path="/clientes" element={<PageClientes />} />
             <Route path="/bodegas" element={<PageBodegas />} />
             <Route path="/ingreso-stock" element={<IngresoStock />} />
             <Route path="/historial" element={<HistorialPersonal />} />

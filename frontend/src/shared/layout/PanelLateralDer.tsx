@@ -16,11 +16,11 @@ const PanelLateralDer: React.FC<PanelLateralDerProps> = ({abierto, titulo, onCer
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">{titulo}</h2>
 
-          <button
+          <button 
             onClick={onCerrar}
-            className="text-gray-500 hover:text-gray-900"
+            className="text-gray-400 hover:text-gray-600 font-bold p-1 transition-colors"
           >
-            Cerrar
+            ✕
           </button>
         </div>
 

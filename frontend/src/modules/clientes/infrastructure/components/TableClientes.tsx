@@ -6,12 +6,13 @@ interface TableClientesProps {
   clientes: Cliente[];
   cargando: boolean;
   refrescar: () => void;
+  onSelect?: (cliente: Cliente) => void;
   onEdit?: (cliente: Cliente) => void;
   onDelete?: (cliente: Cliente) => void;
 }
 
-export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando, refrescar, onEdit, onDelete }) => {
-  const mostrarAcciones = !!onEdit || !!onDelete;
+export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando, refrescar, onSelect, onEdit, onDelete }) => {
+  const mostrarAcciones = !!onSelect || !!onEdit || !!onDelete;
   const [consultaBusqueda, setConsultaBusqueda] = useState('');
 
   const clientesFiltrados = useMemo(()=>{
@@ -73,7 +74,7 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
         <tbody className="divide-y divide-gray-100 bg-white text-gray-600">
           {clientesFiltrados.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-6 py-8 text-center text-gray-500 font-medium">
+              <td colSpan={mostrarAcciones ? 6 : 5} className="px-6 py-8 text-center text-gray-500 font-medium">
                 No hay resultados para la búsqueda.
               </td>
             </tr>
@@ -88,6 +89,14 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
               {mostrarAcciones && (
               <td className="px-6 py-4">
                 <div className="flex gap-2">
+                  {onSelect && (
+                    <button
+                      onClick={() => onSelect(cliente)}
+                      className="px-3 py-1 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-semibold shadow transition-all"
+                    >
+                      Seleccionar
+                    </button>
+                  )}
                   {onEdit && (
                     <button
                       onClick={() => onEdit(cliente)}
