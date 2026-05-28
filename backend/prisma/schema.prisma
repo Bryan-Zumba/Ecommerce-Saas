@@ -9,13 +9,55 @@ datasource db {
 }
 
 model Cliente {
-  id         Int      @default(autoincrement())
-  cedula     String   @db.VarChar
+  id_cliente Int      @id @default(autoincrement())
+  cedula     String   @unique @db.VarChar
   nombres    String   @db.VarChar
   apellidos  String   @db.VarChar
   email      String?  @db.VarChar
   telefono   String?  @db.VarChar
   created_at DateTime @default(now()) @db.Timestamptz(6)
+}
 
-  @@id([id, cedula])
+model Empresa{
+  id_empresa      Int      @id @default(autoincrement())
+  nombre          String   @db.VarChar
+  descripcion     String   @db.VarChar
+  ruc             String   @unique @db.VarChar
+  direccion       String   @db.VarChar
+  telefono        String   @db.VarChar
+  email           String   @db.VarChar
+  logo_url        String   @db.VarChar
+  estado          Boolean  @default(true)
+  fecha_creacion  DateTime @default(now()) @db.Timestamptz(6)
+
+  items           Item[]
+}
+
+model Categoria {
+  id_categoria    Int      @id @default(autoincrement())
+  nombre          String   @db.VarChar
+  descripcion     String   @db.VarChar
+  estado          Boolean  @default(true)
+
+  items           Item[]
+}
+
+enum Tipo_Item {
+  Producto
+  Servicio
+}
+
+model Item {
+  id_item         Int      @id @default(autoincrement())
+  id_categoria    Int      @db.Integer
+  id_empresa      Int      @db.Integer
+  nombre          String   @db.VarChar
+  descripcion     String   @db.VarChar
+  precio          Decimal  @db.Decimal(10,2)
+  tipo            Tipo_Item
+  imagen_url      String   @db.VarChar
+  estado          Boolean  @default(true)
+
+  categoria       Categoria @relation(fields: [id_categoria], references: [id_categoria])
+  empresa         Empresa    @relation(fields: [id_empresa], references: [id_empresa])
 }
