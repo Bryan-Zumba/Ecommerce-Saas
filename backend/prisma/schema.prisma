@@ -54,7 +54,7 @@ model Item {
   nombre          String   @db.VarChar
   descripcion     String   @db.VarChar
   precio          Decimal  @db.Decimal(10,2)
-  tipo            Tipo_Item
+  tipo_item       Tipo_Item
   imagen_url      String   @db.VarChar
   estado          Boolean  @default(true)
 
