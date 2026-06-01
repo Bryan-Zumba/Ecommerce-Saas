@@ -12,46 +12,116 @@
   }
 }
 
-/* REGLAS PARA IMPRESIÓN DEL TICKET (Optimizado para impresoras térmicas de 80mm) */
+/* UTILIDADES GLOBALES PARA IMPRESIÓN GENERAL (TICKETS Y REPORTES A4) */
 @media print {
+  /* Forzar orientación horizontal (Landscape) por defecto para el reporte contable */
   @page {
-    size: 80mm auto; /* Tamaño estándar de ticketera */
-    margin: 0;
+    size: A4 landscape;
+    margin: 8mm;
   }
 
+  /* Ocultar barra de navegación, header móvil y elementos interactivos */
+  aside, 
+  header, 
+  .no-print, 
+  button,
+  .no-print *,
+  input[type="number"] {
+    display: none !important;
+  }
+
+  /* Ajustar contenedor principal al 100% de ancho sin márgenes */
+  main, 
+  .lg\:ml-64,
+  .p-4,
+  .p-6,
+  .p-8,
+  .p-12 {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Forzar visibilidad y colores de fondo */
   body {
-    background: white;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* Mostrar solo el ticket y sus hijos */
-  .printable-ticket, .printable-ticket * {
-    visibility: visible;
-  }
-
-  /* Posicionar el ticket arriba a la izquierda para impresión */
-  .printable-ticket {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
-    padding: 10px;
-    border: none;
-    box-shadow: none;
-  }
-
-  /* Forzar colores de fondo e impresiones */
-  body {
+    background: white !important;
+    color: black !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* REGLAS EXCLUSIVAS DE SPREADSHEET PARA REPORTES DEL BAR (Evitar recortes y forzar escala) */
+  /* El grid-cols-12 de Tailwind se reestructura a flex horizontal al imprimir */
+  main.grid.grid-cols-12 {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    transform: scale(0.78); /* Escalar suavemente al 78% para asegurar ajuste perfecto en A4 */
+    transform-origin: top left;
+    width: 128% !important; /* Compensar la escala del 78% */
+  }
+
+  /* La columna izquierda (tabla de productos) toma el 73% */
+  main.grid.grid-cols-12 > div.col-span-12.xl\:col-span-9 {
+    width: 73% !important;
+    flex: none !important;
+  }
+
+  /* La columna derecha (liquidación contable) toma el 27% */
+  main.grid.grid-cols-12 > div.col-span-12.xl\:col-span-3 {
+    width: 27% !important;
+    flex: none !important;
+  }
+
+  /* Optimizar las tablas en impresión */
+  table {
+    page-break-inside: avoid;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+}
+
+/* Ocultar de forma predeterminada los elementos de impresión */
+.print-only {
+  display: none;
+}
+
+/* REGLAS PARA IMPRESIÓN DEL TICKET (Optimizado para impresoras térmicas de 80mm) */
+@media print {
+  /* Si es un ticket térmico de 80mm */
+  .printable-ticket-mode {
+    @page {
+      size: 80mm auto;
+      margin: 0;
+    }
+
+    .printable-ticket {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      margin: 0;
+      padding: 10px;
+      border: none;
+      box-shadow: none;
+    }
   }
 }
 
 /* Scrollbar personalizada para el resumen de orden */
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {

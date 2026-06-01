@@ -11,6 +11,7 @@ import IngresoStock from "./pages/Page_IngresoStock";
 import HistorialPersonal from "./pages/Pages_Historial_Personal";
 import MainLayout from "@/shared/layout/MainLayout";
 import { PageClientes } from "./modules/clientes/infrastructure/pages/PageClientes";
+import { PageReportes } from "./modules/reportes/infrastructure/pages/PageReportes";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/bodegas" element={<PageBodegas />} />
             <Route path="/ingreso-stock" element={<IngresoStock />} />
             <Route path="/historial" element={<HistorialPersonal />} />
+            <Route path="/reportes" element={<PageReportes />} />
             </Routes>
         </MainLayout>
       </ProveedorCarrito>

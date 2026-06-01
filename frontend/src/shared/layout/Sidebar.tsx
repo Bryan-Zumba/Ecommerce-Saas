@@ -12,14 +12,15 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
   const menuItems = [
     { id: 'inicio', label: 'Inicio', icon: '🏠', path: '/' },
+    { id: 'reportes', label: 'Balance y Reportes', icon: '📊', path: '/reportes' },
     { id: 'productos', label: 'Tienda de Productos', icon: '🛒', path: '/productos' },
     { id: 'gestion-productos', label: 'Gestión Productos', icon: '🛠️', path: '/gestion-productos' },
     { id: 'clientes', label: 'Gestión de Clientes', icon: '👥', path: '/clientes' },
     { id: 'bodegas', label: 'Gestión de Bodegas', icon: '🏬', path: '/bodegas' },
     { id: 'stock', label: 'Ingreso de Stock', icon: '📦', path: '/ingreso-stock' },
     { id: 'historial', label: 'Historial Personal', icon: '📜', path: '/historial' },
-  { id: 'gestion-categorias', label: 'Gestión Categorías', icon: '📂', path: '/gestion-categorias' },
-];
+    { id: 'gestion-categorias', label: 'Gestión Categorías', icon: '📂', path: '/gestion-categorias' },
+  ];
 
   return (
     <>
