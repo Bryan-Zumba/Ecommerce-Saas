@@ -14,7 +14,7 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     { id: 'inicio', label: 'Inicio', icon: '🏠', path: '/' },
     { id: 'reportes', label: 'Balance y Reportes', icon: '📊', path: '/reportes' },
     { id: 'productos', label: 'Tienda de Productos', icon: '🛒', path: '/productos' },
-    { id: 'gestion-productos', label: 'Gestión Productos', icon: '🛠️', path: '/gestion-productos' },
+    { id: 'gestion-items', label: 'Gestión de Items', icon: '🛠️', path: '/gestion-items' },
     { id: 'clientes', label: 'Gestión de Clientes', icon: '👥', path: '/clientes' },
     { id: 'bodegas', label: 'Gestión de Bodegas', icon: '🏬', path: '/bodegas' },
     { id: 'stock', label: 'Ingreso de Stock', icon: '📦', path: '/ingreso-stock' },
@@ -98,9 +98,11 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               <p className="text-sm font-bold text-gray-800 truncate">Bryan Zumba</p>
               <p className="text-[10px] text-gray-500 truncate">Admin Account</p>
             </div>
-            <button className="text-gray-400 hover:text-red-500 transition-colors">
-              ↪️
-            </button>
+            <a href={'/auth'}>
+              <button className="text-gray-400 hover:text-red-500 transition-colors">
+                ↪️
+              </button>
+            </a>
           </div>
         </div>
       </aside>

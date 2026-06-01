@@ -12,27 +12,34 @@ import HistorialPersonal from "./pages/Pages_Historial_Personal";
 import MainLayout from "@/shared/layout/MainLayout";
 import { PageClientes } from "./modules/clientes/infrastructure/pages/PageClientes";
 import { PageReportes } from "./modules/reportes/infrastructure/pages/PageReportes";
-
+import { PageAuth } from "./modules/auth/infrastructure/pages/PageAuth";
+import { PageOnboarding } from "./modules/auth/infrastructure/pages/PageOnboarding";
 
 function App() {
   return (
     <BrowserRouter>
       <ProveedorCarrito>
-        <MainLayout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/productos" element={<PageTienda />} />
-            <Route path="/gestion-productos" element={<PageGestionProductos />} />
-            <Route path="/gestion-categorias" element={<PageGestionCategorias />} />
-            <Route path="/checkout" element={<Caja />} />
-            <Route path="/success" element={<VentaExitosa />} />
-            <Route path="/clientes" element={<PageClientes />} />
-            <Route path="/bodegas" element={<PageBodegas />} />
-            <Route path="/ingreso-stock" element={<IngresoStock />} />
-            <Route path="/historial" element={<HistorialPersonal />} />
-            <Route path="/reportes" element={<PageReportes />} />
-            </Routes>
-        </MainLayout>
+        <Routes>
+          <Route path="/auth" element={<PageAuth />} />
+          <Route path="/onboarding" element={<PageOnboarding />} />
+          <Route path="/*" element={
+            <MainLayout>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/productos" element={<PageTienda />} />
+                <Route path="/gestion-items" element={<PageGestionProductos />} />
+                <Route path="/gestion-categorias" element={<PageGestionCategorias />} />
+                <Route path="/checkout" element={<Caja />} />
+                <Route path="/success" element={<VentaExitosa />} />
+                <Route path="/clientes" element={<PageClientes />} />
+                <Route path="/bodegas" element={<PageBodegas />} />
+                <Route path="/ingreso-stock" element={<IngresoStock />} />
+                <Route path="/historial" element={<HistorialPersonal />} />
+                <Route path="/reportes" element={<PageReportes />} />
+              </Routes>
+            </MainLayout>
+          } />
+        </Routes>
       </ProveedorCarrito>
     </BrowserRouter>
   );
