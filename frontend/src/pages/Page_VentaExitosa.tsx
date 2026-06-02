@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCarrito } from "@/shared/context/ContextoCarrito";
 import { servicioHistorial } from "@/modules/ventas/infrastructure/repositories/servicioHistorial";
+import { registrarSalidaInventario } from "@/modules/items/application/inventarioItems";
 
 /**
  * Página de Éxito (Confirmación de Venta)
@@ -33,6 +34,7 @@ function VentaExitosa() {
                 cliente: cliente,
                 cajero: "Bryan Zumba"
             });
+            registrarSalidaInventario(carrito);
             guardadoRef.current = true;
         }
     }, [carrito, ordenId, fecha, subtotal, iva, total, cliente]);

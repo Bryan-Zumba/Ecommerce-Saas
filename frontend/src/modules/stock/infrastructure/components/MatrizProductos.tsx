@@ -1,29 +1,54 @@
-import React from 'react';
-import { productsData } from '@/modules/productos/infrastructure/repositories/products.data';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Item, obtenerNombreCategoria } from '@/modules/items/domain/Item';
+import { LocalstorageItemRepository } from '@/modules/items/infrastructure/repositories/LocalstorageItemRepository';
 
-function MatrizProductos({ productos, setProductos }) {
-  // Función para agregar una fila vacía
+export interface ProductoIngreso {
+  productoId: number | '';
+  nombre: string;
+  cantidad: number;
+  costoUnitario: number;
+  costoTotal: number;
+}
+
+interface MatrizProductosProps {
+  productos: ProductoIngreso[];
+  setProductos: React.Dispatch<React.SetStateAction<ProductoIngreso[]>>;
+}
+
+const repository = new LocalstorageItemRepository();
+
+function MatrizProductos({ productos, setProductos }: MatrizProductosProps) {
+  const [itemsCatalogo, setItemsCatalogo] = useState<Item[]>([]);
+
+  useEffect(() => {
+    repository.obtenerTodos().then(setItemsCatalogo);
+  }, []);
+
+  const productosCatalogo = useMemo(() => {
+    return itemsCatalogo.filter((item) => item.tipo_item === 'Producto' && item.estado);
+  }, [itemsCatalogo]);
+
   const agregarFila = () => {
     setProductos([...productos, { productoId: '', nombre: '', cantidad: 1, costoUnitario: 0, costoTotal: 0 }]);
   };
 
-  // Función para eliminar una fila
-  const eliminarFila = (index) => {
+  const eliminarFila = (index: number) => {
     const nuevosProductos = [...productos];
     nuevosProductos.splice(index, 1);
     setProductos(nuevosProductos);
   };
 
-  // Manejar el cambio en una fila
-  const handleChange = (index, campo, valor) => {
+  const handleChange = (index: number, campo: keyof ProductoIngreso, valor: string) => {
     const nuevosProductos = [...productos];
     const fila = { ...nuevosProductos[index] };
 
     if (campo === 'productoId') {
-      const productoSeleccionado = productsData.find(p => p.id === parseInt(valor));
-      if (productoSeleccionado) {
-        fila.productoId = productoSeleccionado.id;
-        fila.nombre = productoSeleccionado.nombre;
+      const idSeleccionado = Number(valor);
+      const itemSeleccionado = productosCatalogo.find((item) => item.id_item === idSeleccionado);
+
+      if (itemSeleccionado) {
+        fila.productoId = itemSeleccionado.id_item;
+        fila.nombre = itemSeleccionado.nombre;
       } else {
         fila.productoId = '';
         fila.nombre = '';
@@ -37,7 +62,7 @@ function MatrizProductos({ productos, setProductos }) {
     setProductos(nuevosProductos);
   };
 
-  const totalGeneral = productos.reduce((acc, p) => acc + (p.costoTotal || 0), 0);
+  const totalGeneral = productos.reduce((acc, item) => acc + (item.costoTotal || 0), 0);
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
@@ -66,7 +91,7 @@ function MatrizProductos({ productos, setProductos }) {
           <tbody>
             {productos.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center p-6 text-gray-500">
+                <td colSpan={5} className="text-center p-6 text-gray-500">
                   No hay productos en la matriz. Haz clic en "Agregar Producto" para comenzar.
                 </td>
               </tr>
@@ -81,9 +106,9 @@ function MatrizProductos({ productos, setProductos }) {
                       required
                     >
                       <option value="">Seleccione un producto...</option>
-                      {productsData.map(prod => (
-                        <option key={prod.id} value={prod.id}>
-                          {prod.nombre} ({prod.categoria})
+                      {productosCatalogo.map((producto) => (
+                        <option key={producto.id_item} value={producto.id_item}>
+                          {producto.nombre} ({obtenerNombreCategoria(producto.id_categoria)})
                         </option>
                       ))}
                     </select>
@@ -131,7 +156,7 @@ function MatrizProductos({ productos, setProductos }) {
           {productos.length > 0 && (
             <tfoot>
               <tr>
-                <td colSpan="3" className="p-4 text-right font-bold text-gray-700">
+                <td colSpan={3} className="p-4 text-right font-bold text-gray-700">
                   Total General:
                 </td>
                 <td className="p-4 font-bold text-emerald-600 text-lg">

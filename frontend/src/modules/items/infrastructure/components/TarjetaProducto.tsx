@@ -1,53 +1,70 @@
 import { useCarrito } from "@/shared/context/ContextoCarrito";
-import { obtenerNombreCategoria } from "../../domain/Producto";
+import { calcularStockDisponible } from "../../application/inventarioItems";
+import { Item, obtenerNombreCategoria } from "../../domain/Item";
 
-/**
- * TarjetaProducto - Muestra la información de un producto individual.
- */
-function TarjetaProducto({ data }: { data: any }) {
-    const { agregarAlCarrito } = useCarrito();
+function TarjetaProducto({ item }: { item: Item }) {
+  const { agregarAlCarrito } = useCarrito();
+  const stockDisponible = calcularStockDisponible(item);
+  const esServicio = item.tipo_item === "Servicio";
+  const estaDisponible = item.estado && (esServicio || (stockDisponible ?? 0) > 0);
 
-    // Mapeamos el producto de la estructura de base de datos a lo que espera el carrito
-    const productoParaCarrito = {
-        id: data.id_productos,
-        nombre: data.nombre,
-        precio: data.precio,
-        stock: data.stock,
-        categoria: obtenerNombreCategoria(data.id_categoria),
-        imagen: data.imagen || '/assets/coca_cola_sin_azu_300ml.png',
-    };
+  const itemParaCarrito = {
+    id: item.id_item,
+    id_item: item.id_item,
+    nombre: item.nombre,
+    precio: item.precio,
+    stock: stockDisponible,
+    categoria: obtenerNombreCategoria(item.id_categoria),
+    tipo_item: item.tipo_item,
+    imagen: item.imagen || "/assets/coca_cola_sin_azu_300ml.png",
+  };
 
-    return (
-      <div 
-        onClick={() => agregarAlCarrito(productoParaCarrito)} 
-        className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:scale-[1.01] active:scale-95 transition-all duration-200 flex flex-col text-left"
-      >
-        <span className="bg-emerald-50 text-emerald-700 font-semibold text-[10px] px-2 py-0.5 rounded-full self-start mb-2">
-          {obtenerNombreCategoria(data.id_categoria)}
+  return (
+    <div
+      onClick={() => estaDisponible && agregarAlCarrito(itemParaCarrito)}
+      className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 transition-all duration-200 flex flex-col text-left ${
+        estaDisponible
+          ? "cursor-pointer hover:shadow-md hover:scale-[1.01] active:scale-95"
+          : "opacity-60 cursor-not-allowed"
+      }`}
+    >
+      <div className="flex items-center gap-2 self-start mb-2">
+        <span className="bg-emerald-50 text-emerald-700 font-semibold text-[10px] px-2 py-0.5 rounded-full">
+          {obtenerNombreCategoria(item.id_categoria)}
         </span>
-        
-        <img 
-          src={data.imagen || '/assets/coca_cola_sin_azu_300ml.png'} 
-          alt={data.nombre} 
-          className="w-full h-40 object-cover rounded-xl mb-4"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = '/assets/coca_cola_sin_azu_300ml.png';
-          }}
-        />
-        
-        <div>
-          <h3 className="text-lg font-bold text-gray-900 mb-1">{data.nombre}</h3>
-          <p className="font-bold text-emerald-600">
-            <span>$</span>
-            <span>{data.precio.toFixed(2)}</span>
-          </p>
-          <p className="text-xs text-gray-500 mt-1">
-            <span>Stock: </span>
-            <span className="font-semibold">{data.stock} unidades</span>
-          </p>
-        </div>
+        <span className="bg-gray-100 text-gray-600 font-semibold text-[10px] px-2 py-0.5 rounded-full">
+          {item.tipo_item}
+        </span>
       </div>
-    );
+
+      <img
+        src={item.imagen || "/assets/coca_cola_sin_azu_300ml.png"}
+        alt={item.nombre}
+        className="w-full h-40 object-cover rounded-xl mb-4"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = "/assets/coca_cola_sin_azu_300ml.png";
+        }}
+      />
+
+      <div>
+        <h3 className="text-lg font-bold text-gray-900 mb-1">{item.nombre}</h3>
+        <p className="font-bold text-emerald-600">
+          <span>$</span>
+          <span>{item.precio.toFixed(2)}</span>
+        </p>
+        <p className="text-xs text-gray-500 mt-1">
+          {esServicio ? (
+            <span className="font-semibold">Servicio disponible</span>
+          ) : (
+            <>
+              <span>Stock: </span>
+              <span className="font-semibold">{stockDisponible} unidades</span>
+            </>
+          )}
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default TarjetaProducto;

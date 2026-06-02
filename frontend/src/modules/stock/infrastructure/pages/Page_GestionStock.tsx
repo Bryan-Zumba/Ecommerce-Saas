@@ -3,17 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { LocalstorageBodegaRepository } from '@/modules/bodegas/infrastructure/repositories/LocalstorageBodegaRepository';
 import { useBodegas } from '@/modules/bodegas/application/useBodegas';
 import FormularioFactura, { DatosFacturaType } from '@/modules/stock/infrastructure/components/FormularioFactura';
-import MatrizProductos from '@/modules/stock/infrastructure/components/MatrizProductos';
+import MatrizProductos, { ProductoIngreso } from '@/modules/stock/infrastructure/components/MatrizProductos';
 import { enviarSolicitudStock } from '@/modules/stock/infrastructure/repositories/servicioStock';
 import { servicioHistorial, Operacion } from '@/modules/ventas/infrastructure/repositories/servicioHistorial';
 import ModalDetalleSolicitudStock from '@/modules/stock/infrastructure/components/ModalDetalleSolicitudStock';
-
-// Tipos para el formulario
-interface ProductoIngreso {
-  productoId: string;
-  cantidad: number;
-  costoUnitario: number;
-}
+import { sincronizarInventarioDesdeHistorial } from '@/modules/items/application/inventarioItems';
 
 function Page_GestionStock() {
   const navigate = useNavigate();
@@ -43,6 +37,7 @@ function Page_GestionStock() {
   const handleAprobar = (idInterno: number) => {
     const exito = servicioHistorial.actualizarEstadoOperacion(idInterno, 'Aprobado');
     if (exito) {
+      sincronizarInventarioDesdeHistorial();
       alert("Solicitud Aprobada correctamente.");
       setOperacionSeleccionada(null);
       cargarHistorial();

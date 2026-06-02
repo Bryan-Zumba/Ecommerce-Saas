@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProveedorCarrito } from "@/shared/context/ContextoCarrito";
 import Home from "./pages/Page_Inicio";
-import { PageTienda } from "./modules/productos/infrastructure/pages/PageTienda";
-import { PageGestionProductos } from "./modules/productos/infrastructure/pages/PageGestionProductos";
-import { PageGestionCategorias } from "./modules/productos/infrastructure/pages/PageGestionCategorias";
+import { PageTienda } from "./modules/items/infrastructure/pages/PageTienda";
+import { PageGestionItems } from "./modules/items/infrastructure/pages/PageGestionItems";
+import { PageGestionCategorias } from "./modules/items/infrastructure/pages/PageGestionCategorias";
 import Caja from "./pages/Page_Caja";
 import VentaExitosa from "./pages/Page_VentaExitosa";
 import { PageBodegas } from "./modules/bodegas/infrastructure/pages/PageBodegas";
@@ -26,9 +26,8 @@ function App() {
             <MainLayout>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/productos" element={<PageTienda />} />
                 <Route path="/items" element={<PageTienda/>} />
-                <Route path="/gestion-items" element={<PageGestionProductos />} />
+                <Route path="/gestion-items" element={<PageGestionItems />} />
                 <Route path="/gestion-categorias" element={<PageGestionCategorias />} />
                 <Route path="/checkout" element={<Caja />} />
                 <Route path="/success" element={<VentaExitosa />} />
