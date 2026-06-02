@@ -1,0 +1,1 @@
+Carpeta estructural del proyecto bajo Arquitectura Hexagonal.

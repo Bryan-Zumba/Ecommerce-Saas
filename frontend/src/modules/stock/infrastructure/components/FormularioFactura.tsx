@@ -1,20 +1,35 @@
 import React, { useState } from 'react';
 
-function FormularioFactura({ datos, setDatos }) {
-  const [preview, setPreview] = useState(null);
+export interface DatosFacturaType {
+  codigo: string;
+  fecha: string;
+  total: string | number;
+  imagenAdjunta: string | null;
+}
 
-  const handleChange = (e) => {
+interface FormularioFacturaProps {
+  datos: DatosFacturaType;
+  setDatos: React.Dispatch<React.SetStateAction<DatosFacturaType>>;
+}
+
+function FormularioFactura({ datos, setDatos }: FormularioFacturaProps) {
+  const [preview, setPreview] = useState<string | null>(datos.imagenAdjunta || null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setDatos(prev => ({ ...prev, [name]: value }));
+    setDatos(prev => ({ ...prev, [name]: value as any }));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
-      setDatos(prev => ({ ...prev, imagenAdjunta: file }));
-      // Crear URL para previsualizar
-      const objectUrl = URL.createObjectURL(file);
-      setPreview(objectUrl);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setDatos(prev => ({ ...prev, imagenAdjunta: base64String }));
+        setPreview(base64String);
+      };
+      reader.readAsDataURL(file);
     }
   };
 

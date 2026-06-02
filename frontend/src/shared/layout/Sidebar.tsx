@@ -17,7 +17,7 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     { id: 'gestion-items', label: 'Gestión de Items', icon: '🛠️', path: '/gestion-items' },
     { id: 'clientes', label: 'Gestión de Clientes', icon: '👥', path: '/clientes' },
     { id: 'bodegas', label: 'Gestión de Bodegas', icon: '🏬', path: '/bodegas' },
-    { id: 'stock', label: 'Ingreso de Stock', icon: '📦', path: '/ingreso-stock' },
+    { id: 'stock', label: 'Gestión de Stock', icon: '📦', path: '/ingreso-stock' },
     { id: 'historial', label: 'Historial Personal', icon: '📜', path: '/historial' },
     { id: 'gestion-categorias', label: 'Gestión Categorías', icon: '📂', path: '/gestion-categorias' },
   ];

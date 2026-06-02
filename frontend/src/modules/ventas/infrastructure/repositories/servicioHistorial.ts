@@ -12,6 +12,7 @@ export interface Operacion {
   datosFactura?: any;
   cajero?: string;
   estado?: string;
+  motivoRechazo?: string;
   idInterno?: number;
 }
 
@@ -86,6 +87,25 @@ export const servicioHistorial = {
       });
     } catch (error) {
       return [];
+    }
+  },
+
+  actualizarEstadoOperacion: (idInterno: number, nuevoEstado: string, motivoRechazo?: string): boolean => {
+    try {
+      const historial: Operacion[] = JSON.parse(localStorage.getItem(KEY_HISTORIAL) || '[]');
+      const indice = historial.findIndex(op => op.idInterno === idInterno);
+      if (indice !== -1) {
+        historial[indice].estado = nuevoEstado;
+        if (motivoRechazo) {
+          historial[indice].motivoRechazo = motivoRechazo;
+        }
+        localStorage.setItem(KEY_HISTORIAL, JSON.stringify(historial));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error al actualizar estado en el historial:", error);
+      return false;
     }
   }
 };

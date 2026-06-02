@@ -2,7 +2,6 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBodegas } from '../../application/useBodegas';
 import { LocalstorageBodegaRepository } from '../repositories/LocalstorageBodegaRepository';
-import { KPICards } from '../components/KPICards';
 import { BusquedaBodega } from '../components/BusquedaBodega';
 import { TarjetasBodegas } from '../components/TarjetasBodegas';
 import { TablaBodegas } from '../components/TablaBodegas';
@@ -210,22 +209,6 @@ export const PageBodegas: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50/50 animate-in fade-in duration-500 relative flex flex-col">
-      {/* Barra Superior de Navegación */}
-      <nav className="bg-white border-b border-gray-100 py-4 px-6 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center text-gray-600 hover:text-emerald-600 transition-colors font-semibold group text-sm"
-          >
-            <span className="mr-2 group-hover:-translate-x-1 transition-transform">←</span> Volver al Inicio
-          </button>
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🏬</span>
-            <div className="font-extrabold text-lg text-emerald-600 tracking-tight">SaaS Bodegas</div>
-          </div>
-        </div>
-      </nav>
-
       {/* Contenedor Principal */}
       <main className="max-w-7xl mx-auto p-6 lg:p-10 flex-1 w-full text-left">
         {/* Cabecera de Página */}
@@ -233,12 +216,9 @@ export const PageBodegas: React.FC = () => {
           <div className="text-left">
             <h1 className="text-4xl font-black text-gray-900 tracking-tight flex flex-wrap items-center gap-3">
               Gestión de Bodegas
-              <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                Módulo Administrativo
-              </span>
             </h1>
             <p className="text-gray-500 mt-1 font-medium text-sm lg:text-base">
-              Administra el inventario de ubicaciones físicas, sucursales y centros de distribución de tu negocio.
+              Administra tus bodegas
             </p>
           </div>
 
@@ -260,19 +240,8 @@ export const PageBodegas: React.FC = () => {
           </div>
         </div>
 
-        {/* Panel de KPIs */}
-        <KPICards
-          total={counts.todas}
-          activas={counts.activas}
-          inactivas={counts.inactivas}
-        />
-
         {/* Filtros y Buscador */}
         <BusquedaBodega
-          busqueda={busqueda}
-          setBusqueda={setBusqueda}
-          ordenarPor={ordenarPor}
-          setOrdenarPor={setOrdenarPor}
           vista={vista}
           setVista={setVista}
           filtroEstado={filtroEstado}
