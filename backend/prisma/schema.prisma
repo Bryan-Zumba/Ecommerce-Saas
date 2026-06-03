@@ -120,6 +120,7 @@ model Turno_caja{
   id_usuario          Int      @db.Integer
   id_periodo_gestion  Int      @db.Integer
   id_caja             Int      @db.Integer
+  id_bodega           Int      @db.Integer
   fecha_apertura      DateTime @default(now()) @db.Timestamptz(6)
   fecha_cierre        DateTime? @db.Timestamptz(6)
   monto_apertura      Decimal  @db.Decimal(10,2)
@@ -129,6 +130,7 @@ model Turno_caja{
   usuario             Usuario  @relation(fields: [id_usuario], references: [id_usuario])
   periodo_gestion     Periodo_Gestion  @relation(fields: [id_periodo_gestion], references: [id_periodo_gestion])
   caja                Caja  @relation(fields: [id_caja], references: [id_caja])
+  bodega              Bodega  @relation(fields: [id_bodega], references: [id_bodega])
   movimientos_caja    Movimiento_caja[]
   ventas              Venta[]
 }
@@ -283,6 +285,7 @@ model Bodega{
   movimientos_inventarios Movimiento_Inventario[]
   detalle_ventas          Detalle_Venta[]
   detalle_compras         Detalle_Compra[]
+  turno_caja              Turno_caja[]
 
   empresa                 Empresa    @relation(fields: [id_empresa], references: [id_empresa])
 }
