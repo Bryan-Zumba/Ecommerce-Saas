@@ -15,6 +15,10 @@ import { PageReportes } from "./modules/reportes/infrastructure/pages/PageReport
 import { PageAuth } from "./modules/auth/infrastructure/pages/PageAuth";
 import { PageOnboarding } from "./modules/auth/infrastructure/pages/PageOnboarding";
 
+import { PageMonitoreoInventario } from "./modules/inventario/infrastructure/pages/PageMonitoreoInventario";
+import { PageGestionUsuarios } from "./modules/usuarios/infrastructure/pages/PageGestionUsuarios";
+import { PageConsultaRoles } from "./modules/roles/infrastructure/pages/PageConsultaRoles";
+
 function App() {
   return (
     <BrowserRouter>
@@ -34,6 +38,9 @@ function App() {
                 <Route path="/clientes" element={<PageClientes />} />
                 <Route path="/bodegas" element={<PageBodegas />} />
                 <Route path="/ingreso-stock" element={<Page_GestionStock />} />
+                <Route path="/monitoreo-inventario" element={<PageMonitoreoInventario />} />
+                <Route path="/usuarios/gestion" element={<PageGestionUsuarios />} />
+                <Route path="/roles/consulta" element={<PageConsultaRoles />} />
                 <Route path="/historial" element={<HistorialPersonal />} />
                 <Route path="/reportes" element={<PageReportes />} />
               </Routes>

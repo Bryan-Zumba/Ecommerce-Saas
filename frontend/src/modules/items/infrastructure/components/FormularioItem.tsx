@@ -30,6 +30,8 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
   const [formTipoItem, setFormTipoItem] = useState<TipoItem>('Producto');
   const [formEstado, setFormEstado] = useState(true);
   const [formImagen, setFormImagen] = useState('');
+  const [formImagenNombre, setFormImagenNombre] = useState('');
+  const [errorImagen, setErrorImagen] = useState('');
 
   useEffect(() => {
     if (itemAEditar) {
@@ -40,6 +42,8 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
       setFormTipoItem(itemAEditar.tipo_item);
       setFormEstado(itemAEditar.estado);
       setFormImagen(itemAEditar.imagen || '');
+      setFormImagenNombre(itemAEditar.imagen ? 'Imagen actual' : '');
+      setErrorImagen('');
     } else {
       setFormNombre('');
       setFormDescripcion('');
@@ -48,6 +52,8 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
       setFormTipoItem('Producto');
       setFormEstado(true); // Active by default according to US
       setFormImagen('');
+      setFormImagenNombre('');
+      setErrorImagen('');
     }
   }, [itemAEditar, isOpen]);
 
@@ -64,6 +70,41 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
       estado: formEstado,
       imagen: formImagen.trim() || '/assets/coca_cola_sin_azu_300ml.png',
     });
+  };
+
+  const handleSeleccionImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const archivo = e.target.files?.[0];
+    if (!archivo) return;
+
+    if (!archivo.type.startsWith('image/')) {
+      setErrorImagen('Selecciona un archivo de imagen valido.');
+      e.target.value = '';
+      return;
+    }
+
+    const maximoBytes = 2 * 1024 * 1024;
+    if (archivo.size > maximoBytes) {
+      setErrorImagen('La imagen no debe superar los 2 MB.');
+      e.target.value = '';
+      return;
+    }
+
+    const lector = new FileReader();
+    lector.onload = () => {
+      setFormImagen(String(lector.result));
+      setFormImagenNombre(archivo.name);
+      setErrorImagen('');
+    };
+    lector.onerror = () => {
+      setErrorImagen('No se pudo leer la imagen seleccionada.');
+    };
+    lector.readAsDataURL(archivo);
+  };
+
+  const quitarImagen = () => {
+    setFormImagen('');
+    setFormImagenNombre('');
+    setErrorImagen('');
   };
 
   return (
@@ -192,16 +233,45 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
               />
             </div>
 
-            {/* Imagen (Opcional, texto) */}
-            <div className="space-y-1">
-              <label className="text-xs font-extrabold text-gray-500 uppercase tracking-wider">URL de Imagen (Opcional)</label>
-              <input
-                type="text"
-                value={formImagen}
-                onChange={(e) => setFormImagen(e.target.value)}
-                className="block w-full px-4 py-2.5 border border-gray-100 rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all"
-                placeholder="Ej. /assets/coca_cola_sin_azu_300ml.png"
-              />
+            {/* Imagen (Opcional, archivo) */}
+            <div className="space-y-2">
+              <label className="text-xs font-extrabold text-gray-500 uppercase tracking-wider">Imagen del Item (Opcional)</label>
+              <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50/50 p-3">
+                <img
+                  src={formImagen || '/assets/coca_cola_sin_azu_300ml.png'}
+                  alt="Vista previa"
+                  className="h-16 w-16 rounded-xl border border-gray-100 object-cover bg-white"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/assets/coca_cola_sin_azu_300ml.png';
+                  }}
+                />
+                <div className="min-w-0 flex-1">
+                  <label className="inline-flex cursor-pointer items-center rounded-xl bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-widest text-gray-700 shadow-sm border border-gray-100 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">
+                    Adjuntar imagen
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleSeleccionImagen}
+                      className="sr-only"
+                    />
+                  </label>
+                  <p className="mt-2 truncate text-xs font-semibold text-gray-400">
+                    {formImagenNombre || 'PNG, JPG o WEBP hasta 2 MB.'}
+                  </p>
+                </div>
+                {formImagen && (
+                  <button
+                    type="button"
+                    onClick={quitarImagen}
+                    className="h-9 rounded-xl border border-gray-100 bg-white px-3 text-xs font-extrabold text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  >
+                    Quitar
+                  </button>
+                )}
+              </div>
+              {errorImagen && (
+                <p className="text-xs font-bold text-red-500">{errorImagen}</p>
+              )}
             </div>
 
             {/* Estado Toggle */}
