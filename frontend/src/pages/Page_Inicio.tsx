@@ -23,7 +23,7 @@ function Home() {
         </header>
 
           {/* Decoración Estética */}
-          <div className="absolute right-[-50px] bottom-[-50px] text-[30rem] opacity-10 select-none pointer-events-none grayscale">
+          <div className="absolute right-[0px] bottom-[0px] text-[30rem] opacity-10 select-none pointer-events-none grayscale">
             🚀
           </div>
         {/* Espacio para que el usuario llene más info luego */}
