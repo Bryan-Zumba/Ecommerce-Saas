@@ -207,14 +207,14 @@ model Detalle_Venta{
   id_detalle_venta    Int      @id @default(autoincrement())
   id_venta            Int      @db.Integer
   id_item             Int      @db.Integer
-  id_bodega           Int      @db.Integer
+  id_bodega           Int?      @db.Integer
   cantidad            Int      @db.Integer
   precio_unitario     Decimal  @db.Decimal(10,2)
   subtotal            Decimal  @db.Decimal(10,2)
 
   venta               Venta  @relation(fields: [id_venta], references: [id_venta])
   item                Item  @relation(fields: [id_item], references: [id_item])
-  bodega              Bodega  @relation(fields: [id_bodega], references: [id_bodega])
+  bodega              Bodega?  @relation(fields: [id_bodega], references: [id_bodega])
 }
 
 model Cliente {
