@@ -14,22 +14,32 @@ export const PageTienda: React.FC = () => {
   const hayItemsEnCarrito = carrito.length > 0;
   const [estaCarritoAbierto, setEstaCarritoAbierto] = useState(false);
   const [busqueda, setBusqueda] = useState("");
+  const [orden, setOrden] = useState<'nombre-asc' | 'nombre-desc' | 'precio-asc' | 'precio-desc'>('nombre-asc');
 
   const itemsActivos = useMemo(() => {
     return items.filter((item) => item.estado);
   }, [items]);
 
   const itemsFiltrados = useMemo(() => {
-    if (!busqueda.trim()) return itemsActivos;
-    const query = busqueda.toLowerCase();
+    let result = itemsActivos;
+    if (busqueda.trim()) {
+      const query = busqueda.toLowerCase();
+      result = itemsActivos.filter(
+        (item) =>
+          item.nombre.toLowerCase().includes(query) ||
+          item.tipo_item.toLowerCase().includes(query) ||
+          obtenerNombreCategoria(item.id_categoria).toLowerCase().includes(query)
+      );
+    }
 
-    return itemsActivos.filter(
-      (item) =>
-        item.nombre.toLowerCase().includes(query) ||
-        item.tipo_item.toLowerCase().includes(query) ||
-        obtenerNombreCategoria(item.id_categoria).toLowerCase().includes(query)
-    );
-  }, [itemsActivos, busqueda]);
+    return [...result].sort((a, b) => {
+      if (orden === 'nombre-asc') return a.nombre.localeCompare(b.nombre);
+      if (orden === 'nombre-desc') return b.nombre.localeCompare(a.nombre);
+      if (orden === 'precio-asc') return a.precio - b.precio;
+      if (orden === 'precio-desc') return b.precio - a.precio;
+      return 0;
+    });
+  }, [itemsActivos, busqueda, orden]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex overflow-x-hidden relative">
@@ -44,8 +54,8 @@ export const PageTienda: React.FC = () => {
             </div>
           </div>
 
-          <div className="mb-10 text-left">
-            <div className="relative max-w-md">
+          <div className="mb-10 flex flex-col sm:flex-row gap-4 items-start sm:items-center text-left">
+            <div className="relative flex-1 max-w-md w-full">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">🔍</span>
               <input
                 type="search"
@@ -54,6 +64,20 @@ export const PageTienda: React.FC = () => {
                 className="block w-full pl-10 pr-3 py-3 border border-gray-100 rounded-2xl bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm text-sm"
                 placeholder="Buscar item por nombre, tipo o categoria..."
               />
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Ordenar:</label>
+              <select
+                value={orden}
+                onChange={(e) => setOrden(e.target.value as any)}
+                className="bg-white border border-gray-100 rounded-xl py-2.5 px-3 text-xs font-bold text-gray-750 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm cursor-pointer"
+              >
+                <option value="nombre-asc">Nombre (A-Z)</option>
+                <option value="nombre-desc">Nombre (Z-A)</option>
+                <option value="precio-asc">Precio (Menor a Mayor)</option>
+                <option value="precio-desc">Precio (Mayor a Menor)</option>
+              </select>
             </div>
           </div>
 

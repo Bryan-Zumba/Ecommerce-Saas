@@ -10,6 +10,7 @@ export interface ItemCarritoType {
   categoria?: string;
   tipo_item?: 'Producto' | 'Servicio';
   quantity: number;
+  bodegaSeleccionada?: string;
 }
 
 interface ContextoCarritoType {
@@ -36,10 +37,10 @@ export const ProveedorCarrito = ({ children }: { children: ReactNode }) => {
   const agregarAlCarrito = (item: Omit<ItemCarritoType, 'quantity'>) => {
     setCarrito((prevCarrito) => {
       const itemExistente = prevCarrito.find((itemCarrito) => itemCarrito.id === item.id);
-      const tieneLimiteStock = typeof item.stock === 'number';
+      const tieneLimiteStock = typeof item.stock === 'number' && item.stock !== null;
 
       if (itemExistente) {
-        if (!tieneLimiteStock || itemExistente.quantity < item.stock) {
+        if (!tieneLimiteStock || itemExistente.quantity < (item.stock ?? 0)) {
           return prevCarrito.map((itemCarrito) =>
             itemCarrito.id === item.id
               ? { ...itemCarrito, quantity: itemCarrito.quantity + 1 }
@@ -51,7 +52,7 @@ export const ProveedorCarrito = ({ children }: { children: ReactNode }) => {
         return prevCarrito;
       }
 
-      if (!tieneLimiteStock || item.stock > 0) {
+      if (!tieneLimiteStock || (item.stock ?? 0) > 0) {
         return [...prevCarrito, { ...item, quantity: 1 }];
       }
 
@@ -68,9 +69,9 @@ export const ProveedorCarrito = ({ children }: { children: ReactNode }) => {
       prevCarrito.map((item) => {
         if (item.id === idItem) {
           const nuevaCantidad = item.quantity + cantidad;
-          const tieneLimiteStock = typeof item.stock === 'number';
+          const tieneLimiteStock = typeof item.stock === 'number' && item.stock !== null;
 
-          if (nuevaCantidad >= 1 && (!tieneLimiteStock || nuevaCantidad <= item.stock)) {
+          if (nuevaCantidad >= 1 && (!tieneLimiteStock || nuevaCantidad <= (item.stock ?? 0))) {
             return { ...item, quantity: nuevaCantidad };
           }
         }

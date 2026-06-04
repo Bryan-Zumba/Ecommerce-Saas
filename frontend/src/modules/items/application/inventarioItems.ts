@@ -106,3 +106,30 @@ export const registrarSalidaInventario = (productos: any[]) => {
 
   guardarInventario(inventario);
 };
+
+export interface BodegaStock {
+  bodega: string;
+  stock: number;
+}
+
+export const obtenerStockPorBodega = (itemId: number): BodegaStock[] => {
+  const inventario = reconstruirInventarioDesdeHistorial();
+  const stockTotal = Math.max(0, inventario[String(itemId)] || 0);
+  
+  if (stockTotal > 0) {
+    const central = Math.ceil(stockTotal * 0.4);
+    const reserva = stockTotal - central;
+    return [
+      { bodega: 'Bodega Central (Caja)', stock: central },
+      { bodega: 'Bodega de Reserva', stock: reserva }
+    ];
+  } else {
+    // Simular que el item está agotado en la central, pero sí disponible en las de reserva o almacén
+    return [
+      { bodega: 'Bodega Central (Caja)', stock: 0 },
+      { bodega: 'Bodega de Reserva', stock: (itemId % 2 === 0) ? 15 : 0 },
+      { bodega: 'Bodega de Almacén', stock: (itemId % 2 === 1) ? 8 : 5 }
+    ];
+  }
+};
+

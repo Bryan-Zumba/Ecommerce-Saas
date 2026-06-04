@@ -14,6 +14,8 @@ import { PageClientes } from "./modules/clientes/infrastructure/pages/PageClient
 import { PageReportes } from "./modules/reportes/infrastructure/pages/PageReportes";
 import { PageAuth } from "./modules/auth/infrastructure/pages/PageAuth";
 import { PageOnboarding } from "./modules/auth/infrastructure/pages/PageOnboarding";
+import { PageForcePasswordChange } from "./modules/auth/infrastructure/pages/PageForcePasswordChange";
+import { PageChangePassword } from "./modules/auth/infrastructure/pages/PageChangePassword";
 
 import { PageMonitoreoInventario } from "./modules/inventario/infrastructure/pages/PageMonitoreoInventario";
 import { PageGestionUsuarios } from "./modules/usuarios/infrastructure/pages/PageGestionUsuarios";
@@ -25,6 +27,7 @@ function App() {
       <ProveedorCarrito>
         <Routes>
           <Route path="/auth" element={<PageAuth />} />
+          <Route path="/auth/primer-acceso" element={<PageForcePasswordChange />} />
           <Route path="/onboarding" element={<PageOnboarding />} />
           <Route path="/*" element={
             <MainLayout>
@@ -43,6 +46,7 @@ function App() {
                 <Route path="/roles/consulta" element={<PageConsultaRoles />} />
                 <Route path="/historial" element={<HistorialPersonal />} />
                 <Route path="/reportes" element={<PageReportes />} />
+                <Route path="/cambiar-contrasena" element={<PageChangePassword />} />
               </Routes>
             </MainLayout>
           } />

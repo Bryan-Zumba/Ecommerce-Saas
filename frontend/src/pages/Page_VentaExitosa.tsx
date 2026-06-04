@@ -82,6 +82,9 @@ function VentaExitosa() {
               <div key={item.id} className="flex justify-between items-start text-sm">
                 <div className="text-left font-medium text-gray-700 leading-tight">
                   <p>{item.nombre}</p>
+                  {item.bodegaSeleccionada && (
+                    <p className="text-[10px] text-emerald-600 font-bold">🏢 {item.bodegaSeleccionada}</p>
+                  )}
                   <p className="text-[11px] text-gray-400">{item.quantity} x ${item.precio.toFixed(2)}</p>
                 </div>
                 <span className="font-bold text-gray-900">${(item.precio * item.quantity).toFixed(2)}</span>
@@ -94,7 +97,7 @@ function VentaExitosa() {
               <span>Subtotal (85%)</span>
               <span>${subtotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className="flex justify-between text-xs text-gray-550">
               <span>IVA (15%)</span>
               <span>${iva.toFixed(2)}</span>
             </div>
@@ -115,7 +118,7 @@ function VentaExitosa() {
         {/* ACCIONES */}
         <div className="print:hidden mt-8 flex flex-col sm:flex-row gap-4 w-full max-w-md">
           <button onClick={manejarImprimir} className="flex-1 bg-gray-800 hover:bg-black text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
-            🖨️ Imprimir Ticket
+            𖖅 Imprimir Ticket
           </button>
           <button onClick={manejarNuevaVenta} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 shadow-emerald-200">
             + Nueva Venta

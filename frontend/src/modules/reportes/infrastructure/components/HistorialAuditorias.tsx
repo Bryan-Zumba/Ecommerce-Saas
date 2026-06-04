@@ -104,12 +104,23 @@ export const HistorialAuditorias: React.FC<HistorialAuditoriasProps> = ({ cierre
                 </span>
                 <div className="max-h-36 overflow-y-auto custom-scrollbar flex flex-col gap-1 pr-1 font-mono text-[11px]">
                   {cierreSeleccionado.fotoInventario.map(item => (
-                    <div key={item.id_item} className="flex justify-between py-1 border-b border-gray-150/40 hover:bg-white/40 px-2 rounded">
-                      <span className="font-bold text-gray-700 truncate max-w-64">{item.nombre}</span>
-                      <div className="flex gap-4 font-bold">
-                        <span className="text-gray-400">Merma: <strong className="text-rose-600">{item.usados}</strong></span>
-                        <span className="text-gray-800">Quedó: <strong>{item.stockFinal}</strong></span>
+                    <div key={item.id_item} className="flex flex-col py-1.5 border-b border-gray-150/40 hover:bg-white/40 px-2 rounded">
+                      <div className="flex justify-between">
+                        <span className="font-bold text-gray-700 truncate max-w-xs">{item.nombre}</span>
+                        <div className="flex gap-3 font-bold">
+                          <span className="text-gray-400">Merma: <strong className="text-rose-600">{item.usados}</strong></span>
+                          <span className="text-gray-800">Stock: <strong>{item.stockFinal}</strong></span>
+                        </div>
                       </div>
+                      {item.distribucionBodegas && (
+                        <div className="flex gap-4 text-[9px] text-gray-400 pl-2 mt-0.5 font-sans">
+                          {item.distribucionBodegas.map((b, bIdx) => (
+                            <span key={bIdx} className="flex items-center gap-0.5">
+                              🏢 {b.bodega}: <strong className="text-gray-600">{b.cantidad} u</strong>
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -4,9 +4,10 @@ import { ItemReporte } from '../../domain/ItemReporte';
 interface TablaInventarioBarProps {
   items: ItemReporte[];
   onAjustarUsados: (id_item: number, incremento: number) => void;
+  estaCerrado?: boolean;
 }
 
-export const TablaInventarioBar: React.FC<TablaInventarioBarProps> = ({ items, onAjustarUsados }) => {
+export const TablaInventarioBar: React.FC<TablaInventarioBarProps> = ({ items, onAjustarUsados, estaCerrado }) => {
   return (
     <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm custom-scrollbar">
       <table className="min-w-full table-fixed border-collapse divide-y divide-gray-200 text-sm">
@@ -81,7 +82,7 @@ export const TablaInventarioBar: React.FC<TablaInventarioBarProps> = ({ items, o
                   <div className="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg p-0.5 shadow-sm">
                     <button
                       onClick={() => onAjustarUsados(item.id_item, -1)}
-                      disabled={item.usados <= 0}
+                      disabled={estaCerrado || item.usados <= 0}
                       className="w-6 h-6 flex items-center justify-center rounded bg-white text-gray-500 border border-gray-100 hover:bg-gray-100 hover:text-gray-800 active:scale-95 transition-all disabled:opacity-40 disabled:scale-100 cursor-pointer"
                     >
                       -
@@ -89,7 +90,7 @@ export const TablaInventarioBar: React.FC<TablaInventarioBarProps> = ({ items, o
                     <span className="w-7 font-mono font-bold text-gray-700 text-xs text-center">{item.usados}</span>
                     <button
                       onClick={() => onAjustarUsados(item.id_item, 1)}
-                      disabled={item.percha <= 0}
+                      disabled={estaCerrado || item.percha <= 0}
                       className="w-6 h-6 flex items-center justify-center rounded bg-white text-gray-500 border border-gray-100 hover:bg-gray-100 hover:text-gray-800 active:scale-95 transition-all disabled:opacity-40 disabled:scale-100 cursor-pointer"
                     >
                       +

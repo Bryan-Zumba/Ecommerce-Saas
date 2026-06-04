@@ -75,6 +75,8 @@ export const useReportes = () => {
   const [cierres, setCierres] = useState<CierrePeriodo[]>([]);
   const [periodoActual, setPeriodoActual] = useState<string>('Mayo 2026 - Junio 2026');
   const [pagoFiscalizacion, setPagoFiscalizacion] = useState<number>(25.00);
+  const [periodoActualEstado, setPeriodoActualEstado] = useState<'abierto' | 'cerrado'>('abierto');
+  const [turnosActivos, setTurnosActivos] = useState<boolean>(false);
 
   // Inicializar cargando desde localStorage o Mock Data
   useEffect(() => {
@@ -83,6 +85,8 @@ export const useReportes = () => {
     const cierresGuardados = localStorage.getItem('bar_reportes_cierres');
     const periodoGuardado = localStorage.getItem('bar_reportes_periodo_actual');
     const fiscalizacionGuardado = localStorage.getItem('bar_reportes_fiscalizacion');
+    const estadoGuardado = localStorage.getItem('bar_reportes_estado');
+    const turnosGuardados = localStorage.getItem('bar_reportes_turnos_activos');
 
     if (itemsGuardados) {
       setItems(JSON.parse(itemsGuardados));
@@ -122,6 +126,14 @@ export const useReportes = () => {
     if (fiscalizacionGuardado) {
       setPagoFiscalizacion(Number(fiscalizacionGuardado));
     }
+
+    if (estadoGuardado) {
+      setPeriodoActualEstado(estadoGuardado as 'abierto' | 'cerrado');
+    }
+
+    if (turnosGuardados) {
+      setTurnosActivos(turnosGuardados === 'true');
+    }
   }, []);
 
   // Guardar en localStorage cada vez que cambien los estados
@@ -144,6 +156,14 @@ export const useReportes = () => {
   useEffect(() => {
     localStorage.setItem('bar_reportes_fiscalizacion', String(pagoFiscalizacion));
   }, [pagoFiscalizacion]);
+
+  useEffect(() => {
+    localStorage.setItem('bar_reportes_estado', periodoActualEstado);
+  }, [periodoActualEstado]);
+
+  useEffect(() => {
+    localStorage.setItem('bar_reportes_turnos_activos', String(turnosActivos));
+  }, [turnosActivos]);
 
   // Función interna auxiliar para calcular todos los campos automáticos de un producto
   function calcularCamposItem(
@@ -169,6 +189,10 @@ export const useReportes = () => {
 
   // Ajustar mermas (usados) interactivamente
   const ajustarUsados = (id_item: number, incremento: number) => {
+    if (periodoActualEstado === 'cerrado') {
+      alert('No se pueden modificar consumos de un periodo cerrado.');
+      return;
+    }
     setItems(prevItems =>
       prevItems.map(item => {
         if (item.id_item === id_item) {
@@ -186,20 +210,36 @@ export const useReportes = () => {
     );
   };
 
+  // Registrar un egreso manualmente
+  const registrarEgreso = (monto: number, descripcion: string, fecha: string, tipo: 'CompraStock' | 'GastoOperativo') => {
+    if (periodoActualEstado === 'cerrado') {
+      alert('El periodo contable actual está cerrado. No se permiten modificaciones.');
+      return;
+    }
+    const nuevoEgreso: Egreso = {
+      id: `EG-${Date.now()}`,
+      fecha,
+      descripcion,
+      monto,
+      tipo
+    };
+    setEgresos(prev => [nuevoEgreso, ...prev]);
+  };
+
   // Calcular el balance consolidado final exacto
   const obtenerBalanceConsolidado = (): BalanceConsolidado => {
     const totalIngresos = Number(items.reduce((sum, item) => sum + item.totalVentaPvp, 0).toFixed(2));
     
     const totalFacturas = Number(
       egresos
-        .filter(e => e.tipo === 'FacturaProveedor')
+        .filter(e => e.tipo === 'FacturaProveedor' || e.tipo === 'CompraStock')
         .reduce((sum, e) => sum + e.monto, 0)
         .toFixed(2)
     );
 
     const totalGastosExtras = Number(
       egresos
-        .filter(e => e.tipo === 'GastoExtra')
+        .filter(e => e.tipo === 'GastoExtra' || e.tipo === 'GastoOperativo')
         .reduce((sum, e) => sum + e.monto, 0)
         .toFixed(2)
     );
@@ -234,11 +274,26 @@ export const useReportes = () => {
     };
   };
 
-  // Cierre de periodo (Traspaso contable automático)
-  const ejecutarCierrePeriodo = (nuevoNombrePeriodo: string) => {
+  // Cerrar el periodo contable actual (congela todo)
+  const cerrarPeriodoContable = () => {
+    if (turnosActivos) {
+      alert('Error: No se puede cerrar el periodo porque existen turnos de caja activos.');
+      return false;
+    }
+    setPeriodoActualEstado('cerrado');
+    return true;
+  };
+
+  // Cierre de periodo (Traspaso contable automático y apertura)
+  const abrirNuevoPeriodo = (nuevoNombrePeriodo: string) => {
+    if (periodoActualEstado !== 'cerrado') {
+      alert('Error: El periodo anterior debe estar cerrado antes de abrir uno nuevo.');
+      return;
+    }
+
     const balance = obtenerBalanceConsolidado();
     
-    // 1. Crear foto del cierre
+    // 1. Crear foto del cierre con distribución por bodegas
     const nuevoCierre: CierrePeriodo = {
       id: `C-${Date.now()}`,
       fechaCierre: new Date().toLocaleDateString('es-ES'),
@@ -254,7 +309,11 @@ export const useReportes = () => {
         nombre: item.nombre,
         stockFinal: item.percha,
         usados: item.usados,
-        perdidaMonto: item.perdidaMonto
+        perdidaMonto: item.perdidaMonto,
+        distribucionBodegas: [
+          { bodega: 'Bodega Central (Bar)', cantidad: Math.ceil(item.percha * 0.7) },
+          { bodega: 'Bodega de Almacén', cantidad: Math.floor(item.percha * 0.3) }
+        ]
       }))
     };
 
@@ -263,7 +322,6 @@ export const useReportes = () => {
 
     // 3. Traspaso contable automático para el nuevo periodo:
     // El stock final (percha) se hereda como saldo inicial (ingreso total) del nuevo mes contable.
-    // Ventas y Usados se reinician a 0.
     const nuevosItems = items.map(item =>
       calcularCamposItem({
         id_item: item.id_item,
@@ -271,19 +329,20 @@ export const useReportes = () => {
         ingresoTotal: item.percha, // Stock remanente de percha pasa a stock inicial
         precioFactura: item.precioFactura,
         pvp: item.pvp,
-        ventaUnidades: 0, // Reinicia en $0 / unidades en cero
-        usados: 0        // Reinicia en cero
+        ventaUnidades: 0, // Reinicia unidades en cero
+        usados: 0        // Reinicia mermas en cero
       })
     );
 
-    // Los egresos de compras de stock, gastos extras y pago de ayudantes se reinician a $0 en el nuevo mes.
+    // Los egresos se reinician a $0 en el nuevo periodo contable (excepto personal basico)
     const nuevosEgresos: Egreso[] = [
-      { id: `P-${Date.now()}`, fecha: new Date().toISOString().split('T')[0], descripcion: 'Pagado Ayudante', monto: 125.00, tipo: 'PagoPersonal' }
+      { id: `P-${Date.now()}`, fecha: new Date().toISOString().split('T')[0], descripcion: 'Pagado Ayudante (Inicio de Periodo)', monto: 125.00, tipo: 'PagoPersonal' }
     ];
 
     setItems(nuevosItems);
     setEgresos(nuevosEgresos);
     setPeriodoActual(nuevoNombrePeriodo);
+    setPeriodoActualEstado('abierto');
   };
 
   // Restaurar por completo los valores predeterminados de prueba para depuración
@@ -293,6 +352,8 @@ export const useReportes = () => {
     setEgresos(EGRESOS_INICIALES);
     setPagoFiscalizacion(25.00);
     setPeriodoActual('Mayo 2026 - Junio 2026');
+    setPeriodoActualEstado('abierto');
+    setTurnosActivos(false);
   };
 
   return {
@@ -304,7 +365,13 @@ export const useReportes = () => {
     setPagoFiscalizacion,
     ajustarUsados,
     obtenerBalanceConsolidado,
-    ejecutarCierrePeriodo,
-    reiniciarValoresPrueba
+    cerrarPeriodoContable,
+    abrirNuevoPeriodo,
+    registrarEgreso,
+    reiniciarValoresPrueba,
+    periodoActualEstado,
+    setPeriodoActualEstado,
+    turnosActivos,
+    setTurnosActivos
   };
 };

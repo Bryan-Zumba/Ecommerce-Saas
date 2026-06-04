@@ -3,12 +3,32 @@ import { useNavigate } from 'react-router-dom';
 
 export const PageAuth: React.FC = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
+  const [registerStep, setRegisterStep] = useState<'code' | 'form'>('code');
+  const [accessCode, setAccessCode] = useState('');
+  const [codeError, setCodeError] = useState('');
   const navigate = useNavigate();
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Simular login exitoso
     navigate('/');
+  };
+
+  const handleValidateCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accessCode.trim()) {
+      setCodeError('El código no puede estar vacío');
+      return;
+    }
+    // Simular validación: cualquier código válido de ejemplo, o fallar si dice "invalido"
+    if (accessCode.toLowerCase() === 'invalido') {
+      setCodeError('Código de acceso inválido o ya utilizado');
+    } else if (accessCode.length < 4) {
+      setCodeError('El código de acceso debe tener al menos 4 caracteres');
+    } else {
+      setCodeError('');
+      setRegisterStep('form');
+    }
   };
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
@@ -26,52 +46,100 @@ export const PageAuth: React.FC = () => {
         <div
           className={`absolute top-0 h-full transition-all duration-700 ease-in-out left-0 w-1/2 ${
             isRightPanelActive
-              ? 'translate-x-[100%] opacity-100 z-50 animate-[showAuth_0.6s]'
+              ? 'translate-x-[100%] opacity-100 z-50'
               : 'translate-x-0 opacity-0 z-10'
           }`}
         >
-          <form
-            onSubmit={handleRegisterSubmit}
-            className="bg-white flex items-center justify-center flex-col px-12 h-full text-center"
-          >
-            <h1 className="font-black text-gray-800 mb-2 text-3xl">Crear Empresa</h1>
-            <span className="text-sm text-gray-500 mb-8 font-medium">Registra tu negocio en la plataforma en un paso. Se te creara con rol de adminsitrador y podras crear supervisores y cajeros para tu empresa</span>
-
-            <div className="relative w-full my-2">
-              <i className="fas fa-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input
-                type="text"
-                placeholder="Nombre de tu Negocio / Empresa"
-                required
-                className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-              />
-            </div>
-            <div className="relative w-full my-2">
-              <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input
-                type="email"
-                placeholder="Correo electrónico"
-                required
-                className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-              />
-            </div>
-            <div className="relative w-full my-2">
-              <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input
-                type="password"
-                placeholder="Contraseña segura"
-                required
-                className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="mt-8 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+          {registerStep === 'code' ? (
+            <form
+              onSubmit={handleValidateCode}
+              className="bg-white flex items-center justify-center flex-col px-12 h-full text-center"
             >
-              CREAR EMPRESA
-            </button>
-          </form>
+              <h1 className="font-black text-gray-800 mb-2 text-3xl">Acceso Autorizado</h1>
+              <span className="text-sm text-gray-500 mb-8 font-medium">Ingresa tu código de acceso para continuar con el registro de tu empresa</span>
+
+              <div className="relative w-full my-2">
+                <i className="fas fa-ticket-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type="text"
+                  placeholder="Código de acceso"
+                  required
+                  value={accessCode}
+                  onChange={(e) => {
+                    setAccessCode(e.target.value);
+                    setCodeError('');
+                  }}
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+              </div>
+
+              {codeError && (
+                <p className="text-red-500 text-xs font-semibold mt-2">
+                  <i className="fas fa-exclamation-circle mr-1"></i>
+                  {codeError}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="mt-8 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+              >
+                VALIDAR CÓDIGO
+              </button>
+            </form>
+          ) : (
+            <form
+              onSubmit={handleRegisterSubmit}
+              className="bg-white flex items-center justify-center flex-col px-12 h-full text-center"
+            >
+              <h1 className="font-black text-gray-800 mb-2 text-3xl">Crear Empresa</h1>
+              <span className="text-sm text-gray-500 mb-8 font-medium">Registra tu negocio en la plataforma. Se creará con rol de administrador</span>
+
+              <div className="relative w-full my-2">
+                <i className="fas fa-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type="text"
+                  placeholder="Nombre de tu Negocio / Empresa"
+                  required
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+              </div>
+              <div className="relative w-full my-2">
+                <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type="email"
+                  placeholder="Correo electrónico"
+                  required
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+              </div>
+              <div className="relative w-full my-2">
+                <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type="password"
+                  placeholder="Contraseña segura"
+                  required
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+              </div>
+
+              <div className="flex items-center justify-between w-full mt-6">
+                <button
+                  type="button"
+                  onClick={() => setRegisterStep('code')}
+                  className="text-gray-400 hover:text-gray-600 text-sm font-semibold transition-colors"
+                >
+                  <i className="fas fa-arrow-left mr-1"></i> Atrás
+                </button>
+                <button
+                  type="submit"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+                >
+                  REGISTRARSE
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
         {/* Sign In Container */}

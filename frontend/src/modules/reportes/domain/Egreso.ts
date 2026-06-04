@@ -3,5 +3,5 @@ export interface Egreso {
   fecha: string;
   descripcion: string;
   monto: number;
-  tipo: 'FacturaProveedor' | 'GastoExtra' | 'PagoPersonal';
+  tipo: 'FacturaProveedor' | 'GastoExtra' | 'PagoPersonal' | 'CompraStock' | 'GastoOperativo';
 }
