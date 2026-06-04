@@ -9,57 +9,73 @@ datasource db {
 }
 
 //Modulo de autenticacion
-model Rol{
-  id_rol          Int      @id @default(autoincrement())
-  nombre          String   @db.VarChar
-  descripcion     String   @db.VarChar
-  estado          Boolean  @default(true)
-  fecha_creacion  DateTime @default(now()) @db.Timestamptz(6)
 
-  rol_usuario     Rol_usuario[]
+model Acceso_Autorizado {
+  id_acceso_autorizado Int       @id @default(autoincrement())
+  email                String    @unique @db.VarChar
+  codigo_acceso        String    @unique @db.VarChar
+  nombre               String    @db.VarChar
+  intentos             Int       @default(0)
+  usado                Boolean   @default(false)
+  fecha_uso            DateTime? @db.Timestamptz(6)
+  estado               Boolean   @default(true)
+  fecha_creacion       DateTime  @default(now()) @db.Timestamptz(6)
 }
 
-model Usuario{
-  id_usuario      Int      @id @default(autoincrement())
-  id_empresa      Int      @db.Integer
-  nombre          String   @db.VarChar
-  apellido        String   @db.VarChar
-  telefono        String   @db.VarChar
-  email           String   @unique @db.VarChar
-  password_hash   String   @db.VarChar
-  estado          Boolean  @default(true)
-  ultimo_acceso   DateTime @default(now()) @db.Timestamptz(6)
-  fecha_creacion  DateTime @default(now()) @db.Timestamptz(6)
+model Rol {
+  id_rol         Int      @id @default(autoincrement())
+  nombre         String   @db.VarChar
+  descripcion    String   @db.VarChar
+  estado         Boolean  @default(true)
+  fecha_creacion DateTime @default(now()) @db.Timestamptz(6)
 
-  empresa         Empresa  @relation(fields: [id_empresa], references: [id_empresa])
-  rol_usuario     Rol_usuario[]
-  sesiones        Sesion[]
-  turno_caja      Turno_caja[]
-  ventas          Venta[]
-  compras         Compra[]
+  rol_usuario Rol_usuario[]
 }
 
-model Rol_usuario{
-  id_rol_usuario  Int      @id @default(autoincrement())
-  id_usuario      Int      @db.Integer
-  id_rol          Int      @db.Integer
+model Usuario {
+  id_usuario           Int      @id @default(autoincrement())
+  id_empresa           Int      @db.Integer
+  nombre               String   @db.VarChar
+  apellido             String   @db.VarChar
+  telefono             String   @db.VarChar
+  email                String   @unique @db.VarChar
+  password_hash        String   @db.VarChar
+  must_change_password Boolean  @default(true)
+  estado               Boolean  @default(true)
+  ultimo_acceso        DateTime @default(now()) @db.Timestamptz(6)
+  fecha_creacion       DateTime @default(now()) @db.Timestamptz(6)
+
+  empresa           Empresa           @relation(fields: [id_empresa], references: [id_empresa])
+  rol_usuario       Rol_usuario[]
+  sesiones          Sesion[]
+  turno_caja        Turno_caja[]
+  ventas            Venta[]
+  compras           Compra[]
+  gastos_operativos Gasto_operativo[]
+  cierre_periodo    Cierre_Periodo[]
+}
+
+model Rol_usuario {
+  id_rol_usuario Int @id @default(autoincrement())
+  id_usuario     Int @db.Integer
+  id_rol         Int @db.Integer
+
+  rol     Rol     @relation(fields: [id_rol], references: [id_rol])
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario])
 
   @@unique([id_usuario, id_rol])
-
-  rol             Rol      @relation(fields: [id_rol], references: [id_rol])
-  usuario         Usuario  @relation(fields: [id_usuario], references: [id_usuario])
 }
 
-model Sesion{
-  id_sesion       Int      @id @default(autoincrement())
-  id_usuario      Int      @db.Integer
-  token           String   @db.VarChar
-  ip              String   @db.VarChar
-  fecha_inicio    DateTime @default(now()) @db.Timestamptz(6)
+model Sesion {
+  id_sesion        Int      @id @default(autoincrement())
+  id_usuario       Int      @db.Integer
+  token            String   @db.VarChar
+  ip               String   @db.VarChar
+  fecha_inicio     DateTime @default(now()) @db.Timestamptz(6)
   fecha_expiracion DateTime @db.Timestamptz(6)
-  estado          Boolean  @default(true)
+  estado           Boolean  @default(true)
 
-  usuario         Usuario  @relation(fields: [id_usuario], references: [id_usuario])
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario])
 }
 
 enum Estado_empresa {
@@ -68,136 +84,145 @@ enum Estado_empresa {
   Suspendido
 }
 
-model Empresa{
-  id_empresa      Int      @id @default(autoincrement())
-  nombre          String   @db.VarChar
-  descripcion     String   @db.VarChar
-  ruc             String   @unique @db.VarChar
-  direccion       String   @db.VarChar
-  telefono        String   @db.VarChar
-  email           String   @db.VarChar
-  logo_url        String   @db.VarChar
-  estado_empresa  Estado_empresa  @default(Activo)
-  fecha_creacion  DateTime @default(now()) @db.Timestamptz(6)
+model Empresa {
+  id_empresa     Int            @id @default(autoincrement())
+  nombre         String         @db.VarChar
+  descripcion    String         @db.VarChar
+  ruc            String         @unique @db.VarChar
+  direccion      String         @db.VarChar
+  telefono       String         @db.VarChar
+  email          String         @db.VarChar
+  logo_url       String         @db.VarChar
+  estado_empresa Estado_empresa @default(Activo)
+  fecha_creacion DateTime       @default(now()) @db.Timestamptz(6)
 
-  items           Item[]
-  usuarios        Usuario[]
-  cajas           Caja[]
-  bodegas         Bodega[]
-  categorias      Categoria[]
-  proveedores     Proveedor[]
-  clientes        Cliente[]
-  ventas          Venta[]
-  compras         Compra[]
-  movimientos_caja Movimiento_caja[]
+  items              Item[]
+  usuarios           Usuario[]
+  cajas              Caja[]
+  bodegas            Bodega[]
+  categorias         Categoria[]
+  proveedores        Proveedor[]
+  clientes           Cliente[]
+  ventas             Venta[]
+  compras            Compra[]
+  movimientos_caja   Movimiento_caja[]
+  gastos_operativos  Gasto_operativo[]
+  periodos_contables Periodo_Contable[]
 }
 
 //Modulo de caja
-model Caja{
-  id_caja         Int      @id @default(autoincrement())
-  id_empresa      Int      @db.Integer
-  nombre          String   @db.VarChar
-  descripcion     String   @db.VarChar
-  estado          Boolean  @default(true)
-  fecha_creacion  DateTime @default(now()) @db.Timestamptz(6)
+model Caja {
+  id_caja        Int      @id @default(autoincrement())
+  id_empresa     Int      @db.Integer
+  nombre         String   @db.VarChar
+  descripcion    String   @db.VarChar
+  estado         Boolean  @default(true)
+  fecha_creacion DateTime @default(now()) @db.Timestamptz(6)
 
-  empresa         Empresa  @relation(fields: [id_empresa], references: [id_empresa])
-  turno_caja      Turno_caja[]
+  empresa    Empresa      @relation(fields: [id_empresa], references: [id_empresa])
+  turno_caja Turno_caja[]
 }
 
-model Periodo_Gestion{
-  id_periodo_gestion  Int      @id @default(autoincrement())
-  fecha_inicio        DateTime @db.Timestamptz(6)
-  fecha_fin           DateTime @db.Timestamptz(6)
-  estado              Boolean  @default(false)
-  observacion         String?  @db.VarChar
+model Periodo_Gestion {
+  id_periodo_gestion Int      @id @default(autoincrement())
+  fecha_inicio       DateTime @db.Timestamptz(6)
+  fecha_fin          DateTime @db.Timestamptz(6)
+  estado             Boolean  @default(false)
+  observacion        String?  @db.VarChar
 
-  turno_caja          Turno_caja[]
+  turno_caja Turno_caja[]
 }
 
-model Turno_caja{
-  id_turno_caja       Int      @id @default(autoincrement())
-  id_usuario          Int      @db.Integer
-  id_periodo_gestion  Int      @db.Integer
-  id_caja             Int      @db.Integer
-  id_bodega           Int      @db.Integer
-  fecha_apertura      DateTime @default(now()) @db.Timestamptz(6)
+model Turno_caja {
+  id_turno_caja       Int       @id @default(autoincrement())
+  id_usuario          Int       @db.Integer
+  id_periodo_gestion  Int       @db.Integer
+  id_caja             Int       @db.Integer
+  id_bodega           Int       @db.Integer
+  id_periodo_contable Int       @db.Integer
+  fecha_apertura      DateTime  @default(now()) @db.Timestamptz(6)
   fecha_cierre        DateTime? @db.Timestamptz(6)
-  monto_apertura      Decimal  @db.Decimal(10,2)
-  monto_cierre        Decimal? @db.Decimal(10,2)
-  estado              Boolean  @default(true)
+  monto_apertura      Decimal   @db.Decimal(10, 2)
+  monto_cierre        Decimal?  @db.Decimal(10, 2)
+  estado              Boolean   @default(true)
 
-  usuario             Usuario  @relation(fields: [id_usuario], references: [id_usuario])
-  periodo_gestion     Periodo_Gestion  @relation(fields: [id_periodo_gestion], references: [id_periodo_gestion])
-  caja                Caja  @relation(fields: [id_caja], references: [id_caja])
-  bodega              Bodega  @relation(fields: [id_bodega], references: [id_bodega])
-  movimientos_caja    Movimiento_caja[]
-  ventas              Venta[]
+  usuario          Usuario           @relation(fields: [id_usuario], references: [id_usuario])
+  periodo_gestion  Periodo_Gestion   @relation(fields: [id_periodo_gestion], references: [id_periodo_gestion])
+  caja             Caja              @relation(fields: [id_caja], references: [id_caja])
+  bodega           Bodega            @relation(fields: [id_bodega], references: [id_bodega])
+  periodo_contable Periodo_Contable  @relation(fields: [id_periodo_contable], references: [id_periodo_contable])
+  movimientos_caja Movimiento_caja[]
+  ventas           Venta[]
 }
 
-enum Tipo_Movimiento_caja{
+enum Tipo_Movimiento_caja {
   Ingreso
   Egreso
   Apertura
   Cierre
 }
 
-model Movimiento_caja{
-  id_movimiento_caja  Int      @id @default(autoincrement())
-  id_turno_caja       Int      @db.Integer
-  id_venta            Int?     @db.Integer
-  id_compra           Int?     @db.Integer
-  id_empresa          Int      @db.Integer
-  tipo_movimiento     Tipo_Movimiento_caja
-  monto               Decimal  @db.Decimal(10,2)
-  referencia          String   @db.VarChar
-  fecha_movimiento    DateTime @default(now()) @db.Timestamptz(6)
+model Movimiento_caja {
+  id_movimiento_caja Int                  @id @default(autoincrement())
+  id_turno_caja      Int                  @db.Integer
+  id_venta           Int?                 @db.Integer
+  id_compra          Int?                 @db.Integer
+  id_gasto_operativo Int?                 @db.Integer
+  id_empresa         Int                  @db.Integer
+  tipo_movimiento    Tipo_Movimiento_caja
+  monto              Decimal              @db.Decimal(10, 2)
+  referencia         String               @db.VarChar
+  fecha_movimiento   DateTime             @default(now()) @db.Timestamptz(6)
 
-  turno_caja          Turno_caja  @relation(fields: [id_turno_caja], references: [id_turno_caja])
-  venta               Venta?  @relation(fields: [id_venta], references: [id_venta])
-  compra              Compra?  @relation(fields: [id_compra], references: [id_compra])
-  empresa             Empresa  @relation(fields: [id_empresa], references: [id_empresa])
+  turno_caja      Turno_caja       @relation(fields: [id_turno_caja], references: [id_turno_caja])
+  venta           Venta?           @relation(fields: [id_venta], references: [id_venta])
+  compra          Compra?          @relation(fields: [id_compra], references: [id_compra])
+  empresa         Empresa          @relation(fields: [id_empresa], references: [id_empresa])
+  gasto_operativo Gasto_operativo? @relation(fields: [id_gasto_operativo], references: [id_gasto_operativo])
 }
 
 //Modulo de ventas
-model Metodo_Pago{
-  id_metodo_pago      Int      @id @default(autoincrement())
-  nombre              String   @db.VarChar
-  descripcion         String   @db.VarChar
-  estado              Boolean  @default(true)
+model Metodo_Pago {
+  id_metodo_pago Int     @id @default(autoincrement())
+  nombre         String  @db.VarChar
+  descripcion    String  @db.VarChar
+  estado         Boolean @default(true)
 
-  pagos               Pago[]
+  pagos Pago[]
 }
 
-model Pago{
-  id_pago             Int      @id @default(autoincrement())
-  id_venta            Int      @db.Integer
-  id_metodo_pago      Int      @db.Integer
-  monto               Decimal  @db.Decimal(10,2)
-  fecha_pago          DateTime @default(now()) @db.Timestamptz(6)
+model Pago {
+  id_pago        Int      @id @default(autoincrement())
+  id_venta       Int      @db.Integer
+  id_metodo_pago Int      @db.Integer
+  monto          Decimal  @db.Decimal(10, 2)
+  fecha_pago     DateTime @default(now()) @db.Timestamptz(6)
 
-  venta               Venta  @relation(fields: [id_venta], references: [id_venta])
-  metodo_pago         Metodo_Pago  @relation(fields: [id_metodo_pago], references: [id_metodo_pago])
+  venta       Venta       @relation(fields: [id_venta], references: [id_venta])
+  metodo_pago Metodo_Pago @relation(fields: [id_metodo_pago], references: [id_metodo_pago])
 }
 
-model Venta{
-  id_venta            Int      @id @default(autoincrement())
-  id_turno_caja       Int      @db.Integer
-  id_cliente          Int      @db.Integer
-  id_usuario          Int      @db.Integer
-  id_empresa          Int      @db.Integer
-  total               Decimal  @db.Decimal(10,2)
-  observacion         String?  @db.VarChar
-  fecha               DateTime @default(now()) @db.Timestamptz(6)
-  estado_venta        Estado_venta  @default(Pendiente)
+model Venta {
+  id_venta            Int          @id @default(autoincrement())
+  id_turno_caja       Int          @db.Integer
+  id_cliente          Int          @db.Integer
+  id_usuario          Int          @db.Integer
+  id_empresa          Int          @db.Integer
+  id_periodo_contable Int          @db.Integer
+  total               Decimal      @db.Decimal(10, 2)
+  observacion         String?      @db.VarChar
+  fecha               DateTime     @default(now()) @db.Timestamptz(6)
+  estado_venta        Estado_venta @default(Pendiente)
 
-  turno_caja          Turno_caja  @relation(fields: [id_turno_caja], references: [id_turno_caja])
-  cliente             Cliente  @relation(fields: [id_cliente], references: [id_cliente])
-  usuario             Usuario  @relation(fields: [id_usuario], references: [id_usuario])
-  empresa             Empresa  @relation(fields: [id_empresa], references: [id_empresa])
-  movimientos_caja    Movimiento_caja[]
-  detalle_ventas      Detalle_Venta[]
-  pagos               Pago[]
+  turno_caja              Turno_caja              @relation(fields: [id_turno_caja], references: [id_turno_caja])
+  cliente                 Cliente                 @relation(fields: [id_cliente], references: [id_cliente])
+  usuario                 Usuario                 @relation(fields: [id_usuario], references: [id_usuario])
+  empresa                 Empresa                 @relation(fields: [id_empresa], references: [id_empresa])
+  periodo_contable        Periodo_Contable        @relation(fields: [id_periodo_contable], references: [id_periodo_contable])
+  movimientos_caja        Movimiento_caja[]
+  detalle_ventas          Detalle_Venta[]
+  pagos                   Pago[]
+  movimientos_inventarios Movimiento_Inventario[]
 }
 
 enum Estado_venta {
@@ -205,18 +230,19 @@ enum Estado_venta {
   Completada
   Cancelada
 }
-model Detalle_Venta{
-  id_detalle_venta    Int      @id @default(autoincrement())
-  id_venta            Int      @db.Integer
-  id_item             Int      @db.Integer
-  id_bodega           Int?      @db.Integer
-  cantidad            Int      @db.Integer
-  precio_unitario     Decimal  @db.Decimal(10,2)
-  subtotal            Decimal  @db.Decimal(10,2)
 
-  venta               Venta  @relation(fields: [id_venta], references: [id_venta])
-  item                Item  @relation(fields: [id_item], references: [id_item])
-  bodega              Bodega?  @relation(fields: [id_bodega], references: [id_bodega])
+model Detalle_Venta {
+  id_detalle_venta Int     @id @default(autoincrement())
+  id_venta         Int     @db.Integer
+  id_item          Int     @db.Integer
+  id_bodega        Int?    @db.Integer
+  cantidad         Int     @db.Integer
+  precio_unitario  Decimal @db.Decimal(10, 2)
+  subtotal         Decimal @db.Decimal(10, 2)
+
+  venta  Venta   @relation(fields: [id_venta], references: [id_venta])
+  item   Item    @relation(fields: [id_item], references: [id_item])
+  bodega Bodega? @relation(fields: [id_bodega], references: [id_bodega])
 }
 
 model Cliente {
@@ -227,24 +253,26 @@ model Cliente {
   apellidos  String   @db.VarChar
   email      String?  @db.VarChar
   telefono   String?  @db.VarChar
+  direccion  String?  @db.VarChar
+  estado     Boolean  @default(true)
   created_at DateTime @default(now()) @db.Timestamptz(6)
 
-  @@unique([cedula, id_empresa])
+  ventas  Venta[]
+  empresa Empresa @relation(fields: [id_empresa], references: [id_empresa])
 
-  ventas              Venta[]
-  empresa         Empresa  @relation(fields: [id_empresa], references: [id_empresa])
+  @@unique([cedula, id_empresa])
 }
 
 //Modulo de inventario
 model Categoria {
-  id_categoria    Int      @id @default(autoincrement())
-  id_empresa      Int      @db.Integer
-  nombre          String   @db.VarChar
-  descripcion     String   @db.VarChar
-  estado          Boolean  @default(true)
+  id_categoria Int     @id @default(autoincrement())
+  id_empresa   Int     @db.Integer
+  nombre       String  @db.VarChar
+  descripcion  String  @db.VarChar
+  estado       Boolean @default(true)
 
-  empresa         Empresa  @relation(fields: [id_empresa], references: [id_empresa])
-  items           Item[]
+  empresa Empresa @relation(fields: [id_empresa], references: [id_empresa])
+  items   Item[]
 }
 
 enum Tipo_Item {
@@ -253,33 +281,33 @@ enum Tipo_Item {
 }
 
 model Item {
-  id_item         Int      @id @default(autoincrement())
-  id_categoria    Int      @db.Integer
-  id_empresa      Int      @db.Integer
-  nombre          String   @db.VarChar
-  descripcion     String   @db.VarChar
-  costo           Decimal  @db.Decimal(10,2)
-  precio          Decimal  @db.Decimal(10,2)
-  tipo_item       Tipo_Item
-  imagen_url      String?   @db.VarChar
-  estado          Boolean  @default(true)
+  id_item      Int       @id @default(autoincrement())
+  id_categoria Int       @db.Integer
+  id_empresa   Int       @db.Integer
+  nombre       String    @db.VarChar
+  descripcion  String    @db.VarChar
+  costo        Decimal   @db.Decimal(10, 2)
+  precio       Decimal   @db.Decimal(10, 2)
+  tipo_item    Tipo_Item
+  imagen_url   String?   @db.VarChar
+  estado       Boolean   @default(true)
 
-  categoria       Categoria @relation(fields: [id_categoria], references: [id_categoria])
-  empresa         Empresa    @relation(fields: [id_empresa], references: [id_empresa])
+  categoria       Categoria               @relation(fields: [id_categoria], references: [id_categoria])
+  empresa         Empresa                 @relation(fields: [id_empresa], references: [id_empresa])
   inventarios     Inventario[]
   movimientos     Movimiento_Inventario[]
   detalle_ventas  Detalle_Venta[]
   detalle_compras Detalle_Compra[]
 }
 
-model Bodega{
-  id_bodega       Int      @id @default(autoincrement())
-  id_empresa      Int      @db.Integer
-  nombre          String   @db.VarChar
-  descripcion     String   @db.VarChar
-  ubicacion       String   @db.VarChar
-  estado          Boolean  @default(true)
-  fecha_registro  DateTime @default(now()) @db.Timestamptz(6)
+model Bodega {
+  id_bodega      Int      @id @default(autoincrement())
+  id_empresa     Int      @db.Integer
+  nombre         String   @db.VarChar
+  descripcion    String   @db.VarChar
+  ubicacion      String   @db.VarChar
+  estado         Boolean  @default(true)
+  fecha_registro DateTime @default(now()) @db.Timestamptz(6)
 
   inventarios             Inventario[]
   movimientos_inventarios Movimiento_Inventario[]
@@ -287,76 +315,83 @@ model Bodega{
   detalle_compras         Detalle_Compra[]
   turno_caja              Turno_caja[]
 
-  empresa                 Empresa    @relation(fields: [id_empresa], references: [id_empresa])
+  empresa Empresa @relation(fields: [id_empresa], references: [id_empresa])
 }
 
-model Inventario{
-  id_inventario       Int      @id @default(autoincrement())
-  id_item             Int      @db.Integer
-  id_bodega           Int      @db.Integer
-  stock_actual        Int      @default(0)
-  stock_disponible    Int      @default(0)
-  stock_reservado     Int      @default(0)
+model Inventario {
+  id_inventario              Int      @id @default(autoincrement())
+  id_item                    Int      @db.Integer
+  id_bodega                  Int      @db.Integer
+  stock_actual               Int      @default(0)
+  stock_disponible           Int      @default(0)
+  stock_reservado            Int      @default(0)
   fecha_ultima_actualizacion DateTime @default(now()) @db.Timestamptz(6)
 
+  item   Item   @relation(fields: [id_item], references: [id_item])
+  bodega Bodega @relation(fields: [id_bodega], references: [id_bodega])
+
   @@unique([id_item, id_bodega])
-  
-  item                Item     @relation(fields: [id_item], references: [id_item])
-  bodega              Bodega   @relation(fields: [id_bodega], references: [id_bodega])
 }
 
-enum Tipo_movimiento_inventario{
+enum Tipo_movimiento_inventario {
   Compra
   Venta
   Devolucion
 }
 
-model Movimiento_Inventario{
-  id_movimiento_inventario    Int      @id @default(autoincrement())
-  id_item                     Int      @db.Integer
-  id_bodega                   Int      @db.Integer
-  tipo_movimiento             Tipo_movimiento_inventario
-  cantidad                    Int      @default(0)
-  stock_anterior              Int      @default(0)
-  stock_nuevo                 Int      @default(0)
-  fecha_movimiento            DateTime @default(now()) @db.Timestamptz(6)
+model Movimiento_Inventario {
+  id_movimiento_inventario Int                        @id @default(autoincrement())
+  id_item                  Int                        @db.Integer
+  id_bodega                Int                        @db.Integer
+  id_venta                 Int?                       @db.Integer
+  id_compra                Int?                       @db.Integer
+  tipo_movimiento          Tipo_movimiento_inventario
+  cantidad                 Int                        @default(0)
+  stock_anterior           Int                        @default(0)
+  stock_nuevo              Int                        @default(0)
+  fecha_movimiento         DateTime                   @default(now()) @db.Timestamptz(6)
 
-  bodega                      Bodega   @relation(fields: [id_bodega], references: [id_bodega])
-  item                        Item     @relation(fields: [id_item], references: [id_item])
+  bodega Bodega  @relation(fields: [id_bodega], references: [id_bodega])
+  item   Item    @relation(fields: [id_item], references: [id_item])
+  venta  Venta?  @relation(fields: [id_venta], references: [id_venta])
+  compra Compra? @relation(fields: [id_compra], references: [id_compra])
 }
 
 //Modulo de compra y proveedores
-model Proveedor{
-  id_proveedor    Int      @id @default(autoincrement())
-  id_empresa      Int      @db.Integer
-  nombre          String   @db.VarChar
-  descripcion     String   @db.VarChar
-  direccion       String   @db.VarChar
-  telefono        String   @db.VarChar
-  email           String   @db.VarChar
-  estado          Boolean  @default(true)
-  fecha_registro  DateTime @default(now()) @db.Timestamptz(6)
+model Proveedor {
+  id_proveedor   Int      @id @default(autoincrement())
+  id_empresa     Int      @db.Integer
+  nombre         String   @db.VarChar
+  descripcion    String   @db.VarChar
+  direccion      String   @db.VarChar
+  telefono       String   @db.VarChar
+  email          String   @db.VarChar
+  estado         Boolean  @default(true)
+  fecha_registro DateTime @default(now()) @db.Timestamptz(6)
 
-  compras         Compra[]
+  compras Compra[]
 
-  empresa         Empresa  @relation(fields: [id_empresa], references: [id_empresa])
+  empresa Empresa @relation(fields: [id_empresa], references: [id_empresa])
 }
 
-model Compra{
-  id_compra       Int      @id @default(autoincrement())
-  id_proveedor    Int      @db.Integer
-  id_usuario      Int      @db.Integer
-  id_empresa      Int      @db.Integer
-  total           Decimal  @db.Decimal(10,2)
-  fecha_compra    DateTime @default(now()) @db.Timestamptz(6)
-  observacion     String   @db.VarChar
-  estado_compra   Estado_compra   @default(Pendiente)
+model Compra {
+  id_compra           Int           @id @default(autoincrement())
+  id_proveedor        Int           @db.Integer
+  id_usuario          Int           @db.Integer
+  id_empresa          Int           @db.Integer
+  id_periodo_contable Int           @db.Integer
+  total               Decimal       @db.Decimal(10, 2)
+  fecha_compra        DateTime      @default(now()) @db.Timestamptz(6)
+  observacion         String        @db.VarChar
+  estado_compra       Estado_compra @default(Pendiente)
 
-  proveedor       Proveedor @relation(fields: [id_proveedor], references: [id_proveedor])
-  usuario         Usuario   @relation(fields: [id_usuario], references: [id_usuario])
-  empresa         Empresa  @relation(fields: [id_empresa], references: [id_empresa])
-  detalle_compras Detalle_Compra[]
-  movimientos_caja Movimiento_caja[]
+  proveedor               Proveedor               @relation(fields: [id_proveedor], references: [id_proveedor])
+  usuario                 Usuario                 @relation(fields: [id_usuario], references: [id_usuario])
+  empresa                 Empresa                 @relation(fields: [id_empresa], references: [id_empresa])
+  periodo_contable        Periodo_Contable        @relation(fields: [id_periodo_contable], references: [id_periodo_contable])
+  detalle_compras         Detalle_Compra[]
+  movimientos_caja        Movimiento_caja[]
+  movimientos_inventarios Movimiento_Inventario[]
 }
 
 enum Estado_compra {
@@ -365,16 +400,81 @@ enum Estado_compra {
   Cancelada
 }
 
-model Detalle_Compra{
-  id_detalle_compra   Int      @id @default(autoincrement())
-  id_compra           Int      @db.Integer
-  id_bodega           Int      @db.Integer
-  id_item             Int      @db.Integer
-  cantidad            Int      @default(0)
-  costo_unitario      Decimal  @db.Decimal(10,2)
-  subtotal            Decimal  @db.Decimal(10,2)
+model Detalle_Compra {
+  id_detalle_compra Int     @id @default(autoincrement())
+  id_compra         Int     @db.Integer
+  id_bodega         Int     @db.Integer
+  id_item           Int     @db.Integer
+  cantidad          Int     @default(0)
+  costo_unitario    Decimal @db.Decimal(10, 2)
+  subtotal          Decimal @db.Decimal(10, 2)
 
-  compra              Compra  @relation(fields: [id_compra], references: [id_compra])
-  item                Item  @relation(fields: [id_item], references: [id_item])
-  bodega              Bodega  @relation(fields: [id_bodega], references: [id_bodega])
+  compra Compra @relation(fields: [id_compra], references: [id_compra])
+  item   Item   @relation(fields: [id_item], references: [id_item])
+  bodega Bodega @relation(fields: [id_bodega], references: [id_bodega])
+}
+
+//Modulo de reportes
+model Gasto_operativo {
+  id_gasto_operativo  Int                  @id @default(autoincrement())
+  id_empresa          Int                  @db.Integer
+  id_usuario          Int                  @db.Integer
+  id_periodo_contable Int                  @db.Integer
+  descripcion         String               @db.VarChar
+  total               Decimal              @db.Decimal(10, 2)
+  tipo_gasto          Tipo_gasto_operativo
+  fecha_gasto         DateTime             @db.Timestamptz(6)
+  fecha_registro      DateTime             @default(now()) @db.Timestamptz(6)
+
+  empresa          Empresa           @relation(fields: [id_empresa], references: [id_empresa])
+  usuario          Usuario           @relation(fields: [id_usuario], references: [id_usuario])
+  periodo_contable Periodo_Contable  @relation(fields: [id_periodo_contable], references: [id_periodo_contable])
+  movimientos_caja Movimiento_caja[]
+}
+
+enum Tipo_gasto_operativo {
+  Servicios
+  Transporte
+  Mantenimiento
+  Limpieza
+  Arriendo
+  Otros
+}
+
+enum Estado_periodo_contable {
+  Abierto
+  Cerrado
+}
+
+model Periodo_Contable {
+  id_periodo_contable Int                     @id @default(autoincrement())
+  id_empresa          Int                     @db.Integer
+  fecha_inicio        DateTime                @db.Timestamptz(6)
+  fecha_fin           DateTime?               @db.Timestamptz(6)
+  estado              Estado_periodo_contable @default(Abierto)
+
+  total_ingresos Decimal @db.Decimal(10, 2)
+  total_egresos  Decimal @db.Decimal(10, 2)
+  utilidad       Decimal @db.Decimal(10, 2)
+
+  empresa           Empresa           @relation(fields: [id_empresa], references: [id_empresa])
+  turno_caja        Turno_caja[]
+  ventas            Venta[]
+  compras           Compra[]
+  gastos_operativos Gasto_operativo[]
+  cierres           Cierre_Periodo[]
+}
+
+model Cierre_Periodo {
+  id_cierre_periodo   Int      @id @default(autoincrement())
+  id_periodo_contable Int      @db.Integer
+  id_usuario          Int      @db.Integer
+  fecha_cierre        DateTime @db.Timestamptz(6)
+  total_ingresos      Decimal  @db.Decimal(10, 2)
+  total_egresos       Decimal  @db.Decimal(10, 2)
+  utilidad            Decimal  @db.Decimal(10, 2)
+  observacion         String?  @db.VarChar
+
+  periodo_contable Periodo_Contable @relation(fields: [id_periodo_contable], references: [id_periodo_contable])
+  usuario          Usuario          @relation(fields: [id_usuario], references: [id_usuario])
 }
