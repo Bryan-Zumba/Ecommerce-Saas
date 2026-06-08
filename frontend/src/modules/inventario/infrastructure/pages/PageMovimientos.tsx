@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { mockMovimientos, mockBodegas } from '../data/mockData';
+import { mockMovimientos } from '../data/mockData';
 import { TipoMovimiento } from '../../domain/InventarioTypes';
 
 interface PageMovimientosProps {
@@ -8,7 +8,6 @@ interface PageMovimientosProps {
 
 export const PageMovimientos: React.FC<PageMovimientosProps> = ({ isSubcomponent = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBodega, setSelectedBodega] = useState<number | 'ALL'>('ALL');
   const [selectedTipo, setSelectedTipo] = useState<TipoMovimiento | 'ALL'>('ALL');
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
@@ -16,7 +15,6 @@ export const PageMovimientos: React.FC<PageMovimientosProps> = ({ isSubcomponent
   const filteredMovimientos = useMemo(() => {
     return mockMovimientos.filter((mov) => {
       const matchesSearch = mov.producto_nombre.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesBodega = selectedBodega === 'ALL' || mov.id_bodega === selectedBodega;
       const matchesTipo = selectedTipo === 'ALL' || mov.tipo === selectedTipo;
       
       let matchesFecha = true;
@@ -31,9 +29,9 @@ export const PageMovimientos: React.FC<PageMovimientosProps> = ({ isSubcomponent
         matchesFecha = matchesFecha && movDate < end;
       }
 
-      return matchesSearch && matchesBodega && matchesTipo && matchesFecha;
+      return matchesSearch && matchesTipo && matchesFecha;
     });
-  }, [searchTerm, selectedBodega, selectedTipo, fechaInicio, fechaFin]);
+  }, [searchTerm, selectedTipo, fechaInicio, fechaFin]);
 
   const formatDate = (isoString: string) => {
     return new Intl.DateTimeFormat('es-EC', {
@@ -66,20 +64,6 @@ export const PageMovimientos: React.FC<PageMovimientosProps> = ({ isSubcomponent
           />
         </div>
         
-        <div className="flex-1 min-w-[150px]">
-          <label className="block text-xs font-medium text-gray-700 mb-1">Bodega</label>
-          <select
-            className="block w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm cursor-pointer"
-            value={selectedBodega}
-            onChange={(e) => setSelectedBodega(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))}
-          >
-            <option value="ALL">Todas</option>
-            {mockBodegas.map(b => (
-              <option key={b.id_bodega} value={b.id_bodega}>{b.nombre}</option>
-            ))}
-          </select>
-        </div>
-
         <div className="flex-1 min-w-[150px]">
           <label className="block text-xs font-medium text-gray-700 mb-1">Tipo de Movimiento</label>
           <select

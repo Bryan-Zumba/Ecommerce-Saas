@@ -82,9 +82,6 @@ function VentaExitosa() {
               <div key={item.id} className="flex justify-between items-start text-sm">
                 <div className="text-left font-medium text-gray-700 leading-tight">
                   <p>{item.nombre}</p>
-                  {item.bodegaSeleccionada && (
-                    <p className="text-[10px] text-emerald-600 font-bold">🏢 {item.bodegaSeleccionada}</p>
-                  )}
                   <p className="text-[11px] text-gray-400">{item.quantity} x ${item.precio.toFixed(2)}</p>
                 </div>
                 <span className="font-bold text-gray-900">${(item.precio * item.quantity).toFixed(2)}</span>

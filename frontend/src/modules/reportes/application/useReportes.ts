@@ -293,7 +293,7 @@ export const useReportes = () => {
 
     const balance = obtenerBalanceConsolidado();
     
-    // 1. Crear foto del cierre con distribución por bodegas
+    // 1. Crear foto del cierre con el stock final de la bodega
     const nuevoCierre: CierrePeriodo = {
       id: `C-${Date.now()}`,
       fechaCierre: new Date().toLocaleDateString('es-ES'),
@@ -310,10 +310,6 @@ export const useReportes = () => {
         stockFinal: item.percha,
         usados: item.usados,
         perdidaMonto: item.perdidaMonto,
-        distribucionBodegas: [
-          { bodega: 'Bodega Central (Bar)', cantidad: Math.ceil(item.percha * 0.7) },
-          { bodega: 'Bodega de Almacén', cantidad: Math.floor(item.percha * 0.3) }
-        ]
       }))
     };
 

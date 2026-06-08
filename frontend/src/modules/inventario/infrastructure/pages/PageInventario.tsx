@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { mockInventario, mockBodegas } from '../data/mockData';
+import { mockInventario } from '../data/mockData';
 
 interface PageInventarioProps {
   isSubcomponent?: boolean;
@@ -7,15 +7,13 @@ interface PageInventarioProps {
 
 export const PageInventario: React.FC<PageInventarioProps> = ({ isSubcomponent = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBodega, setSelectedBodega] = useState<number | 'ALL'>('ALL');
 
   const filteredInventario = useMemo(() => {
     return mockInventario.filter((item) => {
       const matchesSearch = item.producto_nombre.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesBodega = selectedBodega === 'ALL' || item.id_bodega === selectedBodega;
-      return matchesSearch && matchesBodega;
+      return matchesSearch;
     });
-  }, [searchTerm, selectedBodega]);
+  }, [searchTerm]);
 
   return (
     <div className={isSubcomponent ? "" : "p-8 max-w-7xl mx-auto"}>
@@ -23,7 +21,7 @@ export const PageInventario: React.FC<PageInventarioProps> = ({ isSubcomponent =
         {!isSubcomponent ? (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Inventario (Existencias)</h1>
-            <p className="text-gray-500 mt-1">Consulta el stock de productos por bodega.</p>
+            <p className="text-gray-500 mt-1">Consulta el stock de productos de la bodega de la empresa.</p>
           </div>
         ) : (
           <div className="hidden md:block"></div>
@@ -44,17 +42,6 @@ export const PageInventario: React.FC<PageInventarioProps> = ({ isSubcomponent =
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
-          <select
-            className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border shadow-sm bg-white cursor-pointer"
-            value={selectedBodega}
-            onChange={(e) => setSelectedBodega(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))}
-          >
-            <option value="ALL">Todas las Bodegas</option>
-            {mockBodegas.map(b => (
-              <option key={b.id_bodega} value={b.id_bodega}>{b.nombre}</option>
-            ))}
-          </select>
         </div>
       </div>
 

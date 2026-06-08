@@ -218,9 +218,6 @@ function Caja() {
                     </div>
                     <div className="flex-1 text-left">
                       <h4 className="font-bold text-gray-800 text-sm leading-tight">{item.nombre}</h4>
-                      {item.bodegaSeleccionada && (
-                        <p className="text-[10px] text-emerald-600 font-bold mt-0.5">🏢 {item.bodegaSeleccionada}</p>
-                      )}
                       <p className="text-xs text-gray-400 mt-1">{item.quantity} x ${item.precio.toFixed(2)}</p>
                     </div>
                     <div className="font-bold text-gray-800 text-sm">${(item.precio * item.quantity).toFixed(2)}</div>

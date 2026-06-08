@@ -28,7 +28,7 @@ export const PageMonitoreoInventario: React.FC = () => {
               }
             `}
           >
-            Existencias por Bodega
+            Existencias en Bodega
           </button>
 
           <button

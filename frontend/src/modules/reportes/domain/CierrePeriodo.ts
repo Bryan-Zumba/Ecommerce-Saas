@@ -14,9 +14,5 @@ export interface CierrePeriodo {
     stockFinal: number;
     usados: number;
     perdidaMonto: number;
-    distribucionBodegas?: {
-      bodega: string;
-      cantidad: number;
-    }[];
   }[];
 }

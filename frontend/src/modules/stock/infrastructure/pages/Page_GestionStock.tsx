@@ -1,13 +1,15 @@
 import React, { useState, useMemo, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LocalstorageBodegaRepository } from '@/modules/bodegas/infrastructure/repositories/LocalstorageBodegaRepository';
-import { useBodegas } from '@/modules/bodegas/application/useBodegas';
+import { useBodega } from '@/modules/bodegas/application/useBodega';
 import FormularioFactura, { DatosFacturaType } from '@/modules/stock/infrastructure/components/FormularioFactura';
 import MatrizProductos, { ProductoIngreso } from '@/modules/stock/infrastructure/components/MatrizProductos';
 import { enviarSolicitudStock } from '@/modules/stock/infrastructure/repositories/servicioStock';
 import { servicioHistorial, Operacion } from '@/modules/ventas/infrastructure/repositories/servicioHistorial';
 import ModalDetalleSolicitudStock from '@/modules/stock/infrastructure/components/ModalDetalleSolicitudStock';
 import { sincronizarInventarioDesdeHistorial } from '@/modules/items/application/inventarioItems';
+
+const ID_EMPRESA = 1;
 
 function Page_GestionStock() {
   const navigate = useNavigate();
@@ -71,7 +73,7 @@ function Page_GestionStock() {
 
   // ================= ESTADOS PARA EL FORMULARIO =================
   const repositoryBodega = useMemo(() => new LocalstorageBodegaRepository(), []);
-  const { bodegas, cargando: cargandoBodegas } = useBodegas(repositoryBodega);
+  const { bodega, cargando: cargandoBodegas, cargarBodega } = useBodega(repositoryBodega);
   const [cargandoForm, setCargandoForm] = useState(false);
   const [exito, setExito] = useState<null | { ordenIngreso: string }>(null);
   const [bodegaSeleccionada, setBodegaSeleccionada] = useState<number | null>(null);
@@ -85,11 +87,21 @@ function Page_GestionStock() {
 
   const [productos, setProductos] = useState<ProductoIngreso[]>([]);
 
+  useEffect(() => {
+    cargarBodega(ID_EMPRESA);
+  }, [cargarBodega]);
+
+  useEffect(() => {
+    if (bodega) {
+      setBodegaSeleccionada(bodega.id_bodega);
+    }
+  }, [bodega]);
+
   const resetFormulario = () => {
     setExito(null);
     setDatosFactura({ codigo: '', fecha: '', total: '', imagenAdjunta: null });
     setProductos([]);
-    setBodegaSeleccionada(null);
+    setBodegaSeleccionada(bodega?.id_bodega ?? null);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -281,7 +293,7 @@ function Page_GestionStock() {
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Seleccionar Bodega de Destino</label>
                 {cargandoBodegas ? (
-                  <p className="text-gray-500 text-sm">Cargando bodegas…</p>
+                  <p className="text-gray-500 text-sm">Cargando bodega...</p>
                 ) : (
                   <select
                     value={bodegaSeleccionada ?? ''}
@@ -289,9 +301,11 @@ function Page_GestionStock() {
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50"
                   >
                     <option value="">-- Seleccione una bodega --</option>
-                    {bodegas.map(b => (
-                      <option key={b.id_bodega} value={b.id_bodega}>{b.nombre}</option>
-                    ))}
+                    {bodega && (
+                      <option key={bodega.id_bodega} value={bodega.id_bodega}>
+                        {bodega.nombre}
+                      </option>
+                    )}
                   </select>
                 )}
               </div>

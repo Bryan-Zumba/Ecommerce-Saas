@@ -23,7 +23,7 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       items: [
         { id: 'gestion-items', label: 'Gestión de items', icon: '🛠️', path: '/gestion-items' },
         { id: 'gestion-categorias', label: 'Gestión categorías', icon: '📂', path: '/gestion-categorias' },
-        { id: 'bodegas', label: 'Gestión de bodegas', icon: '🏬', path: '/bodegas' },
+        { id: 'bodega', label: 'Configuración de bodega', icon: '🏬', path: '/bodega' },
         { id: 'stock', label: 'Gestión de stock', icon: '📦', path: '/ingreso-stock' },
         { id: 'monitoreo-inventario', label: 'Monitoreo de inventario', icon: '📋', path: '/monitoreo-inventario' },
       ]

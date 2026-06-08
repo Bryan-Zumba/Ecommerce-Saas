@@ -112,15 +112,6 @@ export const HistorialAuditorias: React.FC<HistorialAuditoriasProps> = ({ cierre
                           <span className="text-gray-800">Stock: <strong>{item.stockFinal}</strong></span>
                         </div>
                       </div>
-                      {item.distribucionBodegas && (
-                        <div className="flex gap-4 text-[9px] text-gray-400 pl-2 mt-0.5 font-sans">
-                          {item.distribucionBodegas.map((b, bIdx) => (
-                            <span key={bIdx} className="flex items-center gap-0.5">
-                              🏢 {b.bodega}: <strong className="text-gray-600">{b.cantidad} u</strong>
-                            </span>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>

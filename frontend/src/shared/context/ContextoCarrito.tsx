@@ -10,7 +10,6 @@ export interface ItemCarritoType {
   categoria?: string;
   tipo_item?: 'Producto' | 'Servicio';
   quantity: number;
-  bodegaSeleccionada?: string;
 }
 
 interface ContextoCarritoType {
