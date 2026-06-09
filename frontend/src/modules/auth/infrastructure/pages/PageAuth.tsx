@@ -1,18 +1,46 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../../../supabase';
 
 export const PageAuth: React.FC = () => {
+
+  //Estados para inicio de sesion
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
+
+  //Estados para registro
   const [registerStep, setRegisterStep] = useState<'code' | 'form'>('code');
   const [accessCode, setAccessCode] = useState('');
   const [codeError, setCodeError] = useState('');
   const navigate = useNavigate();
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+ /* const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Simular login exitoso
     navigate('/');
-  };
+  };*/
+const handleLoginSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  console.log("EMAIL:", email);
+  console.log("PASSWORD:", password);
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  console.log("DATA:", data);
+  console.log("ERROR:", error);
+
+  if (error) {
+    return;
+  }
+
+  navigate("/");
+};
 
   const handleValidateCode = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +65,16 @@ export const PageAuth: React.FC = () => {
     navigate('/onboarding');
   };
 
+  const loginWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+
+    if (error) {
+      console.error('Error al iniciar sesión con Google:', error);
+    }
+  };
+
   return (
     <div className="bg-gray-50 flex justify-center items-center min-h-screen p-6 font-sans">
       <div
@@ -44,11 +82,10 @@ export const PageAuth: React.FC = () => {
       >
         {/* Sign Up Container */}
         <div
-          className={`absolute top-0 h-full transition-all duration-700 ease-in-out left-0 w-1/2 ${
-            isRightPanelActive
+          className={`absolute top-0 h-full transition-all duration-700 ease-in-out left-0 w-1/2 ${isRightPanelActive
               ? 'translate-x-[100%] opacity-100 z-50'
               : 'translate-x-0 opacity-0 z-10'
-          }`}
+            }`}
         >
           {registerStep === 'code' ? (
             <form
@@ -144,9 +181,8 @@ export const PageAuth: React.FC = () => {
 
         {/* Sign In Container */}
         <div
-          className={`absolute top-0 h-full transition-all duration-700 ease-in-out left-0 w-1/2 ${
-            isRightPanelActive ? 'translate-x-[100%] opacity-0 z-10' : 'translate-x-0 opacity-100 z-20'
-          }`}
+          className={`absolute top-0 h-full transition-all duration-700 ease-in-out left-0 w-1/2 ${isRightPanelActive ? 'translate-x-[100%] opacity-0 z-10' : 'translate-x-0 opacity-100 z-20'
+            }`}
         >
           <form
             onSubmit={handleLoginSubmit}
@@ -161,6 +197,8 @@ export const PageAuth: React.FC = () => {
                 type="text"
                 placeholder="Correo electrónico"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
               />
             </div>
@@ -170,6 +208,8 @@ export const PageAuth: React.FC = () => {
                 type="password"
                 placeholder="Contraseña"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
               />
             </div>
@@ -184,21 +224,31 @@ export const PageAuth: React.FC = () => {
               type="submit"
               className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
             >
-              INICIAR SESIÓN
+              Iniciar Sesión
+            </button>
+            <button
+              type="button"
+              onClick={loginWithGoogle}
+              className="mt-4 w-full bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-800 rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-gray-600/20 active:scale-[0.98]"
+            >
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                className="w-5 h-5 mr-4 inline-block"
+                alt="Google"
+              />
+              Continuar con Google
             </button>
           </form>
         </div>
 
         {/* Overlay Container */}
         <div
-          className={`absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-transform duration-700 ease-in-out z-[100] ${
-            isRightPanelActive ? '-translate-x-[100%]' : 'translate-x-0'
-          }`}
+          className={`absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-transform duration-700 ease-in-out z-[100] ${isRightPanelActive ? '-translate-x-[100%]' : 'translate-x-0'
+            }`}
         >
           <div
-            className={`bg-gradient-to-br from-emerald-600 to-emerald-800 text-white relative -left-[100%] h-full w-[200%] transition-transform duration-700 ease-in-out ${
-              isRightPanelActive ? 'translate-x-[50%]' : 'translate-x-0'
-            }`}
+            className={`bg-gradient-to-br from-emerald-600 to-emerald-800 text-white relative -left-[100%] h-full w-[200%] transition-transform duration-700 ease-in-out ${isRightPanelActive ? 'translate-x-[50%]' : 'translate-x-0'
+              }`}
           >
             {/* Overlay Left */}
             <div
