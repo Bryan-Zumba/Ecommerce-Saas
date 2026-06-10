@@ -1,5 +1,6 @@
+import { supabase } from '@/supabase';
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -144,11 +145,15 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                 [Probar primer acceso]
               </a>
             </div>
-            <a href="/auth">
-              <button className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+
+              <button 
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate('/auth');
+                }}
+              className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
                 ↪️
               </button>
-            </a>
           </div>
         </div>
       </aside>

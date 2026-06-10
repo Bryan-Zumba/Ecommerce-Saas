@@ -136,6 +136,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                 <i className="fas fa-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input
                   type="text"
+                  value={""}
                   placeholder="Nombre de tu Negocio / Empresa"
                   required
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
@@ -145,6 +146,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                 <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input
                   type="email"
+                  value={""}
                   placeholder="Correo electrónico"
                   required
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
@@ -154,6 +156,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                 <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input
                   type="password"
+                  value={""}
                   placeholder="Contraseña segura"
                   required
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
