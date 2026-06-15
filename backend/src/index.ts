@@ -4,7 +4,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import routerCliente from './modules/clientes/infrastructure/RoutesCliente';
-
+import routerAuth from './modules/auth/infrastructure/routes/RouteAuth';
+import routerEmpresa from './modules/empresa/infrastructure/routes/RoutesEmpresa';
+import routerRol from './modules/rol/infrastructure/routes/RoutesRol';
 dotenv.config();
 
 const app = express();
@@ -20,7 +22,6 @@ app.get('/', (req, res) => {
   res.json({
     message: 'Backend Ecommerce API funcionando',
     health: '/health',
-    clientes: '/api/clientes',
   });
 });
 
@@ -30,7 +31,10 @@ app.get('/health', (req, res) => {
 });
 
 //Rutas de aplicacion
-app.use('/api',routerCliente);
+app.use('/api/auth', routerAuth);
+app.use('/api/empresa', routerEmpresa);
+app.use('/api/cliente', routerCliente);
+app.use('/api/rol', routerRol);
 
 // Inicio del servidor
 app.listen(PORT, () => {

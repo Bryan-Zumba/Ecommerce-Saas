@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { RepositoryPrismaCliente } from "./RepositoryPrismaCliente";
+import { RepositoryPrismaCliente } from "./PrismaRepositoryCliente";
 import { ServiceCliente } from "../application/ServicesCliente";
 import { ControllerCliente } from "./ControllersCliente";   
 

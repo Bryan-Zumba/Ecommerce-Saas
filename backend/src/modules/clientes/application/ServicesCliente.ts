@@ -1,5 +1,5 @@
 import { Cliente } from "../domain/Cliente";
-import { RepositoryCliente } from "../domain/RepositoryCliente";
+import { RepositoryCliente } from "../domain/IRepositoryCliente";
 
 export class ServiceCliente {
     private repository: RepositoryCliente;
@@ -13,7 +13,7 @@ export class ServiceCliente {
         return clientes;
     }
 
-     async crear(datosCliente: Omit<Cliente, "id" | "created_at">): Promise<Cliente> {
+    async crear(datosCliente: Omit<Cliente, "id" | "created_at">): Promise<Cliente> {
         const nuevoCliente = await this.repository.crear(datosCliente);
         return nuevoCliente;
     }

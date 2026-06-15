@@ -24,17 +24,18 @@ model Acceso_Autorizado {
 
 model Rol {
   id_rol         Int      @id @default(autoincrement())
-  nombre         String   @db.VarChar
+  nombre         String   @unique @db.VarChar
   descripcion    String   @db.VarChar
   estado         Boolean  @default(true)
   fecha_creacion DateTime @default(now()) @db.Timestamptz(6)
 
-  rol_usuario Rol_usuario[]
+  usuarios Usuario[]
 }
 
 model Usuario {
   id_usuario           Int      @id @default(autoincrement())
   id_empresa           Int      @db.Integer
+  id_rol               Int      @db.Integer
   nombre               String   @db.VarChar
   apellido             String   @db.VarChar
   telefono             String   @db.VarChar
@@ -46,24 +47,13 @@ model Usuario {
   fecha_creacion       DateTime @default(now()) @db.Timestamptz(6)
 
   empresa           Empresa           @relation(fields: [id_empresa], references: [id_empresa])
-  rol_usuario       Rol_usuario[]
+  rol               Rol               @relation(fields: [id_rol], references: [id_rol])
   sesiones          Sesion[]
   turno_caja        Turno_caja[]
   ventas            Venta[]
   compras           Compra[]
   gastos_operativos Gasto_operativo[]
   cierre_periodo    Cierre_Periodo[]
-}
-
-model Rol_usuario {
-  id_rol_usuario Int @id @default(autoincrement())
-  id_usuario     Int @db.Integer
-  id_rol         Int @db.Integer
-
-  rol     Rol     @relation(fields: [id_rol], references: [id_rol])
-  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario])
-
-  @@unique([id_usuario, id_rol])
 }
 
 model Sesion {
@@ -87,12 +77,12 @@ enum Estado_empresa {
 model Empresa {
   id_empresa     Int            @id @default(autoincrement())
   nombre         String         @db.VarChar
-  descripcion    String         @db.VarChar
-  ruc            String         @unique @db.VarChar
-  direccion      String         @db.VarChar
-  telefono       String         @db.VarChar
-  email          String         @db.VarChar
-  logo_url       String         @db.VarChar
+  descripcion    String?        @db.VarChar
+  ruc            String?        @db.VarChar
+  direccion      String?        @db.VarChar
+  telefono       String?        @db.VarChar
+  email          String?        @db.VarChar
+  logo_url       String?        @db.VarChar
   estado_empresa Estado_empresa @default(Activo)
   fecha_creacion DateTime       @default(now()) @db.Timestamptz(6)
 
