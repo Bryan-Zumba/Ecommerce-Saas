@@ -14,65 +14,49 @@ export const PageAuth: React.FC = () => {
   //Estados para registro
   const [registerStep, setRegisterStep] = useState<'code' | 'form'>('code');
   const [accessCode, setAccessCode] = useState('');
+  const [nameEmpresa, setNameEmpresa] = useState('');
+  const [emailRegister , setEmailRegister] = useState('');
   const [codeError, setCodeError] = useState('');
   const navigate = useNavigate();
 
- /* const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginEvent = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simular login exitoso
-    navigate('/');
-  };*/
-// const handleLoginSubmit = async (e: React.FormEvent) => {
-//   e.preventDefault();
-
-//   console.log("EMAIL:", email);
-//   console.log("PASSWORD:", password);
-
-//   const { data, error } = await supabase.auth.signInWithPassword({
-//     email,
-//     password,
-//   });
-
-//   console.log("DATA:", data);
-//   console.log("ERROR:", error);
-
-//   if (error) {
-//     return;
-//   }
-
-//   navigate("/");
-// };
-
-const handleLoginEvent = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const data = await AuthService.login(email, password);
-    localStorage.setItem('token', data.data.token);
-    navigate('/');
-  } catch (error:any) {
-    setLoginError(error.message)
+    try {
+      const data = await AuthService.login(email, password);
+      localStorage.setItem('token', data.data.token);
+      navigate('/');
+    } catch (error:any) {
+      setLoginError(error.message)
+    }
   }
-}
-  const handleValidateCode = (e: React.FormEvent) => {
+
+  const handleValidateCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!accessCode.trim()) {
       setCodeError('El código no puede estar vacío');
       return;
     }
-    // Simular validación: cualquier código válido de ejemplo, o fallar si dice "invalido"
-    if (accessCode.toLowerCase() === 'invalido') {
-      setCodeError('Código de acceso inválido o ya utilizado');
-    } else if (accessCode.length < 4) {
-      setCodeError('El código de acceso debe tener al menos 4 caracteres');
-    } else {
-      setCodeError('');
-      setRegisterStep('form');
+    try {
+      const res = await AuthService.validarCodigoAcc(accessCode);
+      console.log(res);
+      if (res){
+        setCodeError('');
+        setRegisterStep('form');
+      }
+    } catch (error: any) {
+      setCodeError(error.message);
     }
   };
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterEvent = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simular registro exitoso — redirigir al onboarding de empresa
+    if (!nameEmpresa.trim()){
+      setCodeError('Debe registrar el nombre de la empresa')
+    }
+    if (!emailRegister.trim()){
+      setCodeError('Debe ingresar un correo electrónico para crear el usuario adminsitrador, dueño de la empresa')
+    }
+    //Redirigir al onboarding de empresa
     navigate('/onboarding');
   };
 
@@ -137,7 +121,7 @@ const handleLoginEvent = async (e: React.FormEvent) => {
             </form>
           ) : (
             <form
-              onSubmit={handleRegisterSubmit}
+              onSubmit={handleRegisterEvent}
               className="bg-white flex items-center justify-center flex-col px-12 h-full text-center"
             >
               <h1 className="font-black text-gray-800 mb-2 text-3xl">Crear Empresa</h1>
@@ -147,7 +131,7 @@ const handleLoginEvent = async (e: React.FormEvent) => {
                 <i className="fas fa-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input
                   type="text"
-                  value={""}
+                  value={nameEmpresa}
                   placeholder="Nombre de tu Negocio / Empresa"
                   required
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
@@ -157,7 +141,7 @@ const handleLoginEvent = async (e: React.FormEvent) => {
                 <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input
                   type="email"
-                  value={""}
+                  value={emailRegister}
                   placeholder="Correo electrónico"
                   required
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"

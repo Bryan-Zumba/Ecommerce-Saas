@@ -36,7 +36,7 @@ export const apiClient = {
         });
         if (!response.ok) {
             const errorData = await response.json().catch(() => null);
-            throw new Error(errorData?.message || `Error en la petición GET: ${response.status}`);
+            throw new Error(errorData?.message || `Error en la petición POST: ${response.status}`);
         }
         return response.json();
     },
@@ -54,7 +54,7 @@ export const apiClient = {
         });
         if (!response.ok) {
             const errorData = await response.json().catch(() => null);
-            throw new Error(errorData?.message || `Error en la petición GET: ${response.status}`);
+            throw new Error(errorData?.message || `Error en la petición PUT: ${response.status}`);
         }
         return response.json();
     },
@@ -71,7 +71,7 @@ export const apiClient = {
         });
         if (!response.ok) {
             const errorData = await response.json().catch(() => null);
-            throw new Error(errorData?.message || `Error en la petición GET: ${response.status}`);
+            throw new Error(errorData?.message || `Error en la petición DELETE: ${response.status}`);
         }
         return response.json();
     },

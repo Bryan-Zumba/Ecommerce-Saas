@@ -12,5 +12,10 @@ export const AuthService = {
     me: async()=>{
         const response = apiClient.get<LoginResponse>('/api/auth/me');
         return response;
+    },
+
+    //METODO VALIDACION CODIGO ACCESO
+    validarCodigoAcc: async(codigo: string): Promise<LoginResponse>=>{
+        return apiClient.post<LoginResponse>('/api/auth/validate-access-code',{codigo});
     }
 }
