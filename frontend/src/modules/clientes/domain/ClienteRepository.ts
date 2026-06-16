@@ -1,7 +1,7 @@
 import { Cliente } from './Cliente';
 
 export interface ClienteRepository {
-  obtenerTodos(): Promise<Cliente[]>;
-  crear(cliente: Omit<Cliente, 'id' | 'created_at'>): Promise<Cliente>;
+  obtenerTodos(id_empresa:number): Promise<Cliente[]>;
+  crear(cliente: Omit<Cliente, 'id_cliente' | 'created_at'>): Promise<Cliente>;
 
 }

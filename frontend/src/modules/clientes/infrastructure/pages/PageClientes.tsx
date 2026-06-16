@@ -36,7 +36,7 @@ export const PageClientes: React.FC = () => {
       console.log('Editar cliente:', datos);
     } else {
       console.log('Agregar cliente:', datos);
-      const respuesta = await agregarCliente({
+      /*const respuesta = await agregarCliente({
         cedula: datos.cedula,
         nombres: datos.nombres,
         apellidos: datos.apellidos,
@@ -45,7 +45,7 @@ export const PageClientes: React.FC = () => {
       })
       if (respuesta.success) {
         refrescar();
-      }
+      }*/
     }
     cerrarFormulario();
   };

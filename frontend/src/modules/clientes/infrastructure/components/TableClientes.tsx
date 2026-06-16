@@ -14,11 +14,13 @@ interface TableClientesProps {
 export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando, refrescar, onSelect, onEdit, onDelete }) => {
   const mostrarAcciones = !!onSelect || !!onEdit || !!onDelete;
   const [consultaBusqueda, setConsultaBusqueda] = useState('');
+  const safeClientes = Array.isArray(clientes) ? clientes : [];
 
   const clientesFiltrados = useMemo(()=>{
-    if(!consultaBusqueda.trim()) return clientes;
+
+    if(!consultaBusqueda.trim()) return safeClientes;
     const query = consultaBusqueda.toLowerCase();
-    return clientes.filter(
+    return safeClientes.filter(
       (cliente) => 
       cliente.nombres.toLowerCase().includes(query) ||
       cliente.apellidos.toLowerCase().includes(query) ||
@@ -26,7 +28,7 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
       (cliente.email && cliente.email.toLowerCase().includes(query)) ||
       (cliente.telefono && cliente.telefono.toLowerCase().includes(query))
       );
-  }, [clientes, consultaBusqueda]);
+  }, [safeClientes, consultaBusqueda]);
   
   if (cargando) {
     return (
@@ -80,7 +82,7 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
             </tr>
           ) : 
           clientesFiltrados.map((cliente) => (
-            <tr key={cliente.id} className="hover:bg-gray-50 transition-colors">
+            <tr key={cliente.id_cliente} className="hover:bg-gray-50 transition-colors">
               <td className="px-6 py-4 font-medium text-gray-900">{cliente.cedula}</td>
               <td className="px-6 py-4">{cliente.nombres || 'No registrado'}</td>
               <td className="px-6 py-4">{cliente.apellidos || 'No registrado'}</td>

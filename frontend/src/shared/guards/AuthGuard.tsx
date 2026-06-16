@@ -1,25 +1,31 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { supabase } from "@/supabase";
-import { Session } from "@supabase/supabase-js";
+import { AuthService } from "@/core/AuthService";
 
 export const AuthGuard = ({ children }: any) => {
-    const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isAuth, setIsAuth] = useState(false);
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data }) => {
-            setSession(data.session);
-            setLoading(false)
-        })
+        const validate= async()=>{
+            try {
+                const data = await AuthService.me();
+                setIsAuth(true)
+            } catch (error) {
+                setIsAuth(false)
+            } finally{
+                setLoading(false)
+            }
+        }
+        validate()
     },[]);
 
     if(loading){
         return<div>Cargando...</div>
     }
 
-    if(!session){
-        return <Navigate to="/auth"/>
+    if(!isAuth){
+        return <Navigate to="/auth" replace/>
     }
     return children;
 }

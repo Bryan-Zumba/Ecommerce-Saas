@@ -1,5 +1,6 @@
 export interface Cliente {
-  id: number;
+  id_cliente: number;
+  id_empresa:number;
   cedula: string;
   nombres: string;
   apellidos: string;

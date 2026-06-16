@@ -11,7 +11,7 @@ export const useClientes = (repository: ClienteRepository) => {
     setCargando(true);
     setError(null);
     try {
-      const datos = await repository.obtenerTodos();
+      const datos = await repository.obtenerTodos(1);
       setClientes(datos);
     } catch (err: any) {
       setError(err.message || 'Error al obtener los clientes');

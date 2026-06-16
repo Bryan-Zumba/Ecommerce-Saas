@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthService } from '../../../../core/AuthService';
 import { supabase } from '../../../../supabase';
 
 export const PageAuth: React.FC = () => {
@@ -21,27 +22,37 @@ export const PageAuth: React.FC = () => {
     // Simular login exitoso
     navigate('/');
   };*/
-const handleLoginSubmit = async (e: React.FormEvent) => {
+// const handleLoginSubmit = async (e: React.FormEvent) => {
+//   e.preventDefault();
+
+//   console.log("EMAIL:", email);
+//   console.log("PASSWORD:", password);
+
+//   const { data, error } = await supabase.auth.signInWithPassword({
+//     email,
+//     password,
+//   });
+
+//   console.log("DATA:", data);
+//   console.log("ERROR:", error);
+
+//   if (error) {
+//     return;
+//   }
+
+//   navigate("/");
+// };
+
+const handleLoginEvent = async (e: React.FormEvent) => {
   e.preventDefault();
-
-  console.log("EMAIL:", email);
-  console.log("PASSWORD:", password);
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  console.log("DATA:", data);
-  console.log("ERROR:", error);
-
-  if (error) {
-    return;
+  try {
+    const data = await AuthService.login(email, password);
+    localStorage.setItem('token', data.data.token);
+    navigate('/');
+  } catch (error:any) {
+    setLoginError(error.message)
   }
-
-  navigate("/");
-};
-
+}
   const handleValidateCode = (e: React.FormEvent) => {
     e.preventDefault();
     if (!accessCode.trim()) {
@@ -188,7 +199,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
             }`}
         >
           <form
-            onSubmit={handleLoginSubmit}
+            onSubmit={handleLoginEvent}
             className="bg-white flex items-center justify-center flex-col px-12 h-full text-center"
           >
             <h1 className="font-black text-gray-800 mb-2 text-3xl">Bienvenido</h1>
