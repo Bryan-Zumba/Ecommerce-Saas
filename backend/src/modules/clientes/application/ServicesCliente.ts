@@ -8,13 +8,13 @@ export class ServiceCliente {
         this.repository = repository;
     }
 
-    async obtenerTodos(): Promise<Cliente[]> {
-        const clientes = await this.repository.obtenerTodos();
+    async obtenerTodos(id_empresa:number): Promise<Cliente[]> {
+        const clientes = await this.repository.obtenerTodos(id_empresa);
         return clientes;
     }
 
-    async crear(datosCliente: Omit<Cliente, "id" | "created_at">): Promise<Cliente> {
-        const nuevoCliente = await this.repository.crear(datosCliente);
+    async crearCliente(datosCliente: any): Promise<Cliente> {
+        const nuevoCliente = await this.repository.crearCliente(datosCliente);
         return nuevoCliente;
     }
 }

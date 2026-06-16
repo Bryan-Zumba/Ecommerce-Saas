@@ -3,10 +3,12 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import routerCliente from './modules/clientes/infrastructure/RoutesCliente';
+import routerCliente from './modules/clientes/infrastructure/routes/RoutesCliente';
 import routerAuth from './modules/auth/infrastructure/routes/RouteAuth';
 import routerEmpresa from './modules/empresa/infrastructure/routes/RoutesEmpresa';
 import routerRol from './modules/rol/infrastructure/routes/RoutesRol';
+import routerUsuario from './modules/usuarios/infrastructure/routes/RoutesUsuario';
+
 dotenv.config();
 
 const app = express();
@@ -35,6 +37,7 @@ app.use('/api/auth', routerAuth);
 app.use('/api/empresa', routerEmpresa);
 app.use('/api/cliente', routerCliente);
 app.use('/api/rol', routerRol);
+app.use('/api/usuario', routerUsuario);
 
 // Inicio del servidor
 app.listen(PORT, () => {

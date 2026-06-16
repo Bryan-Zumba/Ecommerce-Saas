@@ -10,4 +10,22 @@ export class PrismaRepositoryUsuario implements IRepositoryUsuario{
         })
         return data;
     }
+
+    async obtenerUsuarioEmail(email: any) {
+        const data = await prisma.usuario.findUnique({
+            where: {
+                email: email
+            }
+        })
+        return data;
+    }
+
+    async obtenerUsuarioId(id_usuario: number) {
+        const data = await prisma.usuario.findUnique({
+            where: {
+                id_usuario: id_usuario
+            }
+        })
+        return data;
+    }
 }

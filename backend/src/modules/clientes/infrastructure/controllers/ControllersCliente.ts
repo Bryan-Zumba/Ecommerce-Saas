@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ServiceCliente } from "../application/ServicesCliente";
+import { ServiceCliente } from "../../application/ServicesCliente";
 
 export class ControllerCliente{
     private service: ServiceCliente;
@@ -10,10 +10,11 @@ export class ControllerCliente{
 
     obtenerClientes=async (req: Request, res: Response)=>{
       try{
-            const clientes = await this.service.obtenerTodos();
-            return res.status(200).json(clientes);
+            const id_empresa= parseInt(req.params.id_empresa as string);
+            const clientes = await this.service.obtenerTodos(id_empresa);
+            return res.status(200).json({success: true,clientes});
       }catch(error){
-          return res.status(500).json({message:"Error al obtener los clientes"});
+          return res.status(500).json({success:false,message:"Error al obtener los clientes"});
       }
     };
     // 2. Método para crear un nuevo cliente
@@ -26,7 +27,7 @@ export class ControllerCliente{
                 return res.status(400).json({ message: "La cédula, nombres y apellidos son requeridos." });
             }
 
-            const nuevoCliente = await this.service.crear({
+            const nuevoCliente = await this.service.crearCliente({
                 cedula,
                 nombres,
                 apellidos,
