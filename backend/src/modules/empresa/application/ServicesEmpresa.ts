@@ -1,3 +1,4 @@
+import { prisma } from "@/core/database/prisma";
 import { IRepositoryEmpresa } from "../domain/IRepositoryEmpresa";
 
 export class ServicesEmpresa{
@@ -7,7 +8,7 @@ export class ServicesEmpresa{
         this.repository = repository;
     }
 
-    async crearEmpresa(datosEmpresa: any) {
+    async crearEmpresa(datosEmpresa: any, client = prisma) {
         if (!datosEmpresa.nombre?.trim()) {
             throw new Error("Nombre de la empresa es requerido");
         }

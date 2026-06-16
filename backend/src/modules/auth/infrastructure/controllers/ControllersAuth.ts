@@ -16,6 +16,9 @@ export class ControllersAuth {
             const result = await this.service.login(email, password);
             return res.status(200).json({ success: true, message: "Login exitoso", data: result });
         } catch (error: any) {
+            if(error.message==="Credenciales incorrectas"){
+                return res.status(401).json({ success: false, message: error.message });
+            }
             return res.status(400).json({ success: false, message: error.message });
         }
     }

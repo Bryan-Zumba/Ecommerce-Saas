@@ -11,17 +11,22 @@ export class ServicesAccessCode {
         if (!code?.trim()) {
             throw new Error('Codigo de acceso es requerido');
         }
+        if (code.length <= 8){
+            throw new Error('Codigo de acceso debe tener al menos 8 caracteres')
+        }
         const accessCode = await this.repository.findByCode(code);
         if (!accessCode) {
             throw new Error('Codigo de acceso no valido');
-        } else if (accessCode.usado === true) {
+        }
+        if (accessCode.usado === true) {
             throw new Error('Codigo de acceso ya usado');
-        } else if (accessCode.estado === false) {
+        }
+        if (accessCode.estado === false) {
             throw new Error('Codigo de acceso inactivo');
-        } else if (accessCode.intentos >= 3) {
+        }
+        if (accessCode.intentos >= 3) {
             throw new Error('Número de intentos superado');
         }
-
         return accessCode.id_acceso_autorizado
     }
 }

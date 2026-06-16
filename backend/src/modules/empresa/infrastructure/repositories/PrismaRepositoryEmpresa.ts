@@ -4,8 +4,9 @@ import { IRepositoryEmpresa } from "../../domain/IRepositoryEmpresa";
 const prisma = new PrismaClient();
 
 export class PrismaRepositoryEmpresa implements IRepositoryEmpresa {
-    async crearEmpresa(datosEmpresa:any) {
-        const data = await prisma.empresa.create({
+    async crearEmpresa(datosEmpresa:any, tx?:any) {
+        const client = tx ?? prisma;
+        const data = await client.empresa.create({
             data: datosEmpresa
         });
         return data;
