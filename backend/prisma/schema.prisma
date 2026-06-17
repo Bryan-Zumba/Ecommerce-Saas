@@ -294,8 +294,8 @@ model Bodega {
   id_bodega      Int      @id @default(autoincrement())
   id_empresa     Int      @db.Integer
   nombre         String   @db.VarChar
-  descripcion    String   @db.VarChar
-  ubicacion      String   @db.VarChar
+  descripcion    String?   @db.VarChar
+  ubicacion      String?   @db.VarChar
   estado         Boolean  @default(true)
   fecha_registro DateTime @default(now()) @db.Timestamptz(6)
 

@@ -8,6 +8,7 @@ import routerAuth from './modules/auth/infrastructure/routes/RouteAuth';
 import routerEmpresa from './modules/empresa/infrastructure/routes/RoutesEmpresa';
 import routerRol from './modules/rol/infrastructure/routes/RoutesRol';
 import routerUsuario from './modules/usuarios/infrastructure/routes/RoutesUsuario';
+import routerBodega from './modules/bodega/infrastructure/routes/RoutesBodega';
 
 dotenv.config();
 
@@ -35,9 +36,10 @@ app.get('/health', (req, res) => {
 //Rutas de aplicacion
 app.use('/api/auth', routerAuth);
 app.use('/api/empresa', routerEmpresa);
-app.use('/api/cliente', routerCliente);
 app.use('/api/rol', routerRol);
 app.use('/api/usuario', routerUsuario);
+app.use('/api/bodega',routerBodega)
+app.use('/api/cliente', routerCliente);
 
 // Inicio del servidor
 app.listen(PORT, () => {

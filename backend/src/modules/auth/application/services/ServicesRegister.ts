@@ -27,14 +27,14 @@ export class ServicesRegister{
             //Crear empresa
             const empresa = await this.serviceEmpresa.crearEmpresa(data.empresa,tx);
 
-            //Obtener Rol Adminsitrador para el creador de la empresa
-            const rolAdmin = await this.serviceRol.obtenerRolPorNombre('Administrador');
+            //Obtener ID de Rol Adminsitrador para asignarle al creador de la empresa
+            const idRolAdmin = await this.serviceRol.obtenerRolPorNombre('Administrador');
 
             //Crear usuario Administrador
             const usuarioCreador = await this.serviceUsuario.crearUsuario({
                 ...data.usuario,
                 id_empresa:empresa.id_empresa,
-                id_rol: rolAdmin.id_rol
+                id_rol: idRolAdmin.id_rol
             },tx);
             
             //Registrar que el codigo de acceso ya fue usado
