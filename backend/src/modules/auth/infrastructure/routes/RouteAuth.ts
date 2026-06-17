@@ -11,6 +11,8 @@ import { ServicesRol } from "../../../rol/application/ServicesRol";
 import { PrismaRepositoryRol } from "../../../rol/infrastructure/repositories/PrismaRepositoryRol";
 import { PrismaRepositoryEmpresa } from "../../../empresa/infrastructure/repositories/PrismaRepositoryEmpresa";
 import authMiddleware from "../middleware/AuthMiddleware";
+import { ServicesRegister } from "../../application/services/ServicesRegister";
+import { ControllerRegister } from "../controllers/ControllersRegister";
 
 const routerAuth = Router();
 
@@ -27,8 +29,14 @@ const serviceUsuario= new ServicesUsuarios(repositoryUsuario, serviceEmpresa, se
 const serviceAuth = new ServicesAuth(serviceUsuario);
 const controllerAuth = new ControllersAuth(serviceAuth, serviceUsuario);
 
+const serviceRegister = new ServicesRegister(serviceAccessCode,serviceEmpresa,serviceRol,serviceUsuario);
+const controllerRegister = new ControllerRegister(serviceRegister);
+
 routerAuth.post('/validate-access-code', controllerAccessCode.validarCodigo);
 routerAuth.post('/login', controllerAuth.login)
 routerAuth.get('/me', authMiddleware, controllerAuth.me)
+routerAuth.put('/incrementar-intento-acceso', controllerAccessCode.incrementarIntentoAcceso);
+routerAuth.put('/registrar-uso-codigo', controllerAccessCode.registrarUsoCodigo);
+routerAuth.post('/registrar-tienda', controllerRegister.registrarTienda);
 
 export default routerAuth;

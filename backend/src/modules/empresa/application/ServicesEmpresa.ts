@@ -1,27 +1,27 @@
-import { prisma } from "@/core/database/prisma";
+import { DBClient } from "@/core/database/DBClient";
 import { IRepositoryEmpresa } from "../domain/IRepositoryEmpresa";
 
-export class ServicesEmpresa{
+export class ServicesEmpresa {
     private repository: IRepositoryEmpresa;
 
     constructor(repository: IRepositoryEmpresa) {
         this.repository = repository;
     }
 
-    async crearEmpresa(datosEmpresa: any, client = prisma) {
+    async crearEmpresa(datosEmpresa: any, client?: DBClient) {
         if (!datosEmpresa.nombre?.trim()) {
             throw new Error("Nombre de la empresa es requerido");
         }
-        const data = await this.repository.crearEmpresa(datosEmpresa);
+        const data = await this.repository.crearEmpresa(datosEmpresa, client);
         return data;
     }
 
-    async obtenerEmpresaPorId(id_empresa: number) {
+    async obtenerEmpresaPorId(id_empresa: number, client?: DBClient) {
         if (!id_empresa || id_empresa <= 0) {
             throw new Error("El ID de la empresa es invalido");
         }
-        const data = await this.repository.obtenerEmpresaPorId(id_empresa);
-        if(!data){
+        const data = await this.repository.obtenerEmpresaPorId(id_empresa,client);
+        if (!data) {
             throw new Error("Empresa no encontrada");
         }
         return data;

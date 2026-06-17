@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../../core/database/prisma";
+import { DBClient } from "../../../../core/database/DBClient";
 import { IRepositoryAccessCode } from "../../domain/repositories/IRepositoryAccessCode";
-
-const prisma = new PrismaClient();
 
 export class PrismaRepositoryAccessCode implements IRepositoryAccessCode {
     async findByCode(code: string) {
@@ -22,5 +21,32 @@ export class PrismaRepositoryAccessCode implements IRepositoryAccessCode {
             estado: data.estado,
             fecha_creacion: data.fecha_creacion
         };
+    }
+
+    async incrementarContador(id_acceso: number) {
+        const data = await prisma.acceso_Autorizado.updateMany({
+            where: {
+                id_acceso_autorizado: id_acceso
+            },
+            data: {
+                intentos: {
+                    increment: 1
+                }
+            }
+        });
+        return data;
+    }
+
+    async registrarUsoCodigo(id_acceso: number, client: DBClient = prisma) {
+        const data = await client.acceso_Autorizado.updateMany({
+            where: {
+                id_acceso_autorizado: id_acceso
+            },
+            data: {
+                usado: true,
+                fecha_uso: new Date()
+            }
+        });
+        return data;
     }
 }

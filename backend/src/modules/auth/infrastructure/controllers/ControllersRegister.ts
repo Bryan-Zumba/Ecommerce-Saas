@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { ServicesRegister } from "../../application/services/ServicesRegister";
 
 export class ControllerRegister{
@@ -7,11 +8,12 @@ export class ControllerRegister{
         this.service=service;
     }
 
-    registrarEmpresa = async(req: Request, res: Response)=>{
+    registrarTienda = async(req: Request, res: Response)=>{
         try {
-            
-        } catch (error) {
-            
+            const data = await this.service.registrarTienda(req.body);
+            return res.status(201).json({ success: true, message: "Tienda registrada exitosamente", data });
+        } catch (error: any) {
+            return res.status(400).json({ success: false, message: error.message });
         }
     }
 }

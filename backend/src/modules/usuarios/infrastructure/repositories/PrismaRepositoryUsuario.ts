@@ -1,11 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../../core/database/prisma";
 import { IRepositoryUsuario } from "../../domain/IRepositoryUsuario";
-
-const prisma = new PrismaClient();
+import { DBClient } from "@/core/database/DBClient";
 
 export class PrismaRepositoryUsuario implements IRepositoryUsuario{
-    async crearUsuario(usuario: any) {
-        const data = await prisma.usuario.create({
+    async crearUsuario(usuario: any, client: DBClient = prisma) {
+        const data = await client.usuario.create({
             data: usuario
         })
         return data;

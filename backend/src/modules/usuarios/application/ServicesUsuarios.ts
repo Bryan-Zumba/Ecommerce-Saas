@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { DBClient } from "@/core/database/DBClient";
 import { IRepositoryUsuario } from "../domain/IRepositoryUsuario";
 import { ServicesEmpresa } from "../../empresa/application/ServicesEmpresa";
 import { ServicesRol } from "../../rol/application/ServicesRol";
@@ -7,24 +8,25 @@ export class ServicesUsuarios{
     private repository: IRepositoryUsuario;
     private serviceEmpresa: ServicesEmpresa;
     private serviceRol: ServicesRol;
+    
     constructor(repository: IRepositoryUsuario, serviceEmpresa: ServicesEmpresa, serviceRol: ServicesRol){
         this.repository = repository;
         this.serviceEmpresa = serviceEmpresa;
         this.serviceRol = serviceRol;
     }
 
-    async crearUsuario(usuario: any) {
+    async crearUsuario(usuario: any, client?: DBClient) {
         
         if(!usuario.id_empresa){
             throw new Error("El usuario debe pertenecer a una empresa");
         }
         
-        await this.serviceEmpresa.obtenerEmpresaPorId(usuario.id_empresa);
+        await this.serviceEmpresa.obtenerEmpresaPorId(usuario.id_empresa,client);
 
         if(!usuario.id_rol){
             throw new Error("El usuario debe tener un rol");
         }
-        await this.serviceRol.obtenerRolPorId(usuario.id_rol);
+        await this.serviceRol.obtenerRolPorId(usuario.id_rol,client);
 
         if(!usuario.nombre?.trim()){
             throw new Error("Nombre de usuario es requerido");
@@ -42,6 +44,12 @@ export class ServicesUsuarios{
         if(!emailRegex.test(usuario.email)){
             throw new Error("Correo electronico no valido");
         }
+
+        const emailExist = await this.obtenerUsuarioEmailSec(usuario.email);
+        if(emailExist){
+            throw new Error("Correo electronico ya existe");
+        }
+        
         if(!usuario.password_hash?.trim()){
             throw new Error("Password de usuario es requerido");
         }
@@ -52,7 +60,7 @@ export class ServicesUsuarios{
         const hash = await bcrypt.hash(usuario.password_hash, 10);
         usuario.password_hash = hash;
 
-        const data = await this.repository.crearUsuario(usuario);
+        const data = await this.repository.crearUsuario(usuario, client);
         return data;
     }
 

@@ -1,3 +1,4 @@
+import { DBClient } from "@/core/database/DBClient";
 import { IRepositoryAccessCode } from "../../domain/repositories/IRepositoryAccessCode";
 
 export class ServicesAccessCode {
@@ -11,7 +12,7 @@ export class ServicesAccessCode {
         if (!code?.trim()) {
             throw new Error('Codigo de acceso es requerido');
         }
-        if (code.length <= 8){
+        if (code.length < 8){
             throw new Error('Codigo de acceso debe tener al menos 8 caracteres')
         }
         const accessCode = await this.repository.findByCode(code);
@@ -28,5 +29,35 @@ export class ServicesAccessCode {
             throw new Error('Número de intentos superado');
         }
         return accessCode.id_acceso_autorizado
+    }
+
+    async incrementarIntentoAcceso(id_acceso: number) {
+        if (typeof id_acceso !== 'number' || isNaN(id_acceso)) {
+            throw new Error('El ID de acceso debe ser un numero');
+        }
+        if (id_acceso <= 0) {
+            throw new Error('El ID de acceso es invalido');
+        }
+        
+        const result = await this.repository.incrementarContador(id_acceso);
+        if (result.count === 0) {
+            throw new Error('Codigo de acceso no encontrado');
+        }
+        return result;
+    }
+
+    async registrarUsoCodigo(id_acceso: number, client?: DBClient) {
+        if (typeof id_acceso !== 'number' || isNaN(id_acceso)) {
+            throw new Error('El ID de acceso debe ser un numero');
+        }
+        if (id_acceso <= 0) {
+            throw new Error('El ID de acceso es invalido');
+        }
+        
+        const result = await this.repository.registrarUsoCodigo(id_acceso, client);
+        if (result.count === 0) {
+            throw new Error('Codigo de acceso no encontrado');
+        }
+        return result;
     }
 }

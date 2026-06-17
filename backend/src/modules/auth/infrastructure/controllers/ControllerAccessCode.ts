@@ -17,4 +17,24 @@ export class ControllerAccessCode {
             return res.status(400).json({ success: false, message: error.message });
         }
     }
+
+    incrementarIntentoAcceso = async (req: Request, res: Response) => {
+        try {
+            const { id_acceso_autorizado } = req.body;
+            await this.service.incrementarIntentoAcceso(Number(id_acceso_autorizado));
+            return res.status(200).json({ success: true, message: "Intento incrementado" });
+        } catch (error: any) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+    }
+
+    registrarUsoCodigo = async (req: Request, res: Response) => {
+        try {
+            const { id_acceso_autorizado } = req.body;
+            await this.service.registrarUsoCodigo(Number(id_acceso_autorizado));
+            return res.status(200).json({ success: true, message: "Codigo usado" });
+        } catch (error: any) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+    }
 }
