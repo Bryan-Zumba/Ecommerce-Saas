@@ -1,6 +1,5 @@
 import { DBClient } from "@/core/database/DBClient";
 import { IRepositoryBodega } from "../domain/IRepositoryBodega";
-import { IRepositoryEmpresa } from "@/modules/empresa/domain/IRepositoryEmpresa";
 import { ServicesEmpresa } from "@/modules/empresa/application/ServicesEmpresa";
 
 export class ServicesBodega{

@@ -4,16 +4,19 @@ import { ServicesAccessCode } from "./ServicesAccessCode";
 import { ServicesUsuarios } from "@/modules/usuarios/application/ServicesUsuarios";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../../../core/database/prisma";
+import { ServicesBodega } from "../../../bodega/application/ServicesBodega";
 
 export class ServicesRegister{
     private serviceAccessCode: ServicesAccessCode;
     private serviceEmpresa : ServicesEmpresa;
+    private serviceBodega: ServicesBodega;
     private serviceRol : ServicesRol;
     private serviceUsuario: ServicesUsuarios;
 
-    constructor(serviceAccessCode: ServicesAccessCode, serviceEmpresa: ServicesEmpresa, serviceRol: ServicesRol, serviceUsuario:ServicesUsuarios){
+    constructor(serviceAccessCode: ServicesAccessCode, serviceEmpresa: ServicesEmpresa, serviceBodega: ServicesBodega, serviceRol: ServicesRol, serviceUsuario:ServicesUsuarios){
         this.serviceAccessCode=serviceAccessCode;
         this.serviceEmpresa= serviceEmpresa;
+        this.serviceBodega= serviceBodega;
         this.serviceRol= serviceRol;
         this.serviceUsuario=serviceUsuario;
     }
@@ -26,6 +29,9 @@ export class ServicesRegister{
 
             //Crear empresa
             const empresa = await this.serviceEmpresa.crearEmpresa(data.empresa,tx);
+
+            //Crear bodega
+            const bodega = await this.serviceBodega.crearBodega({ ...data.bodega, id_empresa: empresa.id_empresa }, tx);
 
             //Obtener ID de Rol Adminsitrador para asignarle al creador de la empresa
             const idRolAdmin = await this.serviceRol.obtenerRolPorNombre('Administrador');
