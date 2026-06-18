@@ -1,9 +1,10 @@
 import { prisma } from "../../../../core/database/prisma";
 import { DBClient } from "../../../../core/database/DBClient";
 import { IRepositoryEmpresa } from "../../domain/IRepositoryEmpresa";
+import { EmpresaInputDTO } from "../../domain/EmpresaInputDTO";
 
 export class PrismaRepositoryEmpresa implements IRepositoryEmpresa {
-    async crearEmpresa(datosEmpresa: any, client: DBClient = prisma) {
+    async crearEmpresa(datosEmpresa: EmpresaInputDTO, client: DBClient = prisma) {
         const data = await client.empresa.create({
             data: datosEmpresa
         });

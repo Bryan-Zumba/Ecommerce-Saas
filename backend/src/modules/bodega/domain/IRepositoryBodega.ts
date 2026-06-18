@@ -1,6 +1,7 @@
-import { DBClient } from "@/core/database/DBClient";
+import { DBClient } from "../../../core/database/DBClient";
 import { Bodega } from "./Bodega";
+import { BodegaInputDTO } from "./BodegaInputDTO";
 
 export interface IRepositoryBodega{
-    crearBodega(bodega: Bodega, client?: DBClient): Promise<Bodega>;
+    crearBodega(bodega: BodegaInputDTO, client?: DBClient): Promise<Bodega>;
 }

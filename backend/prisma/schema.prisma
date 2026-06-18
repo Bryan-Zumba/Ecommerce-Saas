@@ -36,14 +36,14 @@ model Usuario {
   id_usuario           Int      @id @default(autoincrement())
   id_empresa           Int      @db.Integer
   id_rol               Int      @db.Integer
-  nombre               String   @db.VarChar
-  apellido             String   @db.VarChar
-  telefono             String   @db.VarChar
-  email                String   @unique @db.VarChar
-  password_hash        String   @db.VarChar
+  nombre               String   @db.VarChar(100)
+  apellido             String   @db.VarChar(100)
+  telefono             String   @db.VarChar(20)
+  email                String   @unique @db.VarChar(255)
+  password_hash        String   @db.Text
   must_change_password Boolean  @default(true)
   estado               Boolean  @default(true)
-  ultimo_acceso        DateTime @default(now()) @db.Timestamptz(6)
+  ultimo_acceso        DateTime? @db.Timestamptz(6)
   fecha_creacion       DateTime @default(now()) @db.Timestamptz(6)
 
   empresa           Empresa           @relation(fields: [id_empresa], references: [id_empresa])
@@ -76,13 +76,13 @@ enum Estado_empresa {
 
 model Empresa {
   id_empresa     Int            @id @default(autoincrement())
-  nombre         String         @db.VarChar
-  descripcion    String?        @db.VarChar
-  ruc            String?        @db.VarChar
-  direccion      String?        @db.VarChar
-  telefono       String?        @db.VarChar
-  email          String?        @db.VarChar
-  logo_url       String?        @db.VarChar
+  nombre         String         @db.VarChar(150)
+  descripcion    String?        @db.VarChar(500)
+  ruc            String?        @db.VarChar(20)
+  direccion      String?        @db.VarChar(300)
+  telefono       String?        @db.VarChar(20)
+  email          String?        @db.VarChar(255)
+  logo_url       String?        @db.Text
   estado_empresa Estado_empresa @default(Activo)
   fecha_creacion DateTime       @default(now()) @db.Timestamptz(6)
 
@@ -293,9 +293,9 @@ model Item {
 model Bodega {
   id_bodega      Int      @id @default(autoincrement())
   id_empresa     Int      @db.Integer
-  nombre         String   @db.VarChar
-  descripcion    String?   @db.VarChar
-  ubicacion      String?   @db.VarChar
+  nombre         String   @db.VarChar(150)
+  descripcion    String?   @db.VarChar(500)
+  ubicacion      String?   @db.VarChar(300)
   estado         Boolean  @default(true)
   fecha_registro DateTime @default(now()) @db.Timestamptz(6)
 

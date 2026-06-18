@@ -1,4 +1,3 @@
-import { Estado_empresa } from "@prisma/client";
 import { ServicesEmpresa } from "../../application/ServicesEmpresa";
 import { Request, Response } from "express";
 
@@ -21,7 +20,6 @@ export class ControllersEmpresa{
                 telefono,
                 email,
                 logo_url,
-                estado_empresa: Estado_empresa.Activo, // Default state
             });
             
             return res.status(200).json({ success: true, message: "Empresa creada exitosamente", empresa });
