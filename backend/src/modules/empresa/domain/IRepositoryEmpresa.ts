@@ -1,4 +1,4 @@
-import { DBClient } from "@/core/database/DBClient";
+import { DBClient } from "../../../core/database/DBClient";
 import { Empresa } from "./Empresa";
 
 export interface IRepositoryEmpresa {

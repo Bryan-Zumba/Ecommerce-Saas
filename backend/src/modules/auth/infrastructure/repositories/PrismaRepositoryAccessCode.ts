@@ -3,8 +3,8 @@ import { DBClient } from "../../../../core/database/DBClient";
 import { IRepositoryAccessCode } from "../../domain/repositories/IRepositoryAccessCode";
 
 export class PrismaRepositoryAccessCode implements IRepositoryAccessCode {
-    async findByCode(code: string) {
-        const data = await prisma.acceso_Autorizado.findUnique({
+    async findByCode(code: string, client: DBClient = prisma) {
+        const data = await client.acceso_Autorizado.findUnique({
             where: {
                 codigo_acceso: code
             }

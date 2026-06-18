@@ -24,17 +24,25 @@ export class ServicesRegister{
     async registrarTienda(data:any){
         
         return await prisma.$transaction(async(tx: Prisma.TransactionClient)=>{
+            console.time("1")
             //Validar codigo
-            const idCodeAcc = await this.serviceAccessCode.buscarCodigo(data.codigo_acceso);
-
+            const idCodeAcc = await this.serviceAccessCode.buscarCodigo(data.codigo_acceso,tx);
+            console.timeEnd("1")
+            console.time("2")
             //Crear empresa
             const empresa = await this.serviceEmpresa.crearEmpresa(data.empresa,tx);
+            console.timeEnd("2")
+            console.time("3")
 
             //Crear bodega
             const bodega = await this.serviceBodega.crearBodega({ ...data.bodega, id_empresa: empresa.id_empresa }, tx);
+            console.timeEnd("3")
+            console.time("4")
 
             //Obtener ID de Rol Adminsitrador para asignarle al creador de la empresa
-            const idRolAdmin = await this.serviceRol.obtenerRolPorNombre('Administrador');
+            const idRolAdmin = await this.serviceRol.obtenerRolPorNombre('Administrador', tx);
+            console.timeEnd("4")
+            console.time("5")
 
             //Crear usuario Administrador
             const usuarioCreador = await this.serviceUsuario.crearUsuario({
@@ -42,12 +50,15 @@ export class ServicesRegister{
                 id_empresa:empresa.id_empresa,
                 id_rol: idRolAdmin.id_rol
             },tx);
-            
+            console.timeEnd("5")
+            console.time("6")
             //Registrar que el codigo de acceso ya fue usado
             await this.serviceAccessCode.registrarUsoCodigo(idCodeAcc, tx);
-
+            console.timeEnd("6")
+            console.time("7")
             return {
-                empresa,
+                empresa: empresa,
+                bodega: bodega,
                 usuario: usuarioCreador
             };
         })

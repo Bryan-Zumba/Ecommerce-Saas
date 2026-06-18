@@ -1,5 +1,5 @@
 import { prisma } from "../../../../core/database/prisma";
-import { DBClient } from "@/core/database/DBClient";
+import { DBClient } from "../../../../core/database/DBClient";
 import { IRepositoryEmpresa } from "../../domain/IRepositoryEmpresa";
 
 export class PrismaRepositoryEmpresa implements IRepositoryEmpresa {

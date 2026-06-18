@@ -1,6 +1,6 @@
 import { prisma } from "../../../../core/database/prisma";
 import { IRepositoryUsuario } from "../../domain/IRepositoryUsuario";
-import { DBClient } from "@/core/database/DBClient";
+import { DBClient } from "../../../../core/database/DBClient";
 
 export class PrismaRepositoryUsuario implements IRepositoryUsuario{
     async crearUsuario(usuario: any, client: DBClient = prisma) {
@@ -10,8 +10,8 @@ export class PrismaRepositoryUsuario implements IRepositoryUsuario{
         return data;
     }
 
-    async obtenerUsuarioEmail(email: any) {
-        const data = await prisma.usuario.findUnique({
+    async obtenerUsuarioEmail(email: any, client: DBClient = prisma) {
+        const data = await client.usuario.findUnique({
             where: {
                 email: email
             }

@@ -1,4 +1,4 @@
-import { DBClient } from "@/core/database/DBClient";
+import { DBClient } from "../../../../core/database/DBClient";
 import { PrismaClient } from "@prisma/client";
 import { IRepositoryRol } from "../../domain/IRepositoryRol";
 
@@ -17,8 +17,8 @@ export class PrismaRepositoryRol implements IRepositoryRol{
         return data;
     }
 
-    async obtenerRolPorNombre(nombre: string) {
-        const data = await prisma.rol.findUnique({
+    async obtenerRolPorNombre(nombre: string, client: DBClient = prisma) {
+        const data = await client.rol.findUnique({
             where: { nombre }
         });
         return data;
