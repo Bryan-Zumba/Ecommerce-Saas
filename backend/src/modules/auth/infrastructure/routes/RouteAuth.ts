@@ -13,6 +13,8 @@ import { PrismaRepositoryEmpresa } from "../../../empresa/infrastructure/reposit
 import authMiddleware from "../middleware/AuthMiddleware";
 import { ServicesRegister } from "../../application/services/ServicesRegister";
 import { ControllerRegister } from "../controllers/ControllersRegister";
+import { PrismaRepositoryBodega } from "../../../bodega/infrastructure/repositories/PrismaRepositoryBodega";
+import { ServicesBodega } from "../../../bodega/application/ServicesBodega";
 
 const routerAuth = Router();
 
@@ -23,13 +25,16 @@ const controllerAccessCode = new ControllerAccessCode(serviceAccessCode);
 const repositoryUsuario= new PrismaRepositoryUsuario();
 const repositoryRol= new PrismaRepositoryRol();
 const repositoryEmpresa= new PrismaRepositoryEmpresa();
+const repositoryBodega = new PrismaRepositoryBodega();
+
 const serviceEmpresa = new ServicesEmpresa(repositoryEmpresa);
+const serviceBodega = new ServicesBodega(repositoryBodega)
 const serviceRol = new ServicesRol(repositoryRol);
 const serviceUsuario= new ServicesUsuarios(repositoryUsuario, serviceEmpresa, serviceRol);
 const serviceAuth = new ServicesAuth(serviceUsuario);
 const controllerAuth = new ControllersAuth(serviceAuth, serviceUsuario);
 
-const serviceRegister = new ServicesRegister(serviceAccessCode,serviceEmpresa,serviceRol,serviceUsuario);
+const serviceRegister = new ServicesRegister(serviceAccessCode,serviceEmpresa,serviceBodega,serviceRol,serviceUsuario);
 const controllerRegister = new ControllerRegister(serviceRegister);
 
 routerAuth.post('/validate-access-code', controllerAccessCode.validarCodigo);

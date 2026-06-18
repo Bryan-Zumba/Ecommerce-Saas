@@ -12,6 +12,12 @@ export class ServicesEmpresa {
         if (!datosEmpresa.nombre?.trim()) {
             throw new Error("Nombre de la empresa es requerido");
         }
+        if(datosEmpresa.email?.trim()){
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!emailRegex.test(datosEmpresa.email)){
+                throw new Error("Correo electronico de la empresa no valido");
+            }
+        }
         const data = await this.repository.crearEmpresa(datosEmpresa, client);
         return data;
     }

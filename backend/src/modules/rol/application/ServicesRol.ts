@@ -27,11 +27,11 @@ export class ServicesRol{
         return data;
     }
 
-    async obtenerRolPorNombre(nombre: string) {
+    async obtenerRolPorNombre(nombre: string, client?: DBClient) {
         if(!nombre?.trim()){
             throw new Error("El nombre del rol es requerido");
         }
-        const data = await this.repository.obtenerRolPorNombre(nombre);
+        const data = await this.repository.obtenerRolPorNombre(nombre, client);
         if(!data){
             throw new Error("Rol no encontrado");
         }

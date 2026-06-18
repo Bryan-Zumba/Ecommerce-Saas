@@ -45,7 +45,7 @@ export class ServicesUsuarios{
             throw new Error("Correo electronico no valido");
         }
 
-        const emailExist = await this.obtenerUsuarioEmailSec(usuario.email);
+        const emailExist = await this.obtenerUsuarioEmailSec(usuario.email, client);
         if(emailExist){
             throw new Error("Correo electronico ya existe");
         }
@@ -90,12 +90,12 @@ export class ServicesUsuarios{
         return data;
     }
 
-    async obtenerUsuarioEmailSec(email:string){
+    async obtenerUsuarioEmailSec(email:string, client?: DBClient){
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(email)){
             throw new Error("Correo electronico no valido");
         }
-        const data = await this.repository.obtenerUsuarioEmail(email);
+        const data = await this.repository.obtenerUsuarioEmail(email, client);
         return data;
     }
 }
