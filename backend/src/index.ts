@@ -13,7 +13,7 @@ import routerBodega from './modules/bodega/infrastructure/routes/RoutesBodega';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3010;
 
 // Middlewares Globales
 app.use(helmet());
@@ -38,7 +38,7 @@ app.use('/api/auth', routerAuth);
 app.use('/api/empresa', routerEmpresa);
 app.use('/api/rol', routerRol);
 app.use('/api/usuario', routerUsuario);
-app.use('/api/bodega',routerBodega)
+app.use('/api/bodega',routerBodega);
 app.use('/api/cliente', routerCliente);
 
 // Inicio del servidor
