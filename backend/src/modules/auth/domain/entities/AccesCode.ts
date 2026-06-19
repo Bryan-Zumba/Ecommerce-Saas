@@ -1,5 +1,6 @@
 export interface Acceso_Autorizado {
     id_acceso_autorizado: number;
+    id_empresa?: number | null;
     email: string;
     codigo_acceso: string;
     nombre: string;

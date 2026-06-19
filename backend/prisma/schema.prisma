@@ -12,14 +12,17 @@ datasource db {
 
 model Acceso_Autorizado {
   id_acceso_autorizado Int       @id @default(autoincrement())
-  email                String    @unique @db.VarChar
-  codigo_acceso        String    @unique @db.VarChar
-  nombre               String    @db.VarChar
+  id_empresa           Int?      @db.Integer
+  email                String    @unique @db.VarChar(255)
+  codigo_acceso        String    @unique @db.VarChar(50)
+  nombre               String    @db.VarChar(100)
   intentos             Int       @default(0)
   usado                Boolean   @default(false)
   fecha_uso            DateTime? @db.Timestamptz(6)
   estado               Boolean   @default(true)
   fecha_creacion       DateTime  @default(now()) @db.Timestamptz(6)
+
+  empresa Empresa? @relation(fields: [id_empresa], references: [id_empresa])
 }
 
 model Rol {
@@ -38,7 +41,7 @@ model Usuario {
   id_rol               Int      @db.Integer
   nombre               String   @db.VarChar(100)
   apellido             String   @db.VarChar(100)
-  telefono             String   @db.VarChar(20)
+  telefono             String?  @db.VarChar(20)
   email                String   @unique @db.VarChar(255)
   password_hash        String   @db.Text
   must_change_password Boolean  @default(true)
@@ -98,6 +101,7 @@ model Empresa {
   movimientos_caja   Movimiento_caja[]
   gastos_operativos  Gasto_operativo[]
   periodos_contables Periodo_Contable[]
+  accesos_autorizados Acceso_Autorizado[]
 }
 
 //Modulo de caja

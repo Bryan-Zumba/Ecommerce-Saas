@@ -1,9 +1,10 @@
 import { prisma } from "../../../../core/database/prisma";
 import { IRepositoryUsuario } from "../../domain/IRepositoryUsuario";
 import { DBClient } from "../../../../core/database/DBClient";
+import { UsuarioCreateDTO } from "../../domain/UsuarioCreateDB";
 
 export class PrismaRepositoryUsuario implements IRepositoryUsuario{
-    async crearUsuario(usuario: any, client: DBClient = prisma) {
+    async crearUsuario(usuario: UsuarioCreateDTO, client: DBClient = prisma) {
         const data = await client.usuario.create({
             data: usuario
         })

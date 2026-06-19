@@ -46,15 +46,18 @@ export class ServicesAccessCode {
         return result;
     }
 
-    async registrarUsoCodigo(id_acceso: number, client?: DBClient) {
+    async registrarUsoCodigo(id_acceso: number, id_empresa: number, client?: DBClient) {
         if (typeof id_acceso !== 'number' || isNaN(id_acceso)) {
             throw new Error('El ID de acceso debe ser un numero');
         }
         if (id_acceso <= 0) {
             throw new Error('El ID de acceso es invalido');
         }
+        if (!id_empresa || id_empresa <= 0) {
+            throw new Error('El ID de la empresa es inválido para registrar el uso del código');
+        }
         
-        const result = await this.repository.registrarUsoCodigo(id_acceso, client);
+        const result = await this.repository.registrarUsoCodigo(id_acceso, id_empresa, client);
         if (result.count === 0) {
             throw new Error('Codigo de acceso no encontrado');
         }
