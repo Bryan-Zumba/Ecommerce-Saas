@@ -141,3 +141,17 @@
   0%, 49.99% { opacity: 0; z-index: 10; }
   50%, 100% { opacity: 1; z-index: 50; }
 }
+
+
+/* Ocultar el ojo nativo de revelar contraseña en navegadores */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
+
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+}

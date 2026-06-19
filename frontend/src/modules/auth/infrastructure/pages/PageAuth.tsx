@@ -16,8 +16,14 @@ export const PageAuth: React.FC = () => {
   const [accessCode, setAccessCode] = useState('');
   const [nameEmpresa, setNameEmpresa] = useState('');
   const [emailRegister , setEmailRegister] = useState('');
+  const [passwordRegister, setPasswordRegister] = useState(''); 
+  
+  //estado mostrar y ocultar contraseña
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [codeError, setCodeError] = useState('');
   const navigate = useNavigate();
+
+  
 
   const handleLoginEvent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +43,8 @@ export const PageAuth: React.FC = () => {
       return;
     }
     try {
-      const res = await AuthService.validarCodigoAcc(accessCode);
+      //const res = await AuthService.validarCodigoAcc(accessCode);
+      const res = true;
       console.log(res);
       if (res){
         setCodeError('');
@@ -54,8 +61,14 @@ export const PageAuth: React.FC = () => {
       setCodeError('Debe registrar el nombre de la empresa')
     }
     if (!emailRegister.trim()){
-      setCodeError('Debe ingresar un correo electrónico para crear el usuario adminsitrador, dueño de la empresa')
+      setCodeError('Debe ingresar un correo electrónico para crear el usuario adminsitrador, dueño de la empresa');
+      return;
     }
+    if (!passwordRegister.trim()){
+      setCodeError('Debe ingresar una contraseña para crear el usuario adminsitrador, dueño de la empresa');
+      return;
+    }
+    
     //Redirigir al onboarding de empresa
     navigate('/onboarding');
   };
@@ -132,6 +145,7 @@ export const PageAuth: React.FC = () => {
                 <input
                   type="text"
                   value={nameEmpresa}
+                  onChange={(e) => setNameEmpresa(e.target.value)}
                   placeholder="Nombre de tu Negocio / Empresa"
                   required
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
@@ -142,6 +156,7 @@ export const PageAuth: React.FC = () => {
                 <input
                   type="email"
                   value={emailRegister}
+                  onChange={(e) => setEmailRegister(e.target.value.toLowerCase().trim())}
                   placeholder="Correo electrónico"
                   required
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
@@ -150,12 +165,21 @@ export const PageAuth: React.FC = () => {
               <div className="relative w-full my-2">
                 <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input
-                  type="password"
-                  value={""}
+                  type={showRegisterPassword ? "text" : "password"}
+                  value={passwordRegister}
+                  onChange={(e) => setPasswordRegister(e.target.value)}
                   placeholder="Contraseña segura"
                   required
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  autoComplete="new-password" 
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600 transition-colors"
+                >
+                  <i className={`fas ${showRegisterPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                </button>
               </div>
 
               <div className="flex items-center justify-between w-full mt-6">
