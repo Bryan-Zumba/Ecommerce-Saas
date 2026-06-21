@@ -15,6 +15,10 @@ export const PageOnboarding: React.FC = () => {
 
   // Estado paso 1 — Empresa
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [ruc, setRuc] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [descripcionEmpresa, setDescripcionEmpresa] = useState('');
+  const [direccionEmpresa, setDireccionEmpresa] = useState('');
 
   // Estado paso 2 — Bodega
   const [bodegaNombre, setBodegaNombre] = useState('');
@@ -157,8 +161,11 @@ export const PageOnboarding: React.FC = () => {
                   Descripción de la Empresa
                 </label>
                 <textarea
-                  placeholder="Ej: Tienda de abarrotes y productos al por mayor ubicada en el centro de la ciudad..."
+                  value={descripcionEmpresa}
+                  onChange={(e) => setDescripcionEmpresa(e.target.value)}
+                 /* placeholder="Ej: Tienda de abarrotes y productos al por mayor ubicada en el centro de la ciudad..."*/
                   rows={3}
+                  maxLength={500}
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 px-4 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all resize-none"
                 />
               </div>
@@ -166,13 +173,16 @@ export const PageOnboarding: React.FC = () => {
               {/* RUC */}
               <div>
                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                  RUC <span className="text-gray-300 normal-case font-medium">(opcional)</span>
+                  RUC {/* <span className="text-gray-300 normal-case font-medium">(opcional)</span>*/}
                 </label>
                 <div className="relative">
                   <i className="fas fa-id-card absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Ej: 0912345678001"
+                    value={ruc}
+                    onChange={(e) => setRuc(e.target.value.replace(/\D/g, ''))}
+                    /*placeholder="Ej: 0912345678001"*/
+                    maxLength={13}
                     className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
                 </div>
@@ -187,7 +197,10 @@ export const PageOnboarding: React.FC = () => {
                   <i className="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="tel"
-                    placeholder="Ej: 0999123456"
+                    value={telefono}
+                    onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))}
+                    /*placeholder="Ej: 0999123456"*/
+                    maxLength={10}
                     required
                     className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
@@ -203,8 +216,11 @@ export const PageOnboarding: React.FC = () => {
                   <i className="fas fa-map-marker-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Ej: Av. Principal y Calle Secundaria, Local 3"
+                    value={direccionEmpresa}
+                    onChange={(e) => setDireccionEmpresa(e.target.value)}
+                    /* placeholder="Introducir la dirección correcta"*/
                     required
+                    maxLength={300}
                     className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
                 </div>
@@ -224,7 +240,7 @@ export const PageOnboarding: React.FC = () => {
                 type="submit"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-10 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98] flex items-center gap-2"
               >
-                SIGUIENTE <span>→</span>
+                SIGUIENTE
               </button>
             </div>
           </form>
@@ -251,19 +267,19 @@ export const PageOnboarding: React.FC = () => {
                   <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
                     Nombre de la Bodega *
                   </label>
-                  <span className={`text-[10px] font-bold ${bodegaNombre.length > 30 ? 'text-red-500' : 'text-gray-400'}`}>
-                    {bodegaNombre.length}/30
-                  </span>
+                  {/*<span className={`text-[10px] font-bold ${bodegaNombre.length > 30 ? 'text-red-500' : 'text-gray-400'}`}>
+                    {bodegaNombre.length}/30 
+                  </span>*/}
                 </div>
                 <div className="relative">
                   <i className="fas fa-warehouse absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
                     required
-                    maxLength={30}
+                    maxLength={150}
                     value={bodegaNombre}
                     onChange={(e) => setBodegaNombre(e.target.value)}
-                    placeholder="Ej. Bodega Central"
+                    /*placeholder="Ej. Bodega Central"*/
                     className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
                 </div>
@@ -275,19 +291,19 @@ export const PageOnboarding: React.FC = () => {
                   <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
                     Ubicación Física *
                   </label>
-                  <span className={`text-[10px] font-bold ${bodegaUbicacion.length > 30 ? 'text-red-500' : 'text-gray-400'}`}>
+                  {/*<span className={`text-[10px] font-bold ${bodegaUbicacion.length > 30 ? 'text-red-500' : 'text-gray-400'}`}>
                     {bodegaUbicacion.length}/30
-                  </span>
+                  </span>*/}
                 </div>
                 <div className="relative">
                   <i className="fas fa-map-marker-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
                     required
-                    maxLength={30}
+                    maxLength={300}
                     value={bodegaUbicacion}
                     onChange={(e) => setBodegaUbicacion(e.target.value)}
-                    placeholder="Ej. Av. De la República N-45"
+                    /*placeholder="Ej. Av. De la República N-45"*/
                     className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
                 </div>
@@ -299,16 +315,16 @@ export const PageOnboarding: React.FC = () => {
                   <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
                     Descripción <span className="text-gray-300 normal-case font-medium">(opcional)</span>
                   </label>
-                  <span className={`text-[10px] font-bold ${bodegaDescripcion.length > 50 ? 'text-red-500' : 'text-gray-400'}`}>
+                  {/*<span className={`text-[10px] font-bold ${bodegaDescripcion.length > 50 ? 'text-red-500' : 'text-gray-400'}`}>
                     {bodegaDescripcion.length}/50
-                  </span>
+                  </span>*/}
                 </div>
                 <textarea
-                  maxLength={50}
+                  maxLength={300}
                   value={bodegaDescripcion}
                   onChange={(e) => setBodegaDescripcion(e.target.value)}
                   rows={3}
-                  placeholder="Escribe detalles breves sobre el almacenamiento..."
+                  /*placeholder="Escribe detalles breves sobre el almacenamiento..."*/
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 px-4 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all resize-none"
                 />
               </div>
@@ -319,15 +335,15 @@ export const PageOnboarding: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setPasoActivo(1)}
-                className="text-gray-400 hover:text-gray-600 text-sm font-semibold transition-colors flex items-center gap-1"
+                className="text-gray-400 hover:text-gray-300 text-sm font-semibold transition-colors flex items-center gap-1"
               >
                 <span>←</span> Volver
               </button>
               <button
                 type="submit"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-10 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+                className="bg-emerald-600 hover:bg-emerald-300 text-white rounded-xl font-bold py-3.5 px-10 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
               >
-                COMPLETAR CONFIGURACIÓN
+                FINALIZAR
               </button>
             </div>
           </form>
