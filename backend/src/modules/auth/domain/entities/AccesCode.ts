@@ -6,7 +6,7 @@ export interface Acceso_Autorizado {
     nombre: string;
     intentos: number;
     usado: boolean;
-    fecha_uso: Date | null;
+    fecha_uso?: Date | null;
     estado: boolean;
     fecha_creacion: Date;
 }

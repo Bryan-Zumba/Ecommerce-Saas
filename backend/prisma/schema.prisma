@@ -62,11 +62,13 @@ model Usuario {
 model Sesion {
   id_sesion        Int      @id @default(autoincrement())
   id_usuario       Int      @db.Integer
-  token            String   @db.VarChar
-  ip               String   @db.VarChar
+  token            String   @db.Text
+  ip               String?  @db.VarChar(45)
+  user_agent       String?  @db.Text
   fecha_inicio     DateTime @default(now()) @db.Timestamptz(6)
   fecha_expiracion DateTime @db.Timestamptz(6)
   estado           Boolean  @default(true)
+  revoked_at       DateTime? @db.Timestamptz(6)
 
   usuario Usuario @relation(fields: [id_usuario], references: [id_usuario])
 }

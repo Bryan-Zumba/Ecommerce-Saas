@@ -1,6 +1,7 @@
 import { ServicesUsuarios } from "../../../usuarios/application/ServicesUsuarios";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto"
 
 export class ServicesAuth{
     private serviceUsuario: ServicesUsuarios;
@@ -34,7 +35,10 @@ export class ServicesAuth{
             id_empresa: usuario.id_empresa,
             id_rol: usuario.id_rol
         }, 
-            process.env.JWT_SECRET!, { expiresIn: "1h" });
+        process.env.JWT_SECRET!, { expiresIn: "1h" });
+
+        //const refreshToken = crypto.randomBytes(64).toString("hex");
+
         return { token, usuario:{
             id_usuario: usuario.id_usuario,
             id_empresa: usuario.id_empresa,
