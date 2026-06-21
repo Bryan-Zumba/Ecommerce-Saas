@@ -9,13 +9,13 @@ export class ControllersUsuario{
     crearUsuario = async (req: Request, res: Response) => {
         try {
             const {id_empresa, id_rol} = req.body;
-            const { nombre, apellido, telefono, email, password_hash } = req.body;
+            const { nombre, apellido, telefono, email, password } = req.body;
             const usuario = await this.service.crearUsuario({
                     nombre,
                     apellido,
                     telefono,
                     email,
-                    password_hash,
+                    password,
                     id_empresa: Number(id_empresa),
                     id_rol: Number(id_rol)
                 });

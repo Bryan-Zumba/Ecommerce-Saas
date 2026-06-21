@@ -3,6 +3,8 @@ import { DBClient } from "@/core/database/DBClient";
 import { IRepositoryUsuario } from "../domain/IRepositoryUsuario";
 import { ServicesEmpresa } from "../../empresa/application/ServicesEmpresa";
 import { ServicesRol } from "../../rol/application/ServicesRol";
+import { UsuarioInputDTO } from "../domain/UsuarioInputDTO";
+import { UsuarioCreateDTO } from "../domain/UsuarioCreateDB";
 
 export class ServicesUsuarios{
     private repository: IRepositoryUsuario;
@@ -15,7 +17,7 @@ export class ServicesUsuarios{
         this.serviceRol = serviceRol;
     }
 
-    async crearUsuario(usuario: any, client?: DBClient) {
+    async crearUsuario(usuario: UsuarioInputDTO, client?: DBClient, must_change_password: boolean = true) {
         
         if(!usuario.id_empresa){
             throw new Error("El usuario debe pertenecer a una empresa");
@@ -34,9 +36,6 @@ export class ServicesUsuarios{
         if(!usuario.apellido?.trim()){
             throw new Error("Apellido de usuario es requerido");
         }
-        if(!usuario.telefono?.trim()){
-            throw new Error("Telefono de usuario es requerido");
-        }
         if(!usuario.email?.trim()){
             throw new Error("Email de usuario es requerido");
         }
@@ -47,20 +46,37 @@ export class ServicesUsuarios{
 
         const emailExist = await this.obtenerUsuarioEmailSec(usuario.email, client);
         if(emailExist){
-            throw new Error("Correo electronico ya existe");
+            throw new Error("Correo electronico ya se encuentra registrado");
         }
         
-        if(!usuario.password_hash?.trim()){
+        if(!usuario.password?.trim()){
             throw new Error("Password de usuario es requerido");
         }
-        if(usuario.password_hash.length < 8){
+
+        //Validaciones longitud variables
+        if(usuario.password.length < 8){
             throw new Error("Password debe tener al menos 8 caracteres");
         }
+        if(usuario.nombre.length>100){
+            throw new Error("Nombre de usuario no puede exceder 100 caracteres");
+        }
+        if(usuario.apellido.length>100){
+            throw new Error("Apellido de usuario no puede exceder 100 caracteres");
+        }
+        if(usuario.telefono && usuario.telefono.length>20){
+            throw new Error("Telefono de usuario no puede exceder 20 caracteres");
+        }
+        if(usuario.email.length>255){
+            throw new Error("Correo electronico no puede exceder 255 caracteres");
+        }
+        const password_hash = await bcrypt.hash(usuario.password, 10);
 
-        const hash = await bcrypt.hash(usuario.password_hash, 10);
-        usuario.password_hash = hash;
-
-        const data = await this.repository.crearUsuario(usuario, client);
+        const entidadUsuario : UsuarioCreateDTO= {
+            ...usuario,
+            password_hash,
+            must_change_password,
+        }
+        const data = await this.repository.crearUsuario(entidadUsuario, client);
         return data;
     }
 

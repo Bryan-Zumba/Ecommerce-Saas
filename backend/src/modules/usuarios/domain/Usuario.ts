@@ -4,11 +4,11 @@ export interface Usuario {
     id_rol: number;
     nombre: string;
     apellido: string;
-    telefono: string;
+    telefono?: string | null;
     email: string;
     password_hash: string;
     must_change_password: boolean;
     estado: boolean;
-    ultimo_acceso: Date;
+    ultimo_acceso?: Date | null;
     fecha_creacion: Date;
 }
