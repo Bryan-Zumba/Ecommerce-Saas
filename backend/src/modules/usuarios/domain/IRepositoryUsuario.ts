@@ -8,5 +8,6 @@ export interface IRepositoryUsuario{
     //actualizarUsuario(usuario: Usuario): Promise<Usuario>;
     //eliminarUsuario(id_usuario: number): Promise<Usuario>;
     obtenerUsuarioId(id_usuario: number): Promise<Usuario|null>;
+    actualizarPassword(id_usuario: number, password_hash: string): Promise<void>;
     //obtenerUsuarios(): Promise<Usuario[]>;
 }

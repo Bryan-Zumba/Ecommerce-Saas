@@ -1,6 +1,7 @@
-export type SesionInputDTO ={
+export type SesionInputDTO = {
     id_usuario: number;
     token: string;
     ip?: string | null;
-    user_agent?: 
+    user_agent?: string | null;
+    fecha_expiracion: Date;
 }

@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import routerCliente from './modules/clientes/infrastructure/routes/RoutesCliente';
 import routerAuth from './modules/auth/infrastructure/routes/RouteAuth';
 import routerEmpresa from './modules/empresa/infrastructure/routes/RoutesEmpresa';
@@ -17,9 +18,13 @@ const PORT = process.env.PORT || 3010;
 
 // Middlewares Globales
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true,
+}));
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
   res.json({

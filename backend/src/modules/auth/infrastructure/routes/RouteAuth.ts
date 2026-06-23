@@ -15,6 +15,9 @@ import { ServicesRegister } from "../../application/services/ServicesRegister";
 import { ControllerRegister } from "../controllers/ControllersRegister";
 import { PrismaRepositoryBodega } from "../../../bodega/infrastructure/repositories/PrismaRepositoryBodega";
 import { ServicesBodega } from "../../../bodega/application/ServicesBodega";
+import { ServicesSesion } from "../../application/services/ServicesSesion";
+import { PrismaRepositorySesion } from "../repositories/PrismaRepositorySesion";
+import { ServicesEmail } from "../../application/services/ServicesEmail";
 
 const routerAuth = Router();
 
@@ -26,12 +29,15 @@ const repositoryUsuario= new PrismaRepositoryUsuario();
 const repositoryRol= new PrismaRepositoryRol();
 const repositoryEmpresa= new PrismaRepositoryEmpresa();
 const repositoryBodega = new PrismaRepositoryBodega();
+const repositorySesion = new PrismaRepositorySesion();
 
 const serviceEmpresa = new ServicesEmpresa(repositoryEmpresa);
 const serviceBodega = new ServicesBodega(repositoryBodega)
 const serviceRol = new ServicesRol(repositoryRol);
 const serviceUsuario= new ServicesUsuarios(repositoryUsuario, serviceEmpresa, serviceRol);
-const serviceAuth = new ServicesAuth(serviceUsuario);
+const serviceSesion = new ServicesSesion(repositorySesion);
+const serviceEmail = new ServicesEmail();
+const serviceAuth = new ServicesAuth(serviceUsuario,serviceSesion,serviceEmail);
 const controllerAuth = new ControllersAuth(serviceAuth, serviceUsuario);
 
 const serviceRegister = new ServicesRegister(serviceAccessCode,serviceEmpresa,serviceBodega,serviceRol,serviceUsuario);
@@ -43,5 +49,7 @@ routerAuth.get('/me', authMiddleware, controllerAuth.me)
 routerAuth.put('/incrementar-intento-acceso', controllerAccessCode.incrementarIntentoAcceso);
 routerAuth.put('/registrar-uso-codigo', controllerAccessCode.registrarUsoCodigo);
 routerAuth.post('/registrar-tienda', controllerRegister.registrarTienda);
+routerAuth.post('/forgot-password', controllerAuth.forgotPassword)
+routerAuth.put('/reset-password', controllerAuth.resetPassword)
 
 export default routerAuth;

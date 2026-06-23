@@ -62,7 +62,7 @@ model Usuario {
 model Sesion {
   id_sesion        Int      @id @default(autoincrement())
   id_usuario       Int      @db.Integer
-  token            String   @db.Text
+  token            String   @unique @db.Text
   ip               String?  @db.VarChar(45)
   user_agent       String?  @db.Text
   fecha_inicio     DateTime @default(now()) @db.Timestamptz(6)

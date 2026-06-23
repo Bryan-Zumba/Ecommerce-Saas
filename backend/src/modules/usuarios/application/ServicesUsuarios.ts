@@ -114,4 +114,17 @@ export class ServicesUsuarios{
         const data = await this.repository.obtenerUsuarioEmail(email, client);
         return data;
     }
+
+    async actualizarPassword(id_usuario: number, password: string){
+        await this.obtenerUsuarioId(id_usuario);
+
+        if(!password?.trim()){
+            throw new Error("Password de usuario es requerido");
+        }
+        if(password.length < 8){
+            throw new Error("Password debe tener al menos 8 caracteres");
+        }
+        const password_hash = await bcrypt.hash(password, 10);
+        await this.repository.actualizarPassword(id_usuario, password_hash);
+    }
 }

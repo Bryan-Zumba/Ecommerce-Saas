@@ -28,4 +28,15 @@ export class PrismaRepositoryUsuario implements IRepositoryUsuario{
         })
         return data;
     }
+
+    async actualizarPassword(id_usuario: number, password_hash: string): Promise<void> {
+        await prisma.usuario.update({
+            where: {
+                id_usuario: id_usuario
+            },
+            data: {
+                password_hash: password_hash
+            }
+        })
+    }
 }
