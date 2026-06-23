@@ -1,19 +1,16 @@
 //ARCHIVO PUENTE PARA CONECTAR FRONTEND CON BACKEND
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
-const getToken = () => localStorage.getItem('token');
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3010';
 
 export const apiClient = {
 
     //PARA REALIZAR SOLICITUDES GET
     get: async <T>(endpoint: string): Promise<T> => {
-        const token = getToken();
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'GET',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                ...(token && { Authorization: `Bearer ${token}` }),
             },
         });
         if (!response.ok) {
@@ -25,12 +22,11 @@ export const apiClient = {
 
     //PARA REALIZAR SOLICITUDES POST
     post: async <T>(endpoint: string, data: unknown): Promise<T> => {
-        const token = getToken();
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                ...(token && { Authorization: `Bearer ${token}` }),
             },
             body: JSON.stringify(data),
         });
@@ -43,12 +39,11 @@ export const apiClient = {
 
     //PARA REALIZAR SOLICITUDES PUT
     put: async <T>(endpoint: string, data: unknown): Promise<T> => {
-        const token = getToken();
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'PUT',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                ...(token && { Authorization: `Bearer ${token}` }),
             },
             body: JSON.stringify(data),
         });
@@ -61,12 +56,11 @@ export const apiClient = {
 
     //PARA REALIZAR SOLICITUDES DELETE
     delete: async <T>(endpoint: string): Promise<T> => {
-        const token = getToken();
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'DELETE',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                ...(token && { Authorization: `Bearer ${token}` }),
             },
         });
         if (!response.ok) {
