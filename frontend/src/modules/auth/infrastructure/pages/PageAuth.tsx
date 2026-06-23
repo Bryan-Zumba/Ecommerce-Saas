@@ -8,6 +8,7 @@ export const PageAuth: React.FC = () => {
   //Estados para inicio de sesion
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
 
@@ -17,13 +18,36 @@ export const PageAuth: React.FC = () => {
   const [nameEmpresa, setNameEmpresa] = useState('');
   const [emailRegister , setEmailRegister] = useState('');
   const [passwordRegister, setPasswordRegister] = useState(''); 
-  
+  //estado confirmacion de contraseña
+  const [confirmPasswordRegister, setConfirmPasswordRegister] = useState('');
+  const [showConfirmPasswordRegister, setShowConfirmPasswordRegister] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   //estado mostrar y ocultar contraseña
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [codeError, setCodeError] = useState('');
   const navigate = useNavigate();
 
+
   
+
+
+
+  // Expresiones regulares individuales para verificar cada criterio en tiempo real
+  const hasMinLength = passwordRegister.length >= 8;
+  const hasUppercase = /[A-Z]/.test(passwordRegister);
+  const hasLowercase = /[a-z]/.test(passwordRegister);
+  const hasNumber = /\d/.test(passwordRegister);
+  //
+
+  // La contraseña es totalmente válida si cumple todos los requisitos
+  const isPasswordValid = hasMinLength && hasUppercase && hasLowercase && hasNumber; //&& hasSpecialChar;
+  
+  // Compara si la contraseña principal y la de confirmación son idénticas
+  const doPasswordsMatch = passwordRegister === confirmPasswordRegister;
+  
+  // Muestra la coincidencia solo si ambos campos tienen caracteres escritos
+  const showMatchValidation = passwordRegister.length > 0 && confirmPasswordRegister.length > 0;
+
 
   const handleLoginEvent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,14 +82,23 @@ export const PageAuth: React.FC = () => {
   const handleRegisterEvent = (e: React.FormEvent) => {
     e.preventDefault();
     if (!nameEmpresa.trim()){
-      setCodeError('Debe registrar el nombre de la empresa')
+      setCodeError('Debe registrar el nombre de la empresa');
+      return;
     }
     if (!emailRegister.trim()){
-      setCodeError('Debe ingresar un correo electrónico para crear el usuario adminsitrador, dueño de la empresa');
+      setCodeError('Debe ingresar un correo electrónico para crear el usuario administrador, dueño de la empresa');
       return;
     }
     if (!passwordRegister.trim()){
-      setCodeError('Debe ingresar una contraseña para crear el usuario adminsitrador, dueño de la empresa');
+      setCodeError('Debe ingresar una contraseña para crear el usuario administrador, dueño de la empresa');
+      return;
+    }
+    if (!isPasswordValid){
+      setCodeError('La contraseña no cumple con todos los requisitos de seguridad');
+      return;
+    }
+    if (!doPasswordsMatch){
+      setCodeError('Las contraseñas no coinciden');
       return;
     }
     
@@ -146,6 +179,7 @@ export const PageAuth: React.FC = () => {
                   type="text"
                   value={nameEmpresa}
                   onChange={(e) => setNameEmpresa(e.target.value)}
+                   maxLength={150}
                   placeholder="Nombre de tu Negocio / Empresa"
                   required
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
@@ -167,14 +201,21 @@ export const PageAuth: React.FC = () => {
                 <input
                   type={showRegisterPassword ? "text" : "password"}
                   value={passwordRegister}
-                  onChange={(e) => setPasswordRegister(e.target.value)}
+                  onChange={(e) => {
+                    setPasswordRegister(e.target.value);
+                    setCodeError('');
+                  }}
+                  onFocus={() => setIsPasswordFocused(true)}
+                  onBlur={() => setIsPasswordFocused(false)}
                   placeholder="Contraseña segura"
                   required
                   autoComplete="new-password" 
                   className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
+        
                 <button
                   type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => setShowRegisterPassword(!showRegisterPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600 transition-colors"
                 >
@@ -182,6 +223,87 @@ export const PageAuth: React.FC = () => {
                 </button>
               </div>
 
+              {/* Lista dinámica de requisitos */}
+              {passwordRegister.length > 0 && isPasswordFocused && (
+                <div className="w-full text-left px-2 py-1.5 mb-2 space-y-1 text-xs transition-all duration-300 animate-in fade-in">
+                  <p className="font-bold text-gray-500 mb-1">La contraseña debe tener:</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-1 text-[11px]">
+                    
+                    <div className={`flex items-center gap-1.5 transition-colors duration-200 ${hasUppercase ? 'text-emerald-600 font-semibold' : 'text-gray-400'}`}>
+                      <i className={`fas ${hasUppercase ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
+                      <span>Una letra mayúscula</span>
+                    </div>
+
+                    <div className={`flex items-center gap-1.5 transition-colors duration-200 ${hasMinLength ? 'text-emerald-600 font-semibold' : 'text-gray-400'}`}>
+                      <i className={`fas ${hasMinLength ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
+                      <span>Mínimo 8 caracteres</span>
+                    </div>
+                   
+                    
+                    <div className={`flex items-center gap-1.5 transition-colors duration-200 ${hasNumber ? 'text-emerald-600 font-semibold' : 'text-gray-400'}`}>
+                      <i className={`fas ${hasNumber ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
+                      <span>Un número</span>
+                    </div>
+                    {/*<div className={`flex items-center gap-1.5 transition-colors duration-200 ${hasLowercase ? 'text-emerald-600 font-semibold' : 'text-gray-400'}`}>
+                      <i className={`fas ${hasLowercase ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
+                      <span>Una minúscula</span>
+                    </div>*/}
+                    {/*<div className={`flex items-center gap-1.5 transition-colors duration-200 ${hasSpecialChar ? 'text-emerald-600 font-semibold' : 'text-gray-400'}`}>
+                      <i className={`fas ${hasSpecialChar ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
+                      <span>Un carácter especial</span>
+                    </div> */}
+                  </div>
+                </div>
+              )}
+
+              {/* Confirmar Contraseña */}
+              <div className="relative w-full my-2">
+                <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type={showConfirmPasswordRegister ? "text" : "password"}
+                  value={confirmPasswordRegister}
+                  onChange={(e) => {
+                    setConfirmPasswordRegister(e.target.value);
+                    setCodeError('');
+                  }}
+                  placeholder="Confirmar contraseña"
+                  required
+                  autoComplete="new-password" 
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+        
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => setShowConfirmPasswordRegister(!showConfirmPasswordRegister)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600 transition-colors"
+                >
+                  <i className={`fas ${showConfirmPasswordRegister ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                </button>
+              </div>
+
+              {/* Validación de coincidencia de contraseñas */}
+              {showMatchValidation && (
+                <div className="w-full text-left px-2 mb-2">
+                  <p className={`text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 ${doPasswordsMatch ? 'text-emerald-600' : 'text-red-500'}`}>
+                    <i className={`fas ${doPasswordsMatch ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
+                    {doPasswordsMatch ? 'Contraseña coincide' : 'Las contraseñas no coinciden'}
+                  </p>
+                </div>
+              )}
+
+              {/* Contenedor dinámico para mostrar otros errores del formulario */}
+              {codeError && (
+                <div className="w-full text-left px-2 mb-2">
+                  <p className="text-red-500 text-xs font-semibold flex items-center gap-1.5">
+                    <i className="fas fa-exclamation-circle"></i>
+                    {codeError}
+                  </p>
+                </div>
+              )}
+
+
+              
               <div className="flex items-center justify-between w-full mt-6">
                 <button
                   type="button"
@@ -194,7 +316,7 @@ export const PageAuth: React.FC = () => {
                   type="submit"
                   className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
                 >
-                  REGISTRARSE
+                  SIGUIENTE
                 </button>
               </div>
             </form>
@@ -223,19 +345,31 @@ export const PageAuth: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
               />
+            
             </div>
-            <div className="relative w-full my-2">
-              <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input
-                type="password"
-                placeholder="Contraseña"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-              />
-            </div>
+              <div className="relative w-full my-2">
+                <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Contraseña"
+                  required
+                  autoComplete="current-password" 
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
 
+                 {/*--visualizar contraseña*/}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600 transition-colors">
+                  <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                </button>
+              </div>
+
+
+              
             <a
               href="#"
               className="text-emerald-600 hover:text-emerald-700 text-sm font-semibold my-4 transition-colors"
@@ -250,6 +384,7 @@ export const PageAuth: React.FC = () => {
             </button>
             <button
               type="button"
+              disabled={true}
               onClick={loginWithGoogle}
               className="mt-4 w-full bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-800 rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-gray-600/20 active:scale-[0.98]"
             >
