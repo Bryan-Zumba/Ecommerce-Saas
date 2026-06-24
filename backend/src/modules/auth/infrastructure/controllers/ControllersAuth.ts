@@ -61,10 +61,21 @@ export class ControllersAuth {
 
     logout = async (req:any, res: Response) => {
         try {
-            const token = req.token;
-            await this.service.logout(token);
-            res.clearCookie("access_token");
-            res.clearCookie("refresh_token");
+            const refreshToken = req.cookies?.refresh_token;
+
+            if (refreshToken) {
+                try {
+                    await this.service.logout(refreshToken);
+                } catch (error: any) {
+                    const ignoredErrors = ["Sesion no encontrada", "Sesion inactiva"];
+                    if (!ignoredErrors.includes(error.message)) {
+                        throw error;
+                    }
+                }
+            }
+
+            res.clearCookie("access_token", { httpOnly: true, secure: false, sameSite: "lax" });
+            res.clearCookie("refresh_token", { httpOnly: true, secure: false, sameSite: "lax" });
             return res.status(200).json({ success: true, message: "Logout exitoso" });
         } catch (error: any) {
             return res.status(400).json({ success: false, message: error.message });
