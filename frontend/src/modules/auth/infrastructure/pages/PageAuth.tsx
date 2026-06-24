@@ -10,6 +10,11 @@ export const PageAuth: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const [isRecoveringPassword, setIsRecoveringPassword] = useState(false);
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [recoveryMessage, setRecoveryMessage] = useState('');
+  const [recoveryError, setRecoveryError] = useState('');
+  const [isSendingRecovery, setIsSendingRecovery] = useState(false);
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
 
   //Estados para registro
@@ -26,9 +31,6 @@ export const PageAuth: React.FC = () => {
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [codeError, setCodeError] = useState('');
   const navigate = useNavigate();
-
-
-  
 
 
 
@@ -58,6 +60,14 @@ export const PageAuth: React.FC = () => {
     } catch (error:any) {
       setLoginError(error.message)
     }
+  }
+
+  const handleForgotPasswordEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRecoveryError('');
+    setRecoveryMessage('');
+
+    navigate('/reset-password');
   }
 
   const handleValidateCode = async (e: React.FormEvent) => {
@@ -117,23 +127,23 @@ export const PageAuth: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-50 flex justify-center items-center min-h-screen p-6 font-sans">
+    <div className="bg-gray-50 flex justify-center items-center min-h-screen p-4 sm:p-6 font-sans">
       <div
-        className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl relative overflow-hidden w-[900px] max-w-full min-h-[600px] animate-in fade-in duration-500"
+        className="bg-white rounded-3xl md:rounded-[2.5rem] border border-gray-100 shadow-xl relative overflow-hidden w-full max-w-[900px] md:min-h-[600px] animate-in fade-in duration-500"
       >
         {/* Sign Up Container */}
         <div
-          className={`absolute top-0 h-full transition-all duration-700 ease-in-out left-0 w-1/2 ${isRightPanelActive
-              ? 'translate-x-[100%] opacity-100 z-50'
-              : 'translate-x-0 opacity-0 z-10'
+          className={`relative md:absolute md:top-0 md:h-full transition-all duration-700 ease-in-out md:left-0 w-full md:w-1/2 ${isRightPanelActive
+              ? 'block md:translate-x-[100%] md:opacity-100 md:z-50'
+              : 'hidden md:block md:translate-x-0 md:opacity-0 md:z-10'
             }`}
         >
           {registerStep === 'code' ? (
             <form
               onSubmit={handleValidateCode}
-              className="bg-white flex items-center justify-center flex-col px-12 h-full text-center"
+              className="bg-white flex items-center justify-center flex-col px-5 py-8 sm:px-8 md:px-12 md:py-0 min-h-[560px] md:h-full text-center"
             >
-              <h1 className="font-black text-gray-800 mb-2 text-3xl">Acceso Autorizado</h1>
+              <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Acceso Autorizado</h1>
               <span className="text-sm text-gray-500 mb-8 font-medium">Ingresa tu código de acceso para continuar con el registro de tu empresa</span>
 
               <div className="relative w-full my-2">
@@ -164,13 +174,20 @@ export const PageAuth: React.FC = () => {
               >
                 VALIDAR CÓDIGO
               </button>
+              <button
+                type="button"
+                onClick={() => setIsRightPanelActive(false)}
+                className="md:hidden mt-5 text-emerald-700 hover:text-emerald-800 text-sm font-bold transition-colors"
+              >
+                Ya tengo cuenta
+              </button>
             </form>
           ) : (
             <form
               onSubmit={handleRegisterEvent}
-              className="bg-white flex items-center justify-center flex-col px-12 h-full text-center"
+              className="bg-white flex items-center justify-center flex-col px-5 py-8 sm:px-8 md:px-12 md:py-0 min-h-[620px] md:min-h-0 md:h-full text-center"
             >
-              <h1 className="font-black text-gray-800 mb-2 text-3xl">Crear Empresa</h1>
+              <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Crear Empresa</h1>
               <span className="text-sm text-gray-500 mb-8 font-medium">Registra tu negocio en la plataforma. Se creará con rol de administrador</span>
 
               <div className="relative w-full my-2">
@@ -244,14 +261,7 @@ export const PageAuth: React.FC = () => {
                       <i className={`fas ${hasNumber ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
                       <span>Un número</span>
                     </div>
-                    {/*<div className={`flex items-center gap-1.5 transition-colors duration-200 ${hasLowercase ? 'text-emerald-600 font-semibold' : 'text-gray-400'}`}>
-                      <i className={`fas ${hasLowercase ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
-                      <span>Una minúscula</span>
-                    </div>*/}
-                    {/*<div className={`flex items-center gap-1.5 transition-colors duration-200 ${hasSpecialChar ? 'text-emerald-600 font-semibold' : 'text-gray-400'}`}>
-                      <i className={`fas ${hasSpecialChar ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
-                      <span>Un carácter especial</span>
-                    </div> */}
+                   
                   </div>
                 </div>
               )}
@@ -301,7 +311,7 @@ export const PageAuth: React.FC = () => {
                   </p>
                 </div>
               )}
-              <div className="flex items-center justify-between w-full mt-6">
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between w-full mt-6 gap-4">
                 <button
                   type="button"
                   onClick={() => setRegisterStep('code')}
@@ -311,25 +321,90 @@ export const PageAuth: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+                  className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
                 >
                   SIGUIENTE
                 </button>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsRightPanelActive(false)}
+                className="md:hidden mt-5 text-emerald-700 hover:text-emerald-800 text-sm font-bold transition-colors"
+              >
+                Ya tengo cuenta
+              </button>
             </form>
           )}
         </div>
 
         {/* Sign In Container */}
         <div
-          className={`absolute top-0 h-full transition-all duration-700 ease-in-out left-0 w-1/2 ${isRightPanelActive ? 'translate-x-[100%] opacity-0 z-10' : 'translate-x-0 opacity-100 z-20'
+          className={`relative md:absolute md:top-0 md:h-full transition-all duration-700 ease-in-out md:left-0 w-full md:w-1/2 ${isRightPanelActive ? 'hidden md:block md:translate-x-[100%] md:opacity-0 md:z-10' : 'block md:translate-x-0 md:opacity-100 md:z-20'
             }`}
         >
           <form
-            onSubmit={handleLoginEvent}
-            className="bg-white flex items-center justify-center flex-col px-12 h-full text-center"
+            onSubmit={isRecoveringPassword ? handleForgotPasswordEvent : handleLoginEvent}
+            className="bg-white flex items-center justify-center flex-col px-5 py-8 sm:px-8 md:px-12 md:py-0 min-h-[560px] md:h-full text-center"
           >
-            <h1 className="font-black text-gray-800 mb-2 text-3xl">Bienvenido</h1>
+            <div className={isRecoveringPassword ? 'w-full contents' : 'hidden'}>
+              <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Recuperar contraseña</h1>
+              <span className="text-sm text-gray-500 mb-8 font-medium">
+                Ingresa tu correo y te enviaremos un enlace para crear una nueva contraseña.
+              </span>
+
+              <div className="relative w-full my-2">
+                <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type="email"
+                  placeholder="Correo electrónico"
+                  required={isRecoveringPassword}
+                  value={recoveryEmail}
+                  onChange={(e) => {
+                    setRecoveryEmail(e.target.value);
+                    setRecoveryError('');
+                    setRecoveryMessage('');
+                  }}
+                  className="bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+              </div>
+
+              {recoveryError && (
+                <p className="w-full text-left text-red-500 text-xs font-semibold mt-2">
+                  <i className="fas fa-exclamation-circle mr-1"></i>
+                  {recoveryError}
+                </p>
+              )}
+
+              {recoveryMessage && (
+                <p className="w-full text-left text-emerald-600 text-xs font-semibold mt-2">
+                  <i className="fas fa-check-circle mr-1"></i>
+                  {recoveryMessage}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSendingRecovery}
+                className="mt-8 w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:shadow-none text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+              >
+                {isSendingRecovery ? 'ENVIANDO...' : 'ENVIAR ENLACE'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRecoveringPassword(false);
+                  setRecoveryError('');
+                  setRecoveryMessage('');
+                }}
+                className="mt-5 text-emerald-700 hover:text-emerald-800 text-sm font-bold transition-colors"
+              >
+                Volver al login
+              </button>
+            </div>
+
+            <div className={isRecoveringPassword ? 'hidden' : 'contents'}>
+            <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Bienvenido</h1>
             <span className="text-sm text-gray-500 mb-8 font-medium">Ingresa al panel de administración</span>
 
             <div className="relative w-full my-2">
@@ -337,10 +412,10 @@ export const PageAuth: React.FC = () => {
               <input
                 type="text"
                 placeholder="Correo electrónico"
-                required
+                required={!isRecoveringPassword}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                className="bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
               />
             
             </div>
@@ -351,9 +426,9 @@ export const PageAuth: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Contraseña"
-                  required
+                  required={!isRecoveringPassword}
                   autoComplete="current-password" 
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
 
                  {/*--visualizar contraseña*/}
@@ -365,12 +440,24 @@ export const PageAuth: React.FC = () => {
                 </button>
               </div>
               
-            <a
-              href="#"
+            {loginError && (
+              <p className="w-full text-left text-red-500 text-xs font-semibold mt-2">
+                <i className="fas fa-exclamation-circle mr-1"></i>
+                {loginError}
+              </p>
+            )}
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsRecoveringPassword(true);
+                setRecoveryEmail(email);
+                setLoginError('');
+              }}
               className="text-emerald-600 hover:text-emerald-700 text-sm font-semibold my-4 transition-colors"
             >
               ¿Olvidaste tu contraseña?
-            </a>
+            </button>
             <button
               type="submit"
               className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
@@ -390,12 +477,20 @@ export const PageAuth: React.FC = () => {
               />
               Continuar con Google
             </button>
+            <button
+              type="button"
+              onClick={() => setIsRightPanelActive(true)}
+              className="md:hidden mt-5 text-emerald-700 hover:text-emerald-800 text-sm font-bold transition-colors"
+            >
+              Registrar empresa
+            </button>
+            </div>
           </form>
         </div>
 
         {/* Overlay Container */}
         <div
-          className={`absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-transform duration-700 ease-in-out z-[100] ${isRightPanelActive ? '-translate-x-[100%]' : 'translate-x-0'
+          className={`hidden md:block absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-transform duration-700 ease-in-out z-[100] ${isRightPanelActive ? '-translate-x-[100%]' : 'translate-x-0'
             }`}
         >
           <div

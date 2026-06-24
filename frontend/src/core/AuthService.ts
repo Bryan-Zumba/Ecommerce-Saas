@@ -17,5 +17,15 @@ export const AuthService = {
     //METODO VALIDACION CODIGO ACCESO
     validarCodigoAcc: async(codigo: string): Promise<LoginResponse>=>{
         return apiClient.post<LoginResponse>('/api/auth/validate-access-code',{codigo});
+    },
+
+    //METODO SOLICITAR RECUPERACION DE PASSWORD
+    forgotPassword: async(email: string): Promise<{ success: boolean; message: string }>=>{
+        return apiClient.post<{ success: boolean; message: string }>('/api/auth/forgot-password',{email});
+    },
+
+    //METODO RESTABLECER PASSWORD CON TOKEN
+    resetPassword: async(token: string, password: string): Promise<{ success: boolean; message: string }>=>{
+        return apiClient.put<{ success: boolean; message: string }>('/api/auth/reset-password',{token, password});
     }
 }

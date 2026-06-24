@@ -18,6 +18,7 @@ import { PageAuth } from "./modules/auth/infrastructure/pages/PageAuth";
 import { PageOnboarding } from "./modules/auth/infrastructure/pages/PageOnboarding";
 import { PageForcePasswordChange } from "./modules/auth/infrastructure/pages/PageForcePasswordChange";
 import { PageChangePassword } from "./modules/auth/infrastructure/pages/PageChangePassword";
+import { PageResetPassword } from "./modules/auth/infrastructure/pages/PageResetPassword";
 
 import { PageMonitoreoInventario } from "./modules/inventario/infrastructure/pages/PageMonitoreoInventario";
 import { PageGestionUsuarios } from "./modules/usuarios/infrastructure/pages/PageGestionUsuarios";
@@ -30,6 +31,7 @@ function App() {
         <Routes>
           <Route path="/auth" element={<PageAuth />} />
           <Route path="/auth/primer-acceso" element={<PageForcePasswordChange />} />
+          <Route path="/reset-password" element={<PageResetPassword />} />
           <Route path="/onboarding" element={<PageOnboarding />} />
           <Route path="/*" element={
             <AuthGuard>

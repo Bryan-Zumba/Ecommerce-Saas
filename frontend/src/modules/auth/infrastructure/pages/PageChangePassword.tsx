@@ -40,11 +40,11 @@ export const PageChangePassword: React.FC = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto py-10 px-6 font-sans">
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="w-full max-w-xl mx-auto py-6 sm:py-10 px-4 sm:px-6 font-sans">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
         
         {/* Header */}
-        <div className="border-b border-gray-100 px-8 py-6">
+        <div className="border-b border-gray-100 px-5 py-5 sm:px-8 sm:py-6">
           <h1 className="text-xl font-bold text-gray-800">Cambiar Contraseña</h1>
           <p className="text-sm text-gray-500 mt-1">
             Actualiza tus credenciales para mantener tu cuenta segura.
@@ -62,7 +62,7 @@ export const PageChangePassword: React.FC = () => {
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-8">
+          <form onSubmit={handleSubmit} className="p-5 sm:p-8">
             
             {error && (
               <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs font-semibold rounded-r-xl">
@@ -148,7 +148,7 @@ export const PageChangePassword: React.FC = () => {
               </ul>
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
               <button
                 type="button"
                 onClick={() => navigate('/')}
@@ -158,7 +158,7 @@ export const PageChangePassword: React.FC = () => {
               </button>
               <button
                 type="submit"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-2.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98] text-sm"
+                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-2.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98] text-sm"
               >
                 Guardar Cambios
               </button>
