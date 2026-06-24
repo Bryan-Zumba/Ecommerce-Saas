@@ -174,7 +174,7 @@ export const PageAuth: React.FC = () => {
               <span className="text-sm text-gray-500 mb-8 font-medium">Registra tu negocio en la plataforma. Se creará con rol de administrador</span>
 
               <div className="relative w-full my-2">
-                <i className="fas fa-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <i className="fas fa-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"></i>
                 <input
                   type="text"
                   value={nameEmpresa}
@@ -182,22 +182,22 @@ export const PageAuth: React.FC = () => {
                    maxLength={150}
                   placeholder="Nombre de tu Negocio / Empresa"
                   required
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-100 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-800 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
               </div>
               <div className="relative w-full my-2">
-                <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"></i>
                 <input
                   type="email"
                   value={emailRegister}
                   onChange={(e) => setEmailRegister(e.target.value.toLowerCase().trim())}
                   placeholder="Correo electrónico"
                   required
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-100 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
               </div>
               <div className="relative w-full my-2">
-                <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"></i>
                 <input
                   type={showRegisterPassword ? "text" : "password"}
                   value={passwordRegister}
@@ -210,7 +210,7 @@ export const PageAuth: React.FC = () => {
                   placeholder="Contraseña segura"
                   required
                   autoComplete="new-password" 
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-100 border border-gray-300 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
         
                 <button
@@ -258,7 +258,7 @@ export const PageAuth: React.FC = () => {
 
               {/* Confirmar Contraseña */}
               <div className="relative w-full my-2">
-                <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"></i>
                 <input
                   type={showConfirmPasswordRegister ? "text" : "password"}
                   value={confirmPasswordRegister}
@@ -269,7 +269,7 @@ export const PageAuth: React.FC = () => {
                   placeholder="Confirmar contraseña"
                   required
                   autoComplete="new-password" 
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-100 border border-gray-300 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
         
                 <button
@@ -301,9 +301,6 @@ export const PageAuth: React.FC = () => {
                   </p>
                 </div>
               )}
-
-
-              
               <div className="flex items-center justify-between w-full mt-6">
                 <button
                   type="button"
@@ -367,8 +364,6 @@ export const PageAuth: React.FC = () => {
                   <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
                 </button>
               </div>
-
-
               
             <a
               href="#"
