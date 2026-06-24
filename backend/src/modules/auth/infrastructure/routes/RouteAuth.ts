@@ -44,7 +44,9 @@ const serviceRegister = new ServicesRegister(serviceAccessCode,serviceEmpresa,se
 const controllerRegister = new ControllerRegister(serviceRegister);
 
 routerAuth.post('/validate-access-code', controllerAccessCode.validarCodigo);
-routerAuth.post('/login', controllerAuth.login)
+routerAuth.post('/login', controllerAuth.login);
+routerAuth.post('/logout', controllerAuth.logout);
+routerAuth.post('/refresh-token', controllerAuth.refreshToken);
 routerAuth.get('/me', authMiddleware, controllerAuth.me)
 routerAuth.put('/incrementar-intento-acceso', controllerAccessCode.incrementarIntentoAcceso);
 routerAuth.put('/registrar-uso-codigo', controllerAccessCode.registrarUsoCodigo);

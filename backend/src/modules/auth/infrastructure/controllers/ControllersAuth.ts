@@ -42,7 +42,7 @@ export class ControllersAuth {
 
     refreshToken = async (req: Request, res: Response) => {
         try {
-            const { refreshToken } = req.body;
+            const refreshToken = req.cookies?.refresh_token || req.body?.refreshToken;
             const result = await this.service.refreshToken(refreshToken);
             
             res.cookie("access_token", result.accessToken, { 
