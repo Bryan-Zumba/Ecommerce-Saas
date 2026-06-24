@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Bodega } from '../../domain/Bodega';
+import type { Bodega } from '../domain/Bodega';
 
 export interface DatosFormularioBodega {
   nombre: string;
@@ -82,88 +82,81 @@ export const FormularioBodega: React.FC<FormularioBodegaProps> = ({
         )}
 
         <div className="space-y-1.5">
-          <div className="flex justify-between items-center">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-              Nombre de la Bodega *
-            </label>
-            {esTarjeta && (
-              <span className={`text-[10px] font-bold ${formNombre.length > 30 ? 'text-red-500' : 'text-gray-400'}`}>
-                {formNombre.length}/30 caract.
-              </span>
-            )}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <label htmlFor="bodega-nombre" className="text-sm text-gray-500 font-medium cursor-default">Nombre de la Bodega</label>
+              <span className="text-red-500">*</span>
+            </div>
+            <span className={`text-[10px] font-bold ${formNombre.length > (esTarjeta ? 30 : 150) ? 'text-red-500' : 'text-gray-400'}`}>
+              {(esTarjeta ? 30 : 150) - formNombre.length} caracteres restantes
+            </span>
           </div>
           <div className="relative">
             {!esTarjeta && (
               <i className="fas fa-warehouse absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             )}
             <input
+              id="bodega-nombre"
               type="text"
               required
               maxLength={esTarjeta ? 30 : 150}
               value={formNombre}
               onChange={(e) => setFormNombre(e.target.value)}
-              placeholder={esTarjeta ? 'Ej. Bodega Central' : undefined}
-              className={`w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all ${
-                esTarjeta
-                  ? 'block px-4 py-3 border border-gray-100 rounded-xl bg-gray-50/50 placeholder-gray-400 focus:bg-white font-semibold text-gray-800'
-                  : 'bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12'
+              placeholder={esTarjeta ? 'Ej. Bodega Central' : 'Nombre de la Bodega'}
+              className={`w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all ${esTarjeta
+                ? 'block px-4 py-3 border border-gray-100 rounded-xl bg-gray-50/50 placeholder-gray-400 focus:bg-white font-semibold text-gray-800'
+                : 'bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12'
               }`}
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <div className="flex justify-between items-center">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-              Ubicacion Fisica *
-            </label>
-            {esTarjeta && (
-              <span className={`text-[10px] font-bold ${formUbicacion.length > 30 ? 'text-red-500' : 'text-gray-400'}`}>
-                {formUbicacion.length}/30 caract.
-              </span>
-            )}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <label htmlFor="bodega-ubicacion" className="text-sm text-gray-500 font-medium cursor-default">Ubicación Física (Opcional)</label>
+            </div>
+            <span className={`text-[10px] font-bold ${formUbicacion.length > (esTarjeta ? 30 : 300) ? 'text-red-500' : 'text-gray-400'}`}>
+              {(esTarjeta ? 30 : 300) - formUbicacion.length} caracteres restantes
+            </span>
           </div>
           <div className="relative">
             {!esTarjeta && (
               <i className="fas fa-map-marker-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             )}
             <input
+              id="bodega-ubicacion"
               type="text"
               required
               maxLength={esTarjeta ? 30 : 300}
               value={formUbicacion}
               onChange={(e) => setFormUbicacion(e.target.value)}
-              placeholder={esTarjeta ? 'Ej. Av. De la Republica N-45' : undefined}
-              className={`w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all ${
-                esTarjeta
-                  ? 'block px-4 py-3 border border-gray-100 rounded-xl bg-gray-50/50 placeholder-gray-400 focus:bg-white font-semibold text-gray-800'
-                  : 'bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12'
+              placeholder={esTarjeta ? 'Ej. Av. De la Republica N-45' : 'Dirección o lugar de la bodega'}
+              className={`w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all ${esTarjeta
+                ? 'block px-4 py-3 border border-gray-100 rounded-xl bg-gray-50/50 placeholder-gray-400 focus:bg-white font-semibold text-gray-800'
+                : 'bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12'
               }`}
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <div className="flex justify-between items-center">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-              Descripcion <span className="text-gray-300 normal-case font-medium">(opcional)</span>
-            </label>
-            {esTarjeta && (
-              <span className={`text-[10px] font-bold ${formDescripcion.length > 50 ? 'text-red-500' : 'text-gray-400'}`}>
-                {formDescripcion.length}/50 caract.
-              </span>
-            )}
+          <div className="flex items-center justify-between">
+            <label htmlFor="bodega-descripcion" className="text-sm text-gray-500 font-medium cursor-default">Descripción (Opcional)</label>
+            <span className={`text-[10px] font-bold ${formDescripcion.length > (esTarjeta ? 50 : 300) ? 'text-red-500' : 'text-gray-400'}`}>
+              {(esTarjeta ? 50 : 300) - formDescripcion.length} caracteres restantes
+            </span>
           </div>
           <textarea
+            id="bodega-descripcion"
             maxLength={esTarjeta ? 50 : 300}
             value={formDescripcion}
             onChange={(e) => setFormDescripcion(e.target.value)}
             rows={3}
-            placeholder={esTarjeta ? 'Escribe detalles breves sobre el almacenamiento...' : undefined}
-            className={`w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all resize-none ${
-              esTarjeta
-                ? 'block px-4 py-3 border border-gray-100 rounded-xl bg-gray-50/50 placeholder-gray-400 focus:bg-white font-semibold text-gray-800'
-                : 'bg-gray-50 border border-gray-300 rounded-xl py-3.5 px-4'
+            placeholder={esTarjeta ? 'Escribe detalles breves sobre el almacenamiento...' : 'Descripción de la bodega (opcional)'}
+            className={`w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all resize-none ${esTarjeta
+              ? 'block px-4 py-3 border border-gray-100 rounded-xl bg-gray-50/50 placeholder-gray-400 focus:bg-white font-semibold text-gray-800'
+              : 'bg-gray-50 border border-gray-300 rounded-xl py-3.5 px-4'
             }`}
           />
         </div>

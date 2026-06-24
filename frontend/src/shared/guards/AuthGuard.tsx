@@ -1,31 +1,31 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { AuthService } from "@/core/AuthService";
+import { AuthService } from "@/modules/auth/services/AuthService";
 
 export const AuthGuard = ({ children }: any) => {
     const [loading, setLoading] = useState(true);
     const [isAuth, setIsAuth] = useState(false);
 
     useEffect(() => {
-        const validate= async()=>{
+        const validate = async () => {
             try {
                 const data = await AuthService.me();
                 setIsAuth(true)
             } catch (error) {
                 setIsAuth(false)
-            } finally{
+            } finally {
                 setLoading(false)
             }
         }
         validate()
-    },[]);
+    }, []);
 
-    if(loading){
-        return<div>Cargando...</div>
+    if (loading) {
+        return <div>Cargando...</div>
     }
 
-    if(!isAuth){
-        return <Navigate to="/auth" replace/>
+    if (!isAuth) {
+        return <Navigate to="/auth" replace />
     }
     return children;
 }

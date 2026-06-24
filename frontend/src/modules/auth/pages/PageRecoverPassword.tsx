@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { AuthService } from '../../../../core/AuthService';
+import { AuthService } from '../services/AuthService';
 
 export const PageResetPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -169,7 +169,7 @@ export const PageResetPassword: React.FC = () => {
             disabled={isSubmitting || !token}
             className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:shadow-none text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
           >
-            
+
             {isSubmitting ? 'GUARDANDO...' : 'GUARDAR CONTRASEÑA'}
           </button>
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useBodega } from '../../application/useBodega';
 import { LocalstorageBodegaRepository } from '../repositories/LocalstorageBodegaRepository';
-import { VistaBodega } from '../components/VistaBodega';
-import { FormularioBodega } from '../components/FormularioBodega';
+import { VistaBodega } from '../../components/VistaBodega';
+import { FormularioBodega } from '../../components/FormularioBodega';
 
 const repository = new LocalstorageBodegaRepository();
 

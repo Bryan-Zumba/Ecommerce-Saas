@@ -1,3 +1,4 @@
+import { AuthService } from '@/modules/auth/services/AuthService';
 import { supabase } from '@/supabase';
 import React from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
@@ -146,14 +147,14 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               </a>
             </div>
 
-              <button 
+            <button
               onClick={async () => {
-                await supabase.auth.signOut();
+                await AuthService.logout();
                 navigate('/auth');
-                }}
+              }}
               className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
-                ↪️
-              </button>
+              ↪️
+            </button>
           </div>
         </div>
       </aside>

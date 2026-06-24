@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthService } from '../../../../core/AuthService';
-import { supabase } from '../../../../supabase';
+import { AuthService } from '../services/AuthService';
+import { supabase } from '../../../supabase';
 
 export const PageAuth: React.FC = () => {
 
@@ -20,9 +20,11 @@ export const PageAuth: React.FC = () => {
   //Estados para registro
   const [registerStep, setRegisterStep] = useState<'code' | 'form'>('code');
   const [accessCode, setAccessCode] = useState('');
-  const [nameEmpresa, setNameEmpresa] = useState('');
-  const [emailRegister , setEmailRegister] = useState('');
-  const [passwordRegister, setPasswordRegister] = useState(''); 
+  const [nombreUsuario, setNombreUsuario] = useState('');
+  const [apellidoUsuario, setApellidoUsuario] = useState('');
+  const [telefonoUsuario, setTelefonoUsuario] = useState('');
+  const [emailRegister, setEmailRegister] = useState('');
+  const [passwordRegister, setPasswordRegister] = useState('');
   //estado confirmacion de contraseña
   const [confirmPasswordRegister, setConfirmPasswordRegister] = useState('');
   const [showConfirmPasswordRegister, setShowConfirmPasswordRegister] = useState(false);
@@ -43,10 +45,10 @@ export const PageAuth: React.FC = () => {
 
   // La contraseña es totalmente válida si cumple todos los requisitos
   const isPasswordValid = hasMinLength && hasUppercase && hasLowercase && hasNumber; //&& hasSpecialChar;
-  
+
   // Compara si la contraseña principal y la de confirmación son idénticas
   const doPasswordsMatch = passwordRegister === confirmPasswordRegister;
-  
+
   // Muestra la coincidencia solo si ambos campos tienen caracteres escritos
   const showMatchValidation = passwordRegister.length > 0 && confirmPasswordRegister.length > 0;
 
@@ -54,20 +56,27 @@ export const PageAuth: React.FC = () => {
   const handleLoginEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = await AuthService.login(email, password);
-      localStorage.setItem('token', data.data.token);
+      await AuthService.login(email, password);
       navigate('/');
-    } catch (error:any) {
+    } catch (error: any) {
       setLoginError(error.message)
     }
   }
 
-  const handleForgotPasswordEvent = async (e: React.FormEvent) => {
+  const handleRecuperarContrasenaEvent = async (e: React.FormEvent) => {
     e.preventDefault();
-    setRecoveryError('');
-    setRecoveryMessage('');
 
-    navigate('/reset-password');
+    try {
+      setIsSendingRecovery(true);
+      setRecoveryError('');
+      setRecoveryMessage('');
+      const res = await AuthService.forgotPassword(recoveryEmail);
+      setRecoveryMessage(res.message);
+    } catch (error: any) {
+      setRecoveryError(error.message);
+    } finally {
+      setIsSendingRecovery(false);
+    }
   }
 
   const handleValidateCode = async (e: React.FormEvent) => {
@@ -80,7 +89,7 @@ export const PageAuth: React.FC = () => {
       //const res = await AuthService.validarCodigoAcc(accessCode);
       const res = true;
       console.log(res);
-      if (res){
+      if (res) {
         setCodeError('');
         setRegisterStep('form');
       }
@@ -91,29 +100,44 @@ export const PageAuth: React.FC = () => {
 
   const handleRegisterEvent = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nameEmpresa.trim()){
-      setCodeError('Debe registrar el nombre de la empresa');
+    if (!nombreUsuario.trim()) {
+      setCodeError('Debes ingresar tu nombre');
       return;
     }
-    if (!emailRegister.trim()){
+    if (!apellidoUsuario.trim()) {
+      setCodeError('Debes ingresar tu apellido');
+      return;
+    }
+    if (!emailRegister.trim()) {
       setCodeError('Debe ingresar un correo electrónico para crear el usuario administrador, dueño de la empresa');
       return;
     }
-    if (!passwordRegister.trim()){
+    if (!passwordRegister.trim()) {
       setCodeError('Debe ingresar una contraseña para crear el usuario administrador, dueño de la empresa');
       return;
     }
-    if (!isPasswordValid){
+    if (!isPasswordValid) {
       setCodeError('La contraseña no cumple con todos los requisitos de seguridad');
       return;
     }
-    if (!doPasswordsMatch){
+    if (!doPasswordsMatch) {
       setCodeError('Las contraseñas no coinciden');
       return;
     }
-    
-    //Redirigir al onboarding de empresa
-    navigate('/onboarding');
+
+    // Redirigir al onboarding de empresa
+    navigate('/onboarding', {
+      state: {
+        codigo_acceso: accessCode,
+        usuario: {
+          nombre: nombreUsuario,
+          apellido: apellidoUsuario,
+          telefono: telefonoUsuario || undefined,
+          email: emailRegister,
+          password: passwordRegister,
+        }
+      }
+    });
   };
 
   const loginWithGoogle = async () => {
@@ -134,8 +158,8 @@ export const PageAuth: React.FC = () => {
         {/* Sign Up Container */}
         <div
           className={`relative md:absolute md:top-0 md:h-full transition-all duration-700 ease-in-out md:left-0 w-full md:w-1/2 ${isRightPanelActive
-              ? 'block md:translate-x-[100%] md:opacity-100 md:z-50'
-              : 'hidden md:block md:translate-x-0 md:opacity-0 md:z-10'
+            ? 'block md:translate-x-[100%] md:opacity-100 md:z-50'
+            : 'hidden md:block md:translate-x-0 md:opacity-0 md:z-10'
             }`}
         >
           {registerStep === 'code' ? (
@@ -187,18 +211,44 @@ export const PageAuth: React.FC = () => {
               onSubmit={handleRegisterEvent}
               className="bg-white flex items-center justify-center flex-col px-5 py-8 sm:px-8 md:px-12 md:py-0 min-h-[620px] md:min-h-0 md:h-full text-center"
             >
-              <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Crear Empresa</h1>
-              <span className="text-sm text-gray-500 mb-8 font-medium">Registra tu negocio en la plataforma. Se creará con rol de administrador</span>
+              <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Crear Cuenta</h1>
+              <span className="text-sm text-gray-500 mb-8 font-medium">Registra el administrador de tu empresa</span>
+
+              <div className="flex gap-3 w-full">
+                <div className="relative flex-1 my-2">
+                  <i className="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"></i>
+                  <input
+                    type="text"
+                    value={nombreUsuario}
+                    onChange={(e) => setNombreUsuario(e.target.value)}
+                    maxLength={100}
+                    placeholder="Tu nombre"
+                    required
+                    className="bg-gray-100 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-800 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  />
+                </div>
+                <div className="relative flex-1 my-2">
+                  <i className="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"></i>
+                  <input
+                    type="text"
+                    value={apellidoUsuario}
+                    onChange={(e) => setApellidoUsuario(e.target.value)}
+                    maxLength={100}
+                    placeholder="Tu apellido"
+                    required
+                    className="bg-gray-100 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-800 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  />
+                </div>
+              </div>
 
               <div className="relative w-full my-2">
-                <i className="fas fa-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"></i>
+                <i className="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"></i>
                 <input
-                  type="text"
-                  value={nameEmpresa}
-                  onChange={(e) => setNameEmpresa(e.target.value)}
-                   maxLength={150}
-                  placeholder="Nombre de tu Negocio / Empresa"
-                  required
+                  type="tel"
+                  value={telefonoUsuario}
+                  onChange={(e) => setTelefonoUsuario(e.target.value.replace(/\D/g, ''))}
+                  maxLength={10}
+                  placeholder="Teléfono (opcional)"
                   className="bg-gray-100 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-800 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
               </div>
@@ -226,10 +276,10 @@ export const PageAuth: React.FC = () => {
                   onBlur={() => setIsPasswordFocused(false)}
                   placeholder="Contraseña segura"
                   required
-                  autoComplete="new-password" 
+                  autoComplete="new-password"
                   className="bg-gray-100 border border-gray-300 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
-        
+
                 <button
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
@@ -245,7 +295,7 @@ export const PageAuth: React.FC = () => {
                 <div className="w-full text-left px-2 py-1.5 mb-2 space-y-1 text-xs transition-all duration-300 animate-in fade-in">
                   <p className="font-bold text-gray-500 mb-1">La contraseña debe tener:</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-1 text-[11px]">
-                    
+
                     <div className={`flex items-center gap-1.5 transition-colors duration-200 ${hasUppercase ? 'text-emerald-600 font-semibold' : 'text-gray-400'}`}>
                       <i className={`fas ${hasUppercase ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
                       <span>Una letra mayúscula</span>
@@ -255,13 +305,13 @@ export const PageAuth: React.FC = () => {
                       <i className={`fas ${hasMinLength ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
                       <span>Mínimo 8 caracteres</span>
                     </div>
-                   
-                    
+
+
                     <div className={`flex items-center gap-1.5 transition-colors duration-200 ${hasNumber ? 'text-emerald-600 font-semibold' : 'text-gray-400'}`}>
                       <i className={`fas ${hasNumber ? 'fa-check-circle text-emerald-500' : 'fa-circle text-[6px] opacity-60'} transition-all`}></i>
                       <span>Un número</span>
                     </div>
-                   
+
                   </div>
                 </div>
               )}
@@ -278,10 +328,10 @@ export const PageAuth: React.FC = () => {
                   }}
                   placeholder="Confirmar contraseña"
                   required
-                  autoComplete="new-password" 
+                  autoComplete="new-password"
                   className="bg-gray-100 border border-gray-300 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
-        
+
                 <button
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
@@ -343,82 +393,102 @@ export const PageAuth: React.FC = () => {
             }`}
         >
           <form
-            onSubmit={isRecoveringPassword ? handleForgotPasswordEvent : handleLoginEvent}
+            onSubmit={isRecoveringPassword ? handleRecuperarContrasenaEvent : handleLoginEvent}
             className="bg-white flex items-center justify-center flex-col px-5 py-8 sm:px-8 md:px-12 md:py-0 min-h-[560px] md:h-full text-center"
           >
             <div className={isRecoveringPassword ? 'w-full contents' : 'hidden'}>
-              <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Recuperar contraseña</h1>
-              <span className="text-sm text-gray-500 mb-8 font-medium">
-                Ingresa tu correo y te enviaremos un enlace para crear una nueva contraseña.
-              </span>
+              {recoveryMessage ? (
+                <div className="w-full flex flex-col items-center">
+                  <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mb-4">
+                    <i className="fas fa-envelope-open-text"></i>
+                  </div>
+                  <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Correo enviado</h1>
+                  <span className="text-sm text-gray-500 mb-6 font-medium">
+                    Hemos enviado un enlace de recuperación a tu correo.
+                  </span>
+                  
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsRecoveringPassword(false);
+                      setRecoveryError('');
+                      setRecoveryMessage('');
+                      setRecoveryEmail('');
+                    }}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+                  >
+                    VOLVER AL LOGIN
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Recuperar contraseña</h1>
+                  <span className="text-sm text-gray-500 mb-8 font-medium">
+                    Ingresa tu correo y te enviaremos un enlace para crear una nueva contraseña.
+                  </span>
 
-              <div className="relative w-full my-2">
-                <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input
-                  type="email"
-                  placeholder="Correo electrónico"
-                  required={isRecoveringPassword}
-                  value={recoveryEmail}
-                  onChange={(e) => {
-                    setRecoveryEmail(e.target.value);
-                    setRecoveryError('');
-                    setRecoveryMessage('');
-                  }}
-                  className="bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                />
-              </div>
+                  <div className="relative w-full my-2">
+                    <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input
+                      type="email"
+                      placeholder="Correo electrónico"
+                      required={isRecoveringPassword && !recoveryMessage}
+                      value={recoveryEmail}
+                      onChange={(e) => {
+                        setRecoveryEmail(e.target.value);
+                        setRecoveryError('');
+                        setRecoveryMessage('');
+                      }}
+                      className="bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                    />
+                  </div>
 
-              {recoveryError && (
-                <p className="w-full text-left text-red-500 text-xs font-semibold mt-2">
-                  <i className="fas fa-exclamation-circle mr-1"></i>
-                  {recoveryError}
-                </p>
+                  {recoveryError && (
+                    <p className="w-full text-left text-red-500 text-xs font-semibold mt-2">
+                      <i className="fas fa-exclamation-circle mr-1"></i>
+                      {recoveryError}
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={isSendingRecovery}
+                    className="mt-8 w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:shadow-none text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+                  >
+                    {isSendingRecovery ? 'ENVIANDO...' : 'ENVIAR ENLACE'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsRecoveringPassword(false);
+                      setRecoveryError('');
+                      setRecoveryMessage('');
+                    }}
+                    className="mt-5 text-emerald-700 hover:text-emerald-800 text-sm font-bold transition-colors"
+                  >
+                    Volver al login
+                  </button>
+                </>
               )}
-
-              {recoveryMessage && (
-                <p className="w-full text-left text-emerald-600 text-xs font-semibold mt-2">
-                  <i className="fas fa-check-circle mr-1"></i>
-                  {recoveryMessage}
-                </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={isSendingRecovery}
-                className="mt-8 w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:shadow-none text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
-              >
-                {isSendingRecovery ? 'ENVIANDO...' : 'ENVIAR ENLACE'}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setIsRecoveringPassword(false);
-                  setRecoveryError('');
-                  setRecoveryMessage('');
-                }}
-                className="mt-5 text-emerald-700 hover:text-emerald-800 text-sm font-bold transition-colors"
-              >
-                Volver al login
-              </button>
             </div>
 
             <div className={isRecoveringPassword ? 'hidden' : 'contents'}>
-            <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Bienvenido</h1>
-            <span className="text-sm text-gray-500 mb-8 font-medium">Ingresa al panel de administración</span>
+              <h1 className="font-black text-gray-800 mb-2 text-2xl sm:text-3xl">Bienvenido</h1>
+              <span className="text-sm text-gray-500 mb-8 font-medium">Ingresa al panel de administración</span>
 
-            <div className="relative w-full my-2">
-              <i className="fas fa-user-circle absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input
-                type="text"
-                placeholder="Correo electrónico"
-                required={!isRecoveringPassword}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-              />
-            
-            </div>
+              <div className="relative w-full my-2">
+                <i className="fas fa-user-circle absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type="text"
+                  placeholder="Correo electrónico"
+                  required={!isRecoveringPassword}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-4 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+
+              </div>
               <div className="relative w-full my-2">
                 <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input
@@ -427,11 +497,11 @@ export const PageAuth: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Contraseña"
                   required={!isRecoveringPassword}
-                  autoComplete="current-password" 
+                  autoComplete="current-password"
                   className="bg-gray-50 border border-gray-300 rounded-xl py-3.5 pr-12 pl-12 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
 
-                 {/*--visualizar contraseña*/}
+                {/*--visualizar contraseña*/}
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -439,51 +509,51 @@ export const PageAuth: React.FC = () => {
                   <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
                 </button>
               </div>
-              
-            {loginError && (
-              <p className="w-full text-left text-red-500 text-xs font-semibold mt-2">
-                <i className="fas fa-exclamation-circle mr-1"></i>
-                {loginError}
-              </p>
-            )}
 
-            <button
-              type="button"
-              onClick={() => {
-                setIsRecoveringPassword(true);
-                setRecoveryEmail(email);
-                setLoginError('');
-              }}
-              className="text-emerald-600 hover:text-emerald-700 text-sm font-semibold my-4 transition-colors"
-            >
-              ¿Olvidaste tu contraseña?
-            </button>
-            <button
-              type="submit"
-              className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
-            >
-              Iniciar Sesión
-            </button>
-            <button
-              type="button"
-              disabled={true}
-              onClick={loginWithGoogle}
-              className="mt-4 w-full bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-800 rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-gray-600/20 active:scale-[0.98]"
-            >
-              <img
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                className="w-5 h-5 mr-4 inline-block"
-                alt="Google"
-              />
-              Continuar con Google
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsRightPanelActive(true)}
-              className="md:hidden mt-5 text-emerald-700 hover:text-emerald-800 text-sm font-bold transition-colors"
-            >
-              Registrar empresa
-            </button>
+              {loginError && (
+                <p className="w-full text-left text-red-500 text-xs font-semibold mt-2">
+                  <i className="fas fa-exclamation-circle mr-1"></i>
+                  {loginError}
+                </p>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRecoveringPassword(true);
+                  setRecoveryEmail(email);
+                  setLoginError('');
+                }}
+                className="text-emerald-600 hover:text-emerald-700 text-sm font-semibold my-4 transition-colors"
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
+              <button
+                type="submit"
+                className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+              >
+                Iniciar Sesión
+              </button>
+              <button
+                type="button"
+                disabled={true}
+                onClick={loginWithGoogle}
+                className="mt-4 w-full bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-800 rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-gray-600/20 active:scale-[0.98]"
+              >
+                <img
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  className="w-5 h-5 mr-4 inline-block"
+                  alt="Google"
+                />
+                Continuar con Google
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsRightPanelActive(true)}
+                className="md:hidden mt-5 text-emerald-700 hover:text-emerald-800 text-sm font-bold transition-colors"
+              >
+                Registrar empresa
+              </button>
             </div>
           </form>
         </div>
