@@ -3,7 +3,7 @@ export interface RegisterTiendaRequest {
     empresa: {
         nombre: string;
         descripcion?: string;
-        ruc: string;
+        ruc?: string;
         direccion?: string;
         telefono?: string;
         email?: string;

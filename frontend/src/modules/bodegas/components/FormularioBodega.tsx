@@ -127,7 +127,6 @@ export const FormularioBodega: React.FC<FormularioBodegaProps> = ({
             <input
               id="bodega-ubicacion"
               type="text"
-              required
               maxLength={esTarjeta ? 30 : 300}
               value={formUbicacion}
               onChange={(e) => setFormUbicacion(e.target.value)}

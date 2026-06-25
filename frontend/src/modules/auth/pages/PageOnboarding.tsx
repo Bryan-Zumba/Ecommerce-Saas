@@ -94,7 +94,8 @@ export const PageOnboarding: React.FC = () => {
       await AuthService.registerTienda(payload);
       
       // Registro exitoso, nos vamos al inicio
-      navigate('/');
+      await AuthService.login(authState.usuario.email, authState.usuario.password);
+      //navigate('/');
     } catch (err: any) {
       console.error('Error al registrar la tienda:', err);
       setErrorRegistro(err.message || 'Error al procesar el registro.');

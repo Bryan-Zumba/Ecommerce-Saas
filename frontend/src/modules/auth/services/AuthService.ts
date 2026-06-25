@@ -37,6 +37,6 @@ export const AuthService = {
 
     //METODO REGISTRAR TIENDA
     registerTienda: async (data: RegisterTiendaRequest): Promise<RegisterTiendaResponse> => {
-        return apiClient.post<RegisterTiendaResponse>('/api/auth//registrar-tienda', data);
+        return apiClient.post<RegisterTiendaResponse>('/api/auth/registrar-tienda', data);
     },
 }
