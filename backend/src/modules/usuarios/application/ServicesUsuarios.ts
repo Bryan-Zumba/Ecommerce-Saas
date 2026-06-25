@@ -127,4 +127,10 @@ export class ServicesUsuarios{
         const password_hash = await bcrypt.hash(password, 10);
         await this.repository.actualizarPassword(id_usuario, password_hash);
     }
+
+    async actualizarUltimoAcceso(id_usuario: number) {
+        await this.obtenerUsuarioId(id_usuario);
+        
+        await this.repository.actualizarUltimoAcceso(id_usuario);
+    }
 }

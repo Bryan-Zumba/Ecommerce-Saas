@@ -53,6 +53,8 @@ export class ServicesAuth{
             ip,
             user_agent
         });
+
+        await this.serviceUsuario.actualizarUltimoAcceso(usuario.id_usuario);
         
         return { 
             accessToken,

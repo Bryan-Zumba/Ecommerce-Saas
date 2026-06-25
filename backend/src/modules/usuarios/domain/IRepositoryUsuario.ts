@@ -10,4 +10,5 @@ export interface IRepositoryUsuario{
     obtenerUsuarioId(id_usuario: number): Promise<Usuario|null>;
     actualizarPassword(id_usuario: number, password_hash: string): Promise<void>;
     //obtenerUsuarios(): Promise<Usuario[]>;
+    actualizarUltimoAcceso(id_usuario: number): Promise<void>;
 }

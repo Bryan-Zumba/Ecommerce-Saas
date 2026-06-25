@@ -39,4 +39,11 @@ export class PrismaRepositoryUsuario implements IRepositoryUsuario{
             }
         })
     }
+
+    async actualizarUltimoAcceso(id_usuario: number): Promise<void> {
+        await prisma.usuario.update({
+            where: { id_usuario },
+            data: { ultimo_acceso: new Date() }
+        });
+    }
 }
