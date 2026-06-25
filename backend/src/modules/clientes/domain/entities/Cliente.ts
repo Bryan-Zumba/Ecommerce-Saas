@@ -9,5 +9,7 @@ export interface Cliente {
   apellidos: string;
   email: string | null;
   telefono: string | null;
+  direccion: string | null;
+  estado: boolean;
   created_at: Date;
 }
