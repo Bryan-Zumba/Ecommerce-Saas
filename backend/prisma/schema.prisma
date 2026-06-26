@@ -244,12 +244,12 @@ model Detalle_Venta {
 model Cliente {
   id_cliente Int      @id @default(autoincrement())
   id_empresa Int      @db.Integer
-  cedula     String   @db.VarChar
-  nombres    String   @db.VarChar
-  apellidos  String   @db.VarChar
-  email      String?  @db.VarChar
-  telefono   String?  @db.VarChar
-  direccion  String?  @db.VarChar
+  cedula     String   @db.VarChar(20)
+  nombres    String   @db.VarChar(100)
+  apellidos  String   @db.VarChar(100)
+  email      String?  @db.VarChar(255)
+  telefono   String?  @db.VarChar(20)
+  direccion  String?  @db.VarChar(300)
   estado     Boolean  @default(true)
   created_at DateTime @default(now()) @db.Timestamptz(6)
 
@@ -357,11 +357,11 @@ model Movimiento_Inventario {
 model Proveedor {
   id_proveedor   Int      @id @default(autoincrement())
   id_empresa     Int      @db.Integer
-  nombre         String   @db.VarChar
-  descripcion    String   @db.VarChar
-  direccion      String   @db.VarChar
-  telefono       String   @db.VarChar
-  email          String   @db.VarChar
+  nombre         String   @db.VarChar(100)
+  descripcion    String?  @db.VarChar(500)
+  direccion      String?  @db.VarChar(300)
+  telefono       String?  @db.VarChar(20)
+  email          String?  @db.VarChar(255)
   estado         Boolean  @default(true)
   fecha_registro DateTime @default(now()) @db.Timestamptz(6)
 
