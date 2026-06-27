@@ -1,9 +1,13 @@
 export interface LoginResponse {
+    success: boolean;
+    message: string;
     data: {
-        token: string;
-        user: {
+        usuario: {
             id_usuario: number;
-            nombre: string;
+            id_empresa: number;
+            id_rol: number;
+            nombres: string;
+            apellidos: string;
             email: string;
         }
     }

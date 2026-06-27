@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCarrito } from "@/shared/context/ContextoCarrito";
-import { useClientes } from "@/modules/clientes/application/useClientes";
+import { useClientes } from "@/modules/clientes/hooks/useClientes";
 import { Cliente } from "@/modules/clientes/domain/Cliente";
 import { ApiClienteRepository } from "@/modules/clientes/infrastructure/ApiClienteRepository";
-import { TableClientes } from "@/modules/clientes/infrastructure/components/TableClientes";
-import FiltrosBusqueda from "@/modules/clientes/infrastructure/components/Busqueda";
+import { TableClientes } from "@/modules/clientes/components/TableClientes";
+import FiltrosBusqueda from "@/modules/clientes/components/Busqueda";
 
 function Caja() {
   const navigate = useNavigate();
@@ -58,20 +58,20 @@ function Caja() {
   };
 
   const clientesFiltradosCaja = useMemo(() => {
-  if (!busquedaCliente.trim()) return clientes.slice(0, 0);
+    if (!busquedaCliente.trim()) return clientes.slice(0, 0);
 
-  const query = busquedaCliente.toLowerCase();
+    const query = busquedaCliente.toLowerCase();
 
-  return clientes
-    .filter((cliente) =>
-      cliente.cedula.toLowerCase().includes(query) ||
-      cliente.nombres.toLowerCase().includes(query) ||
-      cliente.apellidos.toLowerCase().includes(query) ||
-      (cliente.email && cliente.email.toLowerCase().includes(query)) ||
-      (cliente.telefono && cliente.telefono.toLowerCase().includes(query))
-    )
-    .slice(0, 5);
-}, [clientes, busquedaCliente]);
+    return clientes
+      .filter((cliente) =>
+        cliente.cedula.toLowerCase().includes(query) ||
+        cliente.nombres.toLowerCase().includes(query) ||
+        cliente.apellidos.toLowerCase().includes(query) ||
+        (cliente.email && cliente.email.toLowerCase().includes(query)) ||
+        (cliente.telefono && cliente.telefono.toLowerCase().includes(query))
+      )
+      .slice(0, 5);
+  }, [clientes, busquedaCliente]);
 
   if (carrito.length === 0) {
     return (
@@ -103,8 +103,8 @@ function Caja() {
                 </div>
               )}
               <FiltrosBusqueda
-              search={busquedaCliente}
-              setSearch={setBusquedaCliente}
+                search={busquedaCliente}
+                setSearch={setBusquedaCliente}
               />
               <div className="space-y-2 mt-4">
                 {clientesFiltradosCaja.map((cliente) => (
@@ -133,11 +133,10 @@ function Caja() {
                 <button
                   type="button"
                   onClick={aplicarConsumidorFinal}
-                  className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all ${
-                    esConsumidorFinal
+                  className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all ${esConsumidorFinal
                       ? "border-emerald-500 bg-emerald-50 text-emerald-700"
                       : "border-gray-100 text-gray-400 hover:border-gray-300 hover:text-gray-600"
-                  }`}
+                    }`}
                 >
                   Consumidor Final
                 </button>
@@ -145,19 +144,19 @@ function Caja() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1 text-left">
                     <label className="text-[12px] font-bold text-gray-400 ml-1">Nombre</label>
-                    <input required name="nombre" value={datosCliente.nombre} onChange={manejarEntradaCliente} className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" placeholder="Nombre completo" disabled/>
+                    <input required name="nombre" value={datosCliente.nombre} onChange={manejarEntradaCliente} className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" placeholder="Nombre completo" disabled />
                   </div>
                   <div className="space-y-1 text-left">
                     <label className="text-[12px] font-bold text-gray-400 ml-1">Cedula / RUC</label>
-                    <input required name="dni" value={datosCliente.dni} onChange={manejarEntradaCliente} className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" placeholder="17xxxxxxxx" disabled/>
+                    <input required name="dni" value={datosCliente.dni} onChange={manejarEntradaCliente} className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" placeholder="17xxxxxxxx" disabled />
                   </div>
                   <div className="space-y-1 text-left">
                     <label className="text-[12px] font-bold text-gray-400 ml-1">Email</label>
-                    <input required type="email" name="email" value={datosCliente.email} onChange={manejarEntradaCliente} className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" placeholder="correo@ejemplo.com" disabled/>
+                    <input required type="email" name="email" value={datosCliente.email} onChange={manejarEntradaCliente} className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" placeholder="correo@ejemplo.com" disabled />
                   </div>
                   <div className="space-y-1 text-left">
                     <label className="text-[12px] font-bold text-gray-400 ml-1">Telefono</label>
-                    <input name="telefono" value={datosCliente.telefono} onChange={manejarEntradaCliente} className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" placeholder="099xxxxxxx" disabled/>
+                    <input name="telefono" value={datosCliente.telefono} onChange={manejarEntradaCliente} className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" placeholder="099xxxxxxx" disabled />
                   </div>
                 </div>
 
@@ -173,15 +172,15 @@ function Caja() {
                         type="text"
                         inputMode="decimal"
                         value={montoRecibido}
-                          onChange={(e) => {
-                            let val = e.target.value.replace(/[^0-9.,]/g, "");
+                        onChange={(e) => {
+                          let val = e.target.value.replace(/[^0-9.,]/g, "");
 
-                            val = val.replace(",", ".");
+                          val = val.replace(",", ".");
 
-                            if (val.split(".").length <= 2) {
-                              setMontoRecibido(val);
-                            }
-                          }}
+                          if (val.split(".").length <= 2) {
+                            setMontoRecibido(val);
+                          }
+                        }}
                         className="w-full pl-8 pr-4 py-3 rounded-xl border-2 border-emerald-200 focus:border-emerald-500 outline-none font-bold text-emerald-800 text-lg"
                         placeholder="0.00"
                       />

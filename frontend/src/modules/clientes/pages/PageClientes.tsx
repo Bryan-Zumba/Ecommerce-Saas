@@ -1,19 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { TableClientes } from '../components/TableClientes';
-import { ApiClienteRepository } from '../ApiClienteRepository';
-import { useClientes } from '../../application/useClientes';
-import { Cliente } from '../../domain/Cliente';
+import { useClientes } from '../hooks/useClientes';
 import PanelLateralDer from '@/shared/layout/PanelLateralDer';
 import FormularioCliente, { DatosFormularioCliente } from '../components/FormularioClientes';
 
 
 export const PageClientes: React.FC = () => {
-  const repository = useMemo(() => new ApiClienteRepository(), []);
-  const { clientes, cargando, error, refrescar, agregarCliente } = useClientes(repository);
+  const usuario= 
+  const { clientes, cargando, error, refrescar, agregarCliente } = useClientes();
 
-  const permisoEditCliente= true;
-  const permisoDeleteCliente=true;
-  const permisoAddCliente=true;
+  const permisoEditCliente = true;
+  const permisoDeleteCliente = true;
+  const permisoAddCliente = true;
   const [clienteSeleccionado, setClienteSeleccionado] = useState<Cliente | null>(null);
   const [drawerAbierto, setDrawerAbierto] = useState(false);
 
@@ -57,8 +55,8 @@ export const PageClientes: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 animate-in fade-in duration-500">
       <main className="max-w-7xl mx-auto p-6 lg:p-12">
-        
-        <PanelLateralDer 
+
+        <PanelLateralDer
           abierto={drawerAbierto}
           titulo="Formulario de Cliente"
           onCerrar={cerrarFormulario}
@@ -88,12 +86,12 @@ export const PageClientes: React.FC = () => {
         )}
 
         <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
-          <TableClientes 
-          clientes={clientes} 
-          cargando={cargando}
-          refrescar={refrescar}
-          onEdit={permisoEditCliente ? abrirFormularioEditar:undefined}
-          onDelete={permisoDeleteCliente ? eliminarCliente:undefined}
+          <TableClientes
+            clientes={clientes}
+            cargando={cargando}
+            refrescar={refrescar}
+            onEdit={permisoEditCliente ? abrirFormularioEditar : undefined}
+            onDelete={permisoDeleteCliente ? eliminarCliente : undefined}
           />
         </div>
       </main>
