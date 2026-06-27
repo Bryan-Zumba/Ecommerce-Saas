@@ -9,10 +9,10 @@
         crearUsuario = async (req: Request, res: Response) => {
             try {
                 const {id_empresa, id_rol} = req.body;
-                const { nombre, apellido, telefono, email, password } = req.body;
+                const { nombres, apellidos, telefono, email, password } = req.body;
                 const usuario = await this.service.crearUsuario({
-                        nombre,
-                        apellido,
+                        nombres,
+                        apellidos,
                         telefono,
                         email,
                         password,

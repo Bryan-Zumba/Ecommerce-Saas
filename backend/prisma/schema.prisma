@@ -39,8 +39,8 @@ model Usuario {
   id_usuario           Int      @id @default(autoincrement())
   id_empresa           Int      @db.Integer
   id_rol               Int      @db.Integer
-  nombre               String   @db.VarChar(100)
-  apellido             String   @db.VarChar(100)
+  nombres              String   @db.VarChar(100)
+  apellidos            String   @db.VarChar(100)
   telefono             String?  @db.VarChar(20)
   email                String   @unique @db.VarChar(255)
   password_hash        String   @db.Text
@@ -263,8 +263,8 @@ model Cliente {
 model Categoria {
   id_categoria Int     @id @default(autoincrement())
   id_empresa   Int     @db.Integer
-  nombre       String  @db.VarChar
-  descripcion  String  @db.VarChar
+  nombre       String  @db.VarChar(100)
+  descripcion  String?  @db.VarChar(500)
   estado       Boolean @default(true)
 
   empresa Empresa @relation(fields: [id_empresa], references: [id_empresa])
@@ -280,12 +280,12 @@ model Item {
   id_item      Int       @id @default(autoincrement())
   id_categoria Int       @db.Integer
   id_empresa   Int       @db.Integer
-  nombre       String    @db.VarChar
-  descripcion  String    @db.VarChar
+  nombre       String    @db.VarChar(100)
+  descripcion  String?   @db.VarChar(500)
   costo        Decimal   @db.Decimal(10, 2)
   precio       Decimal   @db.Decimal(10, 2)
   tipo_item    Tipo_Item
-  imagen_url   String?   @db.VarChar
+  imagen_url   String?   @db.VarChar(500)
   estado       Boolean   @default(true)
 
   categoria       Categoria               @relation(fields: [id_categoria], references: [id_categoria])

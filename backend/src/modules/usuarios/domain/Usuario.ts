@@ -2,8 +2,8 @@ export interface Usuario {
     id_usuario: number;
     id_empresa: number;
     id_rol: number;
-    nombre: string;
-    apellido: string;
+    nombres: string;
+    apellidos: string;
     telefono?: string | null;
     email: string;
     password_hash: string;
