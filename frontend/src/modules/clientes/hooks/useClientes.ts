@@ -3,11 +3,11 @@ import { ClienteService } from '../services/ClienteService';
 import { ClienteResponse } from '../types/ClienteResponse';
 
 export const useClientes = (id_empresa: number) => {
-  const [clientes, setClientes] = useState<ClienteResponse[]>([]);
+  const [clientes, setClientes] = useState<ClienteResponse["clientes"]>([]);
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const cargarClientes = async (id_empresa: number) => {
+  const cargarClientes = useCallback(async () => {
     setCargando(true);
     setError(null);
     try {
@@ -18,7 +18,7 @@ export const useClientes = (id_empresa: number) => {
     } finally {
       setCargando(false);
     }
-  };
+  }, [id_empresa]);
 
   // const agregarCliente = async (datosCliente: Omit<Cliente, 'id' | 'created_at'> ) => {
   //   setCargando(true);

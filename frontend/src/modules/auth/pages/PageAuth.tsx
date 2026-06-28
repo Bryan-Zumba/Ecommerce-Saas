@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthService } from '../services/AuthService';
 import { supabase } from '../../../supabase';
+import { useAuth } from '@/shared/context/auth/AuthContext';
 
 export const PageAuth: React.FC = () => {
+  const { login } = useAuth();
 
   //Estados para inicio de sesion
   const [email, setEmail] = useState('');
@@ -56,7 +58,7 @@ export const PageAuth: React.FC = () => {
   const handleLoginEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await AuthService.login(email, password);
+      await login(email, password);
       navigate('/');
     } catch (error: any) {
       setLoginError(error.message)

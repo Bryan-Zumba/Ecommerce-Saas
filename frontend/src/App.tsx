@@ -12,7 +12,7 @@ import { PageBodega } from "./modules/bodegas/infrastructure/pages/PageBodega";
 import Page_GestionStock from "./modules/stock/infrastructure/pages/Page_GestionStock";
 import HistorialPersonal from "./pages/Pages_Historial_Personal";
 import MainLayout from "@/shared/layout/MainLayout";
-import { PageClientes } from "./modules/clientes/infrastructure/pages/PageClientes";
+import { PageClientes } from "./modules/clientes/pages/PageClientes";
 import { PageReportes } from "./modules/reportes/infrastructure/pages/PageReportes";
 import { PageAuth } from "./modules/auth/pages/PageAuth";
 import { PageOnboarding } from "./modules/auth/pages/PageOnboarding";
@@ -23,40 +23,41 @@ import { PageResetPassword } from "./modules/auth/pages/PageRecoverPassword";
 import { PageMonitoreoInventario } from "./modules/inventario/infrastructure/pages/PageMonitoreoInventario";
 import { PageGestionUsuarios } from "./modules/usuarios/infrastructure/pages/PageGestionUsuarios";
 import { PageConsultaRoles } from "./modules/roles/infrastructure/pages/PageConsultaRoles";
+import { AuthProvider } from "./shared/context/auth/AuthContext";
 
 function App() {
   return (
     <BrowserRouter>
       <ProveedorCarrito>
-        <Routes>
-          <Route path="/auth" element={<PageAuth />} />
-          <Route path="/auth/primer-acceso" element={<PageForcePasswordChange />} />
-          <Route path="/reset-password" element={<PageResetPassword />} />
-          <Route path="/onboarding" element={<PageOnboarding />} />
-          <Route path="/*" element={
-            <AuthGuard>
-              <MainLayout>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/items" element={<PageTienda />} />
-                  <Route path="/gestion-items" element={<PageGestionItems />} />
-                  <Route path="/gestion-categorias" element={<PageGestionCategorias />} />
-                  <Route path="/checkout" element={<Caja />} />
-                  <Route path="/success" element={<VentaExitosa />} />
-                  <Route path="/clientes" element={<PageClientes />} />
-                  <Route path="/bodega" element={<PageBodega />} />
-                  <Route path="/ingreso-stock" element={<Page_GestionStock />} />
-                  <Route path="/monitoreo-inventario" element={<PageMonitoreoInventario />} />
-                  <Route path="/usuarios/gestion" element={<PageGestionUsuarios />} />
-                  <Route path="/roles/consulta" element={<PageConsultaRoles />} />
-                  <Route path="/historial" element={<HistorialPersonal />} />
-                  <Route path="/reportes" element={<PageReportes />} />
-                  <Route path="/cambiar-contrasena" element={<PageChangePassword />} />
-                </Routes>
-              </MainLayout>
-            </AuthGuard>
-          } />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            {/* Rutas publicas */}
+            <Route path="/auth" element={<PageAuth />} />
+            <Route path="/auth/primer-acceso" element={<PageForcePasswordChange />} />
+            <Route path="/reset-password" element={<PageResetPassword />} />
+            <Route path="/onboarding" element={<PageOnboarding />} />
+            {/* Rutas privadas */}
+            <Route element={<AuthGuard />}>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/items" element={<PageTienda />} />
+                <Route path="/gestion-items" element={<PageGestionItems />} />
+                <Route path="/gestion-categorias" element={<PageGestionCategorias />} />
+                <Route path="/checkout" element={<Caja />} />
+                <Route path="/success" element={<VentaExitosa />} />
+                <Route path="/clientes" element={<PageClientes />} />
+                <Route path="/bodega" element={<PageBodega />} />
+                <Route path="/ingreso-stock" element={<Page_GestionStock />} />
+                <Route path="/monitoreo-inventario" element={<PageMonitoreoInventario />} />
+                <Route path="/usuarios/gestion" element={<PageGestionUsuarios />} />
+                <Route path="/roles/consulta" element={<PageConsultaRoles />} />
+                <Route path="/historial" element={<HistorialPersonal />} />
+                <Route path="/reportes" element={<PageReportes />} />
+                <Route path="/cambiar-contrasena" element={<PageChangePassword />} />
+              </Route>
+            </Route>
+          </Routes>
+        </AuthProvider>
       </ProveedorCarrito>
     </BrowserRouter>
   );

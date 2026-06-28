@@ -30,10 +30,10 @@ export class ServicesUsuarios{
         }
         await this.serviceRol.obtenerRolPorId(usuario.id_rol,client);
 
-        if(!usuario.nombre?.trim()){
+        if(!usuario.nombres?.trim()){
             throw new Error("Nombre de usuario es requerido");
         }
-        if(!usuario.apellido?.trim()){
+        if(!usuario.apellidos?.trim()){
             throw new Error("Apellido de usuario es requerido");
         }
         if(!usuario.email?.trim()){
@@ -57,10 +57,10 @@ export class ServicesUsuarios{
         if(usuario.password.length < 8){
             throw new Error("Password debe tener al menos 8 caracteres");
         }
-        if(usuario.nombre.length>100){
+        if(usuario.nombres.length>100){
             throw new Error("Nombre de usuario no puede exceder 100 caracteres");
         }
-        if(usuario.apellido.length>100){
+        if(usuario.apellidos.length>100){
             throw new Error("Apellido de usuario no puede exceder 100 caracteres");
         }
         if(usuario.telefono && usuario.telefono.length>20){
