@@ -2,16 +2,18 @@ import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCarrito } from "@/shared/context/ContextoCarrito";
 import { useClientes } from "@/modules/clientes/hooks/useClientes";
-import { Cliente } from "@/modules/clientes/domain/Cliente";
-import { ApiClienteRepository } from "@/modules/clientes/infrastructure/ApiClienteRepository";
 import { TableClientes } from "@/modules/clientes/components/TableClientes";
 import FiltrosBusqueda from "@/modules/clientes/components/Busqueda";
+import { useAuth } from "@/shared/context/auth/AuthContext";
+import { ClienteResponse } from "@/modules/clientes/types/ClienteResponse";
 
 function Caja() {
   const navigate = useNavigate();
   const { carrito, total, subtotal, iva } = useCarrito();
-  const repository = useMemo(() => new ApiClienteRepository(), []);
-  const { clientes, cargando, error, refrescar } = useClientes(repository);
+  const usuario = useAuth();
+  const id_empresa = Number(usuario?.usuario?.id_empresa);
+  type Cliente = ClienteResponse["clientes"][number];
+  const { clientes, cargando, error, refrescar } = useClientes(id_empresa);
   const [busquedaCliente, setBusquedaCliente] = useState("");
   const [datosCliente, setDatosCliente] = useState({
     nombre: "",
@@ -109,7 +111,7 @@ function Caja() {
               <div className="space-y-2 mt-4">
                 {clientesFiltradosCaja.map((cliente) => (
                   <button
-                    key={cliente.id}
+                    key={cliente.id_cliente}
                     type="button"
                     onClick={() => seleccionarCliente(cliente)}
                     className="w-full text-left p-3 rounded-xl border border-gray-100 hover:border-emerald-300 hover:bg-emerald-50 transition-all"

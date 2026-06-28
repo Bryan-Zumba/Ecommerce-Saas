@@ -3,16 +3,19 @@ import { TableClientes } from '../components/TableClientes';
 import { useClientes } from '../hooks/useClientes';
 import PanelLateralDer from '@/shared/layout/PanelLateralDer';
 import FormularioCliente, { DatosFormularioCliente } from '../components/FormularioClientes';
+import { useAuth } from '@/shared/context/auth/AuthContext';
+import { ClienteResponse } from '../types/ClienteResponse';
 
 
 export const PageClientes: React.FC = () => {
-  const usuario= 
-  const { clientes, cargando, error, refrescar, agregarCliente } = useClientes();
+  const usuario = useAuth();
+  const id_empresa = Number(usuario?.usuario?.id_empresa);
+  const { clientes, cargando, error, refrescar } = useClientes(id_empresa);
 
   const permisoEditCliente = true;
   const permisoDeleteCliente = true;
   const permisoAddCliente = true;
-  const [clienteSeleccionado, setClienteSeleccionado] = useState<Cliente | null>(null);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState<ClienteResponse | null>(null);
   const [drawerAbierto, setDrawerAbierto] = useState(false);
 
   const abrirFormularioNuevo = () => {
@@ -20,7 +23,7 @@ export const PageClientes: React.FC = () => {
     setDrawerAbierto(true);
   };
 
-  const abrirFormularioEditar = (cliente: Cliente) => {
+  const abrirFormularioEditar = (cliente: ClienteResponse) => {
     setClienteSeleccionado(cliente);
     setDrawerAbierto(true);
   };
@@ -48,7 +51,7 @@ export const PageClientes: React.FC = () => {
     cerrarFormulario();
   };
 
-  const eliminarCliente = (cliente: Cliente) => {
+  const eliminarCliente = (cliente: ClienteResponse) => {
     console.log('Eliminar:', cliente);
   };
 

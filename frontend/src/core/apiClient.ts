@@ -24,8 +24,8 @@ const request = async <T>(endpoint: string, options: RequestInit): Promise<T> =>
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
 
-        // Si devuelve 401 y no es la petición de login ni de refresh-token, intentamos refrescar el token
-        if (response.status === 401 && !endpoint.includes('/login') && !endpoint.includes('/refresh-token')) {
+        // Si devuelve 401 y no es la petición de login, refresh-token ni me (verificación de sesión), intentamos refrescar el token
+        if (response.status === 401 && !endpoint.includes('/login') && !endpoint.includes('/refresh-token') && !endpoint.includes('/api/auth/me')) {
             if (isRefreshing) {
                 // Si ya hay un refresco en curso, encolamos la petición
                 return new Promise<void>((resolve, reject) => {

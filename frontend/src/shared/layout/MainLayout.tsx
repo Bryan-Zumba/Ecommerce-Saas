@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
+import { Outlet } from 'react-router-dom';
 
-function MainLayout({ children }) {
+function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -29,7 +30,7 @@ function MainLayout({ children }) {
 
         {/* Contenido de la Página */}
         <main className="flex-1">
-          {children}
+          <Outlet />
         </main>
         
       </div>
