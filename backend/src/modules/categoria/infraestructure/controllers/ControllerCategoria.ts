@@ -51,7 +51,8 @@ export class ControllerCategoria {
             const categoria = await this.service.actualizarCategoria(id_categoria,{
                 nombre,
                 descripcion,
-                estado});
+                estado
+            });
             return res.status(200).json({success:true,categoria});
         } catch (error:any) {
             res.status(400).json({success:false,message:error.message});

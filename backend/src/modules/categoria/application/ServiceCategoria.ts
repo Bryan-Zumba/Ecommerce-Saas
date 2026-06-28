@@ -10,8 +10,8 @@ export class ServiceCategoria {
     private serviceEmpresa: ServicesEmpresa;
     
     constructor(repository: RepositoryCategoria, serviceEmpresa:ServicesEmpresa) {
-        this.repository = repository;
-        this.serviceEmpresa = serviceEmpresa;
+            this.repository = repository;
+            this.serviceEmpresa = serviceEmpresa;
     }
 
     async obtenerCategorias(id_empresa:number):Promise<Categoria[]> {
@@ -61,6 +61,7 @@ export class ServiceCategoria {
         if(categoria.descripcion && categoria.descripcion.length >200){
             throw new Error(" La descripción  debe tener menos de 200 caracteres");
         }
+        
         const categoriaActualizada = await this.repository.actualizarCategoria(id_categoria,categoria);
         return categoriaActualizada;
         }
