@@ -1,5 +1,4 @@
 import { Decimal } from "@prisma/client/runtime/library";
-
 import { Tipo_Item } from "@prisma/client";
 
 export interface Item {

@@ -1,13 +1,10 @@
 import { prisma } from "../../../../core/database/prisma";
-import { RepositoryItem } from "../../domain/RepositoryItem";
+import { IRepositoryItem } from "../../domain/IRepositoryItem";
 import { Item } from "../../domain/Item";
 import { ItemInputDTO } from "../../domain/ItemInputDTO";
 import { ItemUpdateDTO } from "../../domain/ItemUpdateDTO";
 
-
-
-
-export class PrismaRepositoryItem implements RepositoryItem {
+export class PrismaRepositoryItem implements IRepositoryItem {
     async obtenerItems(id_empresa: number): Promise<Item[]> {
         const items = await prisma.item.findMany({
             where: {
@@ -36,8 +33,6 @@ export class PrismaRepositoryItem implements RepositoryItem {
         return item;
     }
 
-
-
     async crearItem(item: ItemInputDTO): Promise<Item> {
         const newItem = await prisma.item.create({
             data: item
@@ -62,7 +57,6 @@ export class PrismaRepositoryItem implements RepositoryItem {
         return itemActualizado
     }
 
-
     async activarItem(id_item: number): Promise<Item> {
         const itemActivado = await prisma.item.update({
             where: {
@@ -74,6 +68,7 @@ export class PrismaRepositoryItem implements RepositoryItem {
         });
         return itemActivado;
     }
+
     async desactivarItem(id_item: number): Promise<Item> {
         const itemDesactivado = await prisma.item.update({
             where: {
@@ -85,5 +80,4 @@ export class PrismaRepositoryItem implements RepositoryItem {
         });
         return itemDesactivado;
     }
-
 }

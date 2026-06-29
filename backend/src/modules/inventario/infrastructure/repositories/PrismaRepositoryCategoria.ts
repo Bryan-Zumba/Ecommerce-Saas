@@ -1,11 +1,10 @@
 import { prisma } from "../../../../core/database/prisma";
 import { Categoria } from "../../domain/Categoria";
-import { RepositoryCategoria } from "../../domain/RepositoryCategoria";
+import { IRepositoryCategoria } from "../../domain/IRepositoryCategoria";
 import { CategoriaInputDTO } from "../../domain/CategoriaInputDTO";
 import { CategoriaUpdateDTO } from "../../domain/CategoriaUpdateDTO";
 
-
-export class PrismaRepositoryCategoria implements RepositoryCategoria {
+export class PrismaRepositoryCategoria implements IRepositoryCategoria {
     async obtenerCategorias(id_empresa: number): Promise<Categoria[]> {
         const categorias = await prisma.categoria.findMany({
             where: {
@@ -14,9 +13,9 @@ export class PrismaRepositoryCategoria implements RepositoryCategoria {
         });
         return categorias;
 
-    } 
+    }
 
-   async obtenerCategoriaId(id_categoria: number): Promise<Categoria | null> {
+    async obtenerCategoriaId(id_categoria: number): Promise<Categoria | null> {
         const categoria = await prisma.categoria.findUnique({
             where: {
                 id_categoria: id_categoria
@@ -37,10 +36,10 @@ export class PrismaRepositoryCategoria implements RepositoryCategoria {
             where: {
                 id_categoria: id_categoria,
             },
-            data:{
-                nombre:categoria.nombre,
-                descripcion:categoria.descripcion,
-                estado:categoria.estado
+            data: {
+                nombre: categoria.nombre,
+                descripcion: categoria.descripcion,
+                estado: categoria.estado
             },
         });
         return categoriaActualizada;

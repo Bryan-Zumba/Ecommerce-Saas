@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { PrismaRepositoryItem } from "../repositories/PrismaRepositoryItem";
 import { ControllerItem } from "../controllers/ControllerItem";
-import { PrismaRepositoryCategoria } from "../../../categoria/infraestructure/repositories/PrismaRepositoryCategoria";
+import { PrismaRepositoryCategoria } from "../repositories/PrismaRepositoryCategoria";
 import { PrismaRepositoryEmpresa } from "../../../empresa/infrastructure/repositories/PrismaRepositoryEmpresa";
 import { ServicesEmpresa } from "../../../empresa/application/ServicesEmpresa";
 import { ServiceItem } from "../../application/ServiceItem"
-import { ServiceCategoria } from "../../../categoria/application/ServiceCategoria";
+import { ServiceCategoria } from "../../application/ServiceCategoria";
 
-const routerItem= Router();
+const routerItem = Router();
 
 const repositoryItem = new PrismaRepositoryItem();
 const RepositoryCategoria = new PrismaRepositoryCategoria();
@@ -16,7 +16,7 @@ const repositoryEmpresa = new PrismaRepositoryEmpresa();
 
 const serviceEmpresa = new ServicesEmpresa(repositoryEmpresa);
 const serviceCategoria = new ServiceCategoria(RepositoryCategoria, serviceEmpresa);
-const serviceItem = new ServiceItem(repositoryItem,serviceEmpresa,serviceCategoria);
+const serviceItem = new ServiceItem(repositoryItem, serviceEmpresa, serviceCategoria);
 
 const controllerItem = new ControllerItem(serviceItem);
 

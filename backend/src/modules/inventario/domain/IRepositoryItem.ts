@@ -2,8 +2,7 @@ import { Item } from "./Item";
 import { ItemInputDTO } from "./ItemInputDTO";
 import { ItemUpdateDTO } from "./ItemUpdateDTO";
 
-
-export interface RepositoryItem {
+export interface IRepositoryItem {
     obtenerItems(id_empresa: number): Promise<Item[]>;
     obtenerItemsPorCategoria(id_categoria: number): Promise<Item[]>;
     obtenerItemPorId(id_item: number): Promise<Item | null>;
@@ -12,5 +11,3 @@ export interface RepositoryItem {
     activarItem(id_item: number): Promise<Item>;
     desactivarItem(id_item: number): Promise<Item>;
 }
-
-

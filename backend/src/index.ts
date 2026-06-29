@@ -9,9 +9,9 @@ import routerAuth from './modules/auth/infrastructure/routes/RouteAuth';
 import routerEmpresa from './modules/empresa/infrastructure/routes/RoutesEmpresa';
 import routerRol from './modules/rol/infrastructure/routes/RoutesRol';
 import routerUsuario from './modules/usuarios/infrastructure/routes/RoutesUsuario';
-import routerBodega from './modules/bodega/infrastructure/routes/RoutesBodega';
-import routerCategoria from './modules/categoria/infraestructure/routes/RouterCategoria';
-import routerItem from './modules/item/infraestructure/routes/routerItem';
+import routerBodega from './modules/inventario/infrastructure/routes/RoutesBodega';
+import routerCategoria from './modules/inventario/infrastructure/routes/RouterCategoria';
+import routerItem from './modules/inventario/infrastructure/routes/routerItem';
 
 dotenv.config();
 
@@ -45,7 +45,7 @@ app.use('/api/auth', routerAuth);
 app.use('/api/empresa', routerEmpresa);
 app.use('/api/rol', routerRol);
 app.use('/api/usuario', routerUsuario);
-app.use('/api/bodega',routerBodega);
+app.use('/api/bodega', routerBodega);
 app.use('/api/cliente', routerCliente);
 app.use('/api/categoria', routerCategoria);
 app.use('/api/item', routerItem);

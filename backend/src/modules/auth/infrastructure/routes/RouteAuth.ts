@@ -13,8 +13,8 @@ import { PrismaRepositoryEmpresa } from "../../../empresa/infrastructure/reposit
 import authMiddleware from "../middleware/AuthMiddleware";
 import { ServicesRegister } from "../../application/services/ServicesRegister";
 import { ControllerRegister } from "../controllers/ControllersRegister";
-import { PrismaRepositoryBodega } from "../../../bodega/infrastructure/repositories/PrismaRepositoryBodega";
-import { ServicesBodega } from "../../../bodega/application/ServicesBodega";
+import { PrismaRepositoryBodega } from "../../../inventario/infrastructure/repositories/PrismaRepositoryBodega";
+import { ServicesBodega } from "../../../inventario/application/ServicesBodega";
 import { ServicesSesion } from "../../application/services/ServicesSesion";
 import { PrismaRepositorySesion } from "../repositories/PrismaRepositorySesion";
 import { ServicesEmail } from "../../application/services/ServicesEmail";
@@ -25,22 +25,22 @@ const repositoryAccessCode = new PrismaRepositoryAccessCode();
 const serviceAccessCode = new ServicesAccessCode(repositoryAccessCode);
 const controllerAccessCode = new ControllerAccessCode(serviceAccessCode);
 
-const repositoryUsuario= new PrismaRepositoryUsuario();
-const repositoryRol= new PrismaRepositoryRol();
-const repositoryEmpresa= new PrismaRepositoryEmpresa();
+const repositoryUsuario = new PrismaRepositoryUsuario();
+const repositoryRol = new PrismaRepositoryRol();
+const repositoryEmpresa = new PrismaRepositoryEmpresa();
 const repositoryBodega = new PrismaRepositoryBodega();
 const repositorySesion = new PrismaRepositorySesion();
 
 const serviceEmpresa = new ServicesEmpresa(repositoryEmpresa);
 const serviceBodega = new ServicesBodega(repositoryBodega)
 const serviceRol = new ServicesRol(repositoryRol);
-const serviceUsuario= new ServicesUsuarios(repositoryUsuario, serviceEmpresa, serviceRol);
+const serviceUsuario = new ServicesUsuarios(repositoryUsuario, serviceEmpresa, serviceRol);
 const serviceSesion = new ServicesSesion(repositorySesion);
 const serviceEmail = new ServicesEmail();
-const serviceAuth = new ServicesAuth(serviceUsuario,serviceSesion,serviceEmail);
+const serviceAuth = new ServicesAuth(serviceUsuario, serviceSesion, serviceEmail);
 const controllerAuth = new ControllersAuth(serviceAuth, serviceUsuario);
 
-const serviceRegister = new ServicesRegister(serviceAccessCode,serviceEmpresa,serviceBodega,serviceRol,serviceUsuario);
+const serviceRegister = new ServicesRegister(serviceAccessCode, serviceEmpresa, serviceBodega, serviceRol, serviceUsuario);
 const controllerRegister = new ControllerRegister(serviceRegister);
 
 routerAuth.post('/validate-access-code', controllerAccessCode.validarCodigo);
