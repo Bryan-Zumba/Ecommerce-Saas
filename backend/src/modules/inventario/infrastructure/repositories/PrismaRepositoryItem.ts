@@ -39,6 +39,23 @@ export class PrismaRepositoryItem implements IRepositoryItem {
         });
         return newItem;
     }
+
+    //VERIFICAR SI ES IMPORTANTE
+    async existeItemPorNombre(nombre: string, id_empresa: number): Promise<boolean> {
+        const item = await prisma.item.findFirst({
+            where: {
+                nombre: {
+                    equals: nombre.trim(),
+                    mode: "insensitive"
+                },
+                id_empresa
+            }
+        });
+
+        return !!item;
+    }
+
+
     async actualizarItem(id_item: number, item: ItemUpdateDTO): Promise<Item> {
         const itemActualizado = await prisma.item.update({
             where: {
