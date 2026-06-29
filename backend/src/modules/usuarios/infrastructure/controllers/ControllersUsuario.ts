@@ -105,4 +105,19 @@ export class ControllersUsuario{
             return res.status(400).json({ success: false, message: error.message });
         }
     }
+
+    cambiarPasswordUsuario = async (req: Request, res: Response) => {
+        try {
+            /*if (!req.user) {
+                return res.status(401).json({ message: "No autenticado" });
+            }
+            const id_usuario = req.user.id_usuario;*/
+            const id_usuario = Number(req.params.id_usuario);
+            const { password_actual, password_nueva } = req.body;
+            await this.service.cambiarPasswordUsuario(Number(id_usuario), password_actual, password_nueva);
+            return res.status(200).json({ success: true, message: "Contraseña actualizada exitosamente" });
+        } catch (error: any) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+    }
 }

@@ -12,6 +12,7 @@ export interface IRepositoryUsuario{
     obtenerUsuarioEmail(email: string, client?: DBClient): Promise<Usuario|null>;
     obtenerUsuarioId(id_usuario: number): Promise<Usuario|null>;
     actualizarRolUsuario(id_usuario: number, id_rol: number): Promise<void>;
-    actualizarPassword(id_usuario: number, password_hash: string): Promise<void>;
+    actualizarPassword(id_usuario: number, password_hash: string, client?: DBClient): Promise<void>;
+    actualizarMustChangePassword(id_usuario: number, estado: boolean, client?: DBClient): Promise<void>;
     actualizarUltimoAcceso(id_usuario: number): Promise<void>;
 }

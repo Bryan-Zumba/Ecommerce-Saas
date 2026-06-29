@@ -196,6 +196,31 @@ export class ServicesUsuarios{
         }
         const password_hash = await bcrypt.hash(password, 10);
         await this.repository.actualizarPassword(id_usuario, password_hash);
+        await this.repository.actualizarMustChangePassword(id_usuario, false);
+    }
+
+    async cambiarPasswordUsuario(id_usuario: number, password_actual: string, password_nueva: string){
+        const usuario= await this.obtenerUsuarioId(id_usuario);
+        
+        if(!password_actual?.trim()){
+            throw new Error("La contraseña actual es requerida");
+        }
+
+        if(!password_nueva?.trim()){
+            throw new Error("La contraseña nueva es requerida");
+        }
+
+        const coincidePassword = await bcrypt.compare(password_actual, usuario.password_hash);
+        if(!coincidePassword){
+            throw new Error("La contraseña actual es incorrecta");
+        }
+
+        const mismaPassword = await bcrypt.compare(password_nueva, usuario.password_hash);
+        if(mismaPassword){
+            throw new Error("La contraseña nueva debe ser diferente a la contraseña actual");
+        }
+
+        await this.actualizarPassword(id_usuario, password_nueva);
     }
 
     async actualizarUltimoAcceso(id_usuario: number) {

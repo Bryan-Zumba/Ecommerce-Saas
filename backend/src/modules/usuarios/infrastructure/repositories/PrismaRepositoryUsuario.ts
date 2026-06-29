@@ -98,8 +98,8 @@ export class PrismaRepositoryUsuario implements IRepositoryUsuario{
         return data;
     }
 
-    async actualizarPassword(id_usuario: number, password_hash: string): Promise<void> {
-        await prisma.usuario.update({
+    async actualizarPassword(id_usuario: number, password_hash: string, client: DBClient = prisma): Promise<void> {
+        await client.usuario.update({
             where: {
                 id_usuario: id_usuario
             },
@@ -107,6 +107,17 @@ export class PrismaRepositoryUsuario implements IRepositoryUsuario{
                 password_hash: password_hash
             }
         })
+    }
+
+    async actualizarMustChangePassword(id_usuario: number, estado: boolean, client: DBClient = prisma): Promise<void> {
+        await client.usuario.update({
+            where: {
+                id_usuario: id_usuario
+            },
+            data: {
+                must_change_password: estado
+            }
+        });
     }
 
     async actualizarUltimoAcceso(id_usuario: number): Promise<void> {

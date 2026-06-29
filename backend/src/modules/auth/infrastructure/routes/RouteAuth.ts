@@ -51,7 +51,7 @@ routerAuth.get('/me', authMiddleware, controllerAuth.me)
 routerAuth.put('/incrementar-intento-acceso', controllerAccessCode.incrementarIntentoAcceso);
 routerAuth.put('/registrar-uso-codigo', controllerAccessCode.registrarUsoCodigo);
 routerAuth.post('/registrar-tienda', controllerRegister.registrarTienda);
-routerAuth.post('/forgot-password', controllerAuth.forgotPassword)
-routerAuth.put('/reset-password', controllerAuth.resetPassword)
+routerAuth.post('/forgot-password', controllerAuth.forgotPasswordSendEmail);
+routerAuth.put('/reset-password', controllerAuth.resetPasswordOlvidada);
 
 export default routerAuth;

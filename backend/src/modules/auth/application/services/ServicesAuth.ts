@@ -59,6 +59,7 @@ export class ServicesAuth{
         return { 
             accessToken,
             refreshToken,
+            must_change_password: usuario.must_change_password,
             usuario:{
             id_usuario: usuario.id_usuario,
             id_empresa: usuario.id_empresa,
@@ -86,6 +87,7 @@ export class ServicesAuth{
             throw new Error("Sesion revocada");
         }
         if(sesion.fecha_expiracion < new Date()){
+            await this.serviceSesion.desactivarSesion(sesion.id_sesion);
             throw new Error("Sesion expirada");
         }
         const usuario = await this.serviceUsuario.obtenerUsuarioId(sesion.id_usuario);
@@ -93,6 +95,7 @@ export class ServicesAuth{
             throw new Error("Usuario no encontrado");
         }
         if(usuario.estado === false){
+            await this.serviceSesion.desactivarSesion(sesion.id_sesion);
             throw new Error("Usuario inactivo");
         }
 
@@ -124,7 +127,7 @@ export class ServicesAuth{
         await this.serviceSesion.desactivarSesion(sesion.id_sesion);
     }
 
-    async forgotPassword(email: string){
+    async forgotPasswordSendEmail(email: string){
         if(!email?.trim()){
             throw new Error("Email de usuario es requerido");
         }
@@ -157,7 +160,7 @@ export class ServicesAuth{
         }
     }
     
-    async resetPassword(token: string, password: string){
+    async resetPasswordOlvidada(token: string, password: string){
         if(!token?.trim()){
             throw new Error("Token es requerido");
         }

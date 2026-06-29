@@ -103,20 +103,20 @@ export class ControllersAuth {
         }
     }
 
-    forgotPassword = async (req: Request, res: Response) => {
+    forgotPasswordSendEmail = async (req: Request, res: Response) => {
         try {
             const { email } = req.body;
-            const result = await this.service.forgotPassword(email);
+            const result = await this.service.forgotPasswordSendEmail(email);
             return res.status(200).json({ success: true, message: result.message });
         } catch (error: any) {
             return res.status(400).json({ success: false, message: error.message });
         }
     }
 
-    resetPassword = async (req: Request, res: Response) => {
+    resetPasswordOlvidada = async (req: Request, res: Response) => {
         try {
             const { token, password } = req.body;
-            await this.service.resetPassword(token, password);
+            await this.service.resetPasswordOlvidada(token, password);
             return res.status(200).json({ success: true, message: "Password reseteada exitosamente" });
         } catch (error: any) {
             return res.status(400).json({ success: false, message: error.message });
