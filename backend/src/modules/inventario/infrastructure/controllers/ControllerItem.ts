@@ -1,10 +1,6 @@
-
 import { ServiceItem } from "../../application/ServiceItem";
 import { Request, Response } from "express";
 import { Decimal } from "@prisma/client/runtime/library";
-import { Tipo_Item } from "@prisma/client";
-
-
 
 export class ControllerItem {
     private service: ServiceItem;

@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import routerCliente from './modules/clientes/infrastructure/routes/RoutesCliente';
 import routerAuth from './modules/auth/infrastructure/routes/RouteAuth';
 import routerEmpresa from './modules/empresa/infrastructure/routes/RoutesEmpresa';
-import routerRol from './modules/rol/infrastructure/routes/RoutesRol';
+import routerRol from './modules/usuarios/infrastructure/routes/RoutesRol';
 import routerUsuario from './modules/usuarios/infrastructure/routes/RoutesUsuario';
 import routerBodega from './modules/inventario/infrastructure/routes/RoutesBodega';
 import routerCategoria from './modules/inventario/infrastructure/routes/RouterCategoria';

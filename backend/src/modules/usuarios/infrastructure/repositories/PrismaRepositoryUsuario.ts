@@ -2,10 +2,21 @@ import { prisma } from "../../../../core/database/prisma";
 import { IRepositoryUsuario } from "../../domain/IRepositoryUsuario";
 import { DBClient } from "../../../../core/database/DBClient";
 import { UsuarioCreateDTO } from "../../domain/UsuarioCreateDB";
+import { UsuarioUpdateDTO } from "../../domain/UsuarioUpdateDTO";
 
 export class PrismaRepositoryUsuario implements IRepositoryUsuario{
     async crearUsuario(usuario: UsuarioCreateDTO, client: DBClient = prisma) {
         const data = await client.usuario.create({
+            data: usuario
+        })
+        return data;
+    }
+
+    async actualizarInformacionUsuario(id_usuario: number, usuario: UsuarioUpdateDTO) {
+        const data = await prisma.usuario.update({
+            where: {
+                id_usuario: id_usuario
+            },
             data: usuario
         })
         return data;

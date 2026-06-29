@@ -2,9 +2,10 @@ import bcrypt from "bcrypt";
 import { DBClient } from "@/core/database/DBClient";
 import { IRepositoryUsuario } from "../domain/IRepositoryUsuario";
 import { ServicesEmpresa } from "../../empresa/application/ServicesEmpresa";
-import { ServicesRol } from "../../rol/application/ServicesRol";
+import { ServicesRol } from "./ServicesRol";
 import { UsuarioInputDTO } from "../domain/UsuarioInputDTO";
 import { UsuarioCreateDTO } from "../domain/UsuarioCreateDB";
+import { UsuarioUpdateDTO } from "../domain/UsuarioUpdateDTO";
 
 export class ServicesUsuarios{
     private repository: IRepositoryUsuario;
@@ -77,6 +78,36 @@ export class ServicesUsuarios{
             must_change_password,
         }
         const data = await this.repository.crearUsuario(entidadUsuario, client);
+        return data;
+    }
+
+    async actualizarInformacionUsuario(id_usuario: number, usuario: UsuarioUpdateDTO) {
+        if(!id_usuario){
+            throw new Error("ID de usuario es requerido");
+        }
+        await this.obtenerUsuarioId(id_usuario);
+        
+        if(usuario.nombres && usuario.nombres.length > 100){
+            throw new Error("Nombre de usuario no puede exceder 100 caracteres");
+        }
+        if(usuario.apellidos && usuario.apellidos.length > 100){
+            throw new Error("Apellido de usuario no puede exceder 100 caracteres");
+        }
+        if(usuario.telefono && usuario.telefono.length > 20){
+            throw new Error("Telefono de usuario no puede exceder 20 caracteres");
+        }
+        if(usuario.email && usuario.email.length > 255){
+            throw new Error("Correo electronico no puede exceder 255 caracteres");
+        }
+        
+        if(usuario.email){
+            const emailExist = await this.obtenerUsuarioEmailSec(usuario.email);
+            if(emailExist && emailExist.id_usuario !== id_usuario){
+                throw new Error("Correo electronico ya se encuentra registrado");
+            }
+        }
+
+        const data = await this.repository.actualizarInformacionUsuario(id_usuario, usuario);
         return data;
     }
 
