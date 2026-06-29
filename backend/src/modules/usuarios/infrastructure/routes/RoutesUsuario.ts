@@ -21,7 +21,11 @@ const servicesUsuario = new ServicesUsuarios(repositoryUsuario, serviceEmpresa, 
 const controllersUsuario = new ControllersUsuario(servicesUsuario);
 
 routerUsuario.post('/crear-usuario', controllersUsuario.crearUsuario);
-routerUsuario.put('actualizar-informacion-usuario', controllersUsuario.actualizarInformacionUsuario);
+routerUsuario.put('/actualizar-informacion-usuario', controllersUsuario.actualizarInformacionUsuario);
+routerUsuario.put('/actualizar-rol-usuario', controllersUsuario.actualizarRolUsuario);
+routerUsuario.put('/desactivar-usuario', controllersUsuario.desactivarUsuario);
+routerUsuario.put('/activar-usuario', controllersUsuario.activarUsuario);
+routerUsuario.get('/obtener-usuarios-empresa/:id_empresa', controllersUsuario.obtenerUsuariosEmpresa);
 routerUsuario.get('/obtener-usuario-email', controllersUsuario.obtenerUsuarioEmail);
 routerUsuario.get('/obtener-usuario/:id_usuario', authMiddleware, controllersUsuario.obtenerUsuarioId);
 

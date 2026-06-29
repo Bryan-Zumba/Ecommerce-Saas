@@ -41,6 +41,51 @@ export class ControllersUsuario{
         }
     }
 
+    actualizarRolUsuario = async (req: Request, res: Response) => {
+        try {
+            const {id_usuario} = req.params;
+            const { id_rol } = req.body;
+            await this.service.actualizarRolUsuario(Number(id_usuario), Number(id_rol));
+            return res.status(200).json({ success: true, message: "Rol del usuario actualizado exitosamente" });
+        } catch (error: any) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+    }
+
+    desactivarUsuario = async (req: Request, res: Response) => {
+        try {
+            const {id_usuario} = req.params;
+            await this.service.desactivarUsuario(Number(id_usuario));
+            return res.status(200).json({ success: true, message: "Usuario desactivado exitosamente" });
+        } catch (error: any) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+    }
+
+    activarUsuario = async (req: Request, res: Response) => {
+        try {
+            const {id_usuario} = req.params;
+            await this.service.activarUsuario(Number(id_usuario));
+            return res.status(200).json({ success: true, message: "Usuario activado exitosamente" });
+        } catch (error: any) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+    }
+
+    obtenerUsuariosEmpresa = async (req: Request, res: Response) => {
+        try {
+            /*if (!req.user) {
+                return res.status(401).json({ message: "No autenticado" });
+            }
+            const id_empresa = req.user.id_empresa;*/
+            const id_empresa = Number(req.params.id_empresa);
+            const usuarios = await this.service.obtenerUsuariosEmpresa(id_empresa);
+            return res.status(200).json({ success: true, message: "Usuarios obtenidos exitosamente", usuarios });
+        } catch (error: any) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+    }
+
     obtenerUsuarioEmail = async (req: Request, res: Response) => {
         try {
             const email = req.query.email as string;

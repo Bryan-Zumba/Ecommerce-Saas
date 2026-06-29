@@ -111,6 +111,45 @@ export class ServicesUsuarios{
         return data;
     }
 
+    async actualizarRolUsuario(id_usuario: number, id_rol: number){
+        const usuarioEncontrado = await this.obtenerUsuarioId(id_usuario);
+        if(usuarioEncontrado.id_rol === id_rol){
+            throw new Error("El usuario ya tiene ese rol");
+        }
+        const nuevoRol = await this.serviceRol.obtenerRolPorId(id_rol);
+        if(nuevoRol.nombre === "Administrador"){
+            throw new Error("El rol de administrador no puede ser asignado a un usuario");
+        }
+        await this.repository.actualizarRolUsuario(id_usuario, id_rol);
+    }
+
+    async desactivarUsuario(id_usuario: number) {
+        const usuarioEncontrado = await this.obtenerUsuarioId(id_usuario);
+        const rol = await this.serviceRol.obtenerRolPorId(usuarioEncontrado.id_rol);
+        if(rol.nombre === "Administrador"){
+            throw new Error("El usuario administrador no puede ser desactivado");
+        }
+        if(usuarioEncontrado.estado === false){
+            throw new Error("El usuario ya se encuentra desactivado");
+        }
+        await this.repository.desactivarUsuario(id_usuario);
+    }
+
+    async activarUsuario(id_usuario: number) {
+        const usuarioEncontrado = await this.obtenerUsuarioId(id_usuario);
+        if(usuarioEncontrado.estado === true){
+            throw new Error("El usuario ya se encuentra activo");
+        }
+        await this.repository.activarUsuario(id_usuario);
+    }
+
+    async obtenerUsuariosEmpresa(id_empresa: number) {
+        await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa);
+
+        const data = await this.repository.obtenerUsuariosEmpresa(id_empresa);
+        return data;
+    }
+
     async obtenerUsuarioEmail(email: string) {
         if(!email?.trim()){
             throw new Error("Email de usuario es requerido");

@@ -36,4 +36,14 @@ export class ControllersRol{
             return res.status(400).json({ success: false, message: error.message });
         }
     }
+
+    obtenerPermisosRol = async (req: Request, res: Response) => {
+        try {
+            const nombreRol = String(req.params.nombre);
+            const permisos = await this.service.obtenerPermisosRol(nombreRol);
+            return res.status(200).json({ success: true, message: "Permisos obtenidos exitosamente", permisos });
+        } catch (error: any) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+    }
 }

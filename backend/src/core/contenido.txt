@@ -1,1 +1,0 @@
-Core: Configuraciones transversales, utilitarios de red (apiClient) y configuración de base de datos.

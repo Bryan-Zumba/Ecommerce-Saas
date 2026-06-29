@@ -1,5 +1,6 @@
 import { DBClient } from "@/core/database/DBClient";
 import { IRepositoryRol } from "../domain/IRepositoryRol";
+import { ROLES_PERMISOS } from "../../../core/permissions/rolesPermisos";
 
 export class ServicesRol{
     private repository: IRepositoryRol;
@@ -36,5 +37,14 @@ export class ServicesRol{
             throw new Error("Rol no encontrado");
         }
         return data;
+    }
+
+    async obtenerPermisosRol(nombreRol:string){
+        await this.obtenerRolPorNombre(nombreRol);
+        const permisos = ROLES_PERMISOS[nombreRol as keyof typeof ROLES_PERMISOS]
+        if(!permisos){
+            throw new Error("Permisos no encontrados");
+        }
+        return permisos;
     }
 }

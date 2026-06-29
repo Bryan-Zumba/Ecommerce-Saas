@@ -1,10 +1,10 @@
-import { ServicesRol } from "@/modules/rol/application/ServicesRol";
+import { ServicesRol } from "../../../usuarios/application/ServicesRol";
 import { ServicesEmpresa } from "../../../empresa/application/ServicesEmpresa";
 import { ServicesAccessCode } from "./ServicesAccessCode";
 import { ServicesUsuarios } from "@/modules/usuarios/application/ServicesUsuarios";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../../../core/database/prisma";
-import { ServicesBodega } from "../../../bodega/application/ServicesBodega";
+import { ServicesBodega } from "../../../inventario/application/ServicesBodega";
 
 export class ServicesRegister{
     private serviceAccessCode: ServicesAccessCode;

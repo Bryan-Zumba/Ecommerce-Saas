@@ -12,5 +12,5 @@ const controllersRol = new ControllersRol(servicesRol);
 routerRol.get('/obtener-roles', controllersRol.obtenerRoles);
 routerRol.get('/obtener-rol-id/:id_rol', controllersRol.obtenerRolPorId);
 routerRol.get('/obtener-rol-nombre/:nombre', controllersRol.obtenerRolPorNombre);
-
+routerRol.get('/obtener-permisos-rol/:nombre', controllersRol.obtenerPermisosRol);
 export default routerRol;
