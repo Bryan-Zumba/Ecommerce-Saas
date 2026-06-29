@@ -19,7 +19,7 @@ const controllerCategoria = new ControllerCategoria(serviceCategoria);
 
 routerCategoria.get("/obtener-categorias/empresa/:id_empresa", controllerCategoria.obtenerCategorias);
 
-routerCategoria.get("/obtener-categorias/:id_categoria", controllerCategoria.obtenerCategoriaId);
+routerCategoria.get("/obtener-categoria/:id_categoria", controllerCategoria.obtenerCategoriaId);
 
 routerCategoria.post("/crear-categorias", controllerCategoria.crearCategoria);
 

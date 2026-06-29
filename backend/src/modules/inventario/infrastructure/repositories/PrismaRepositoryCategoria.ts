@@ -31,6 +31,20 @@ export class PrismaRepositoryCategoria implements IRepositoryCategoria {
         return nuevaCategoria;
     }
 
+    async existeCategoriaPorNombre(nombre: string, id_empresa: number): Promise<boolean> {
+        const categoria = await prisma.categoria.findFirst({
+            where: {
+                nombre: {
+                    equals: nombre.trim(),
+                    mode: "insensitive"
+                },
+                id_empresa
+            }
+        });
+
+        return !!categoria;
+    }
+
     async actualizarCategoria(id_categoria: number, categoria: CategoriaUpdateDTO): Promise<Categoria> {
         const categoriaActualizada = await prisma.categoria.update({
             where: {
