@@ -12,7 +12,6 @@ export class PrismaRepositoryCategoria implements IRepositoryCategoria {
             }
         });
         return categorias;
-
     }
 
     async obtenerCategoriaId(id_categoria: number): Promise<Categoria | null> {

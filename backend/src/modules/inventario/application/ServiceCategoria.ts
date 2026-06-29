@@ -13,7 +13,15 @@ export class ServiceCategoria {
         this.serviceEmpresa = serviceEmpresa;
     }
 
-        async obtenerCategoriaId(id_categoria:number):Promise<Categoria | null> {
+    async obtenerCategorias(id_empresa:number):Promise<Categoria[]>{
+
+        await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa);
+        
+        const categorias = await this.repository.obtenerCategorias(id_empresa);
+        return categorias;
+    }
+
+    async obtenerCategoriaId(id_categoria:number):Promise<Categoria | null> {
         if(!id_categoria || id_categoria <=0 ){
             throw new Error("Id de categoría inválido");
         }

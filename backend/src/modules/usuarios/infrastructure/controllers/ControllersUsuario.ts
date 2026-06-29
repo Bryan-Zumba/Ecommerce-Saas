@@ -25,7 +25,7 @@ export class ControllersUsuario{
         }
     }
 
-    actualizarUsuario = async (req: Request, res: Response) => {
+    actualizarInformacionUsuario = async (req: Request, res: Response) => {
         try {
             const {id_usuario} = req.params;
             const { nombres, apellidos, telefono, email } = req.body;
