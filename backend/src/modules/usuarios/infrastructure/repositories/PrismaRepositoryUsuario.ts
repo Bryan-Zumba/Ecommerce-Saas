@@ -63,6 +63,7 @@ export class PrismaRepositoryUsuario implements IRepositoryUsuario{
             },
             select:{
                 id_usuario: true,
+                id_rol: true,
                 nombres: true,
                 apellidos: true,
                 telefono: true,

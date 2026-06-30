@@ -18,7 +18,7 @@ export class ServicesUsuarios{
         this.serviceRol = serviceRol;
     }
 
-    async crearUsuario(usuario: UsuarioInputDTO, client?: DBClient, must_change_password: boolean = true) {
+    async crearUsuario(usuario: UsuarioInputDTO, client?: DBClient, must_change_password: boolean = true, contexto: "registro_empresa" | "usuario_normal" = "usuario_normal") {
         
         if(!usuario.id_empresa){
             throw new Error("El usuario debe pertenecer a una empresa");
@@ -29,8 +29,10 @@ export class ServicesUsuarios{
         if(!usuario.id_rol){
             throw new Error("El usuario debe tener un rol");
         }
-        await this.serviceRol.obtenerRolPorId(usuario.id_rol,client);
-
+        const rol = await this.serviceRol.obtenerRolPorId(usuario.id_rol,client);
+        if(rol.nombre === "Administrador" && contexto === "usuario_normal"){
+            throw new Error("El rol de administrador no puede ser asignado a un usuario");
+        }
         if(!usuario.nombres?.trim()){
             throw new Error("Nombre de usuario es requerido");
         }
@@ -71,9 +73,9 @@ export class ServicesUsuarios{
             throw new Error("Correo electronico no puede exceder 255 caracteres");
         }
         const password_hash = await bcrypt.hash(usuario.password, 10);
-
+        const {password,...usuarioSinPassword} = usuario;
         const entidadUsuario : UsuarioCreateDTO= {
-            ...usuario,
+            ...usuarioSinPassword,
             password_hash,
             must_change_password,
         }

@@ -50,7 +50,7 @@ export class ServicesRegister{
                 ...data.usuario,
                 id_empresa:empresa.id_empresa,
                 id_rol: idRolAdmin.id_rol,
-            },tx,false);
+            },tx,false, "registro_empresa");
             console.timeEnd("5")
 
             console.time("6")
