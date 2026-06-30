@@ -28,5 +28,7 @@ routerUsuario.put('/activar-usuario/:id_usuario', authMiddleware, controllersUsu
 routerUsuario.get('/obtener-usuarios-empresa/:id_empresa', authMiddleware, controllersUsuario.obtenerUsuariosEmpresa);
 routerUsuario.get('/obtener-usuario-email', authMiddleware, controllersUsuario.obtenerUsuarioEmail);
 routerUsuario.get('/obtener-usuario/:id_usuario', authMiddleware, controllersUsuario.obtenerUsuarioId);
+routerUsuario.put('/actualizar-contrasena-usuario', authMiddleware, controllersUsuario.cambiarPasswordUsuario);
+routerUsuario.put('/actualizar-must-change-password-false', authMiddleware, controllersUsuario.actualizarMustChangePasswordFalse);
 
 export default routerUsuario;

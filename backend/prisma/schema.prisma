@@ -27,8 +27,8 @@ model Acceso_Autorizado {
 
 model Rol {
   id_rol         Int      @id @default(autoincrement())
-  nombre         String   @unique @db.VarChar
-  descripcion    String   @db.VarChar
+  nombre         String   @unique @db.VarChar(100)
+  descripcion    String   @db.VarChar(500)
   estado         Boolean  @default(true)
   fecha_creacion DateTime @default(now()) @db.Timestamptz(6)
 
@@ -55,7 +55,6 @@ model Usuario {
   turno_caja        Turno_caja[]
   ventas            Venta[]
   compras           Compra[]
-  gastos_operativos Gasto_operativo[]
   cierre_periodo    Cierre_Periodo[]
 }
 
@@ -101,7 +100,6 @@ model Empresa {
   ventas             Venta[]
   compras            Compra[]
   movimientos_caja   Movimiento_caja[]
-  gastos_operativos  Gasto_operativo[]
   periodos_contables Periodo_Contable[]
   accesos_autorizados Acceso_Autorizado[]
 }
@@ -110,11 +108,12 @@ model Empresa {
 model Caja {
   id_caja        Int      @id @default(autoincrement())
   id_empresa     Int      @db.Integer
-  nombre         String   @db.VarChar
-  descripcion    String   @db.VarChar
+  nombre         String   @db.VarChar(100)
+  descripcion    String   @db.VarChar(500)
   estado         Boolean  @default(true)
   fecha_creacion DateTime @default(now()) @db.Timestamptz(6)
-
+  
+  @@unique([id_empresa, nombre])
   empresa    Empresa      @relation(fields: [id_empresa], references: [id_empresa])
   turno_caja Turno_caja[]
 }
@@ -124,7 +123,7 @@ model Periodo_Gestion {
   fecha_inicio       DateTime @db.Timestamptz(6)
   fecha_fin          DateTime @db.Timestamptz(6)
   estado             Boolean  @default(false)
-  observacion        String?  @db.VarChar
+  observacion        String?  @db.VarChar(500)
 
   turno_caja Turno_caja[]
 }
@@ -163,25 +162,23 @@ model Movimiento_caja {
   id_turno_caja      Int                  @db.Integer
   id_venta           Int?                 @db.Integer
   id_compra          Int?                 @db.Integer
-  id_gasto_operativo Int?                 @db.Integer
   id_empresa         Int                  @db.Integer
   tipo_movimiento    Tipo_Movimiento_caja
   monto              Decimal              @db.Decimal(10, 2)
-  referencia         String               @db.VarChar
+  referencia         String               @db.VarChar(500)
   fecha_movimiento   DateTime             @default(now()) @db.Timestamptz(6)
 
   turno_caja      Turno_caja       @relation(fields: [id_turno_caja], references: [id_turno_caja])
   venta           Venta?           @relation(fields: [id_venta], references: [id_venta])
   compra          Compra?          @relation(fields: [id_compra], references: [id_compra])
   empresa         Empresa          @relation(fields: [id_empresa], references: [id_empresa])
-  gasto_operativo Gasto_operativo? @relation(fields: [id_gasto_operativo], references: [id_gasto_operativo])
 }
 
 //Modulo de ventas
 model Metodo_Pago {
   id_metodo_pago Int     @id @default(autoincrement())
-  nombre         String  @db.VarChar
-  descripcion    String  @db.VarChar
+  nombre         String  @db.VarChar(100)
+  descripcion    String  @db.VarChar(500)
   estado         Boolean @default(true)
 
   pagos Pago[]
@@ -206,7 +203,7 @@ model Venta {
   id_empresa          Int          @db.Integer
   id_periodo_contable Int          @db.Integer
   total               Decimal      @db.Decimal(10, 2)
-  observacion         String?      @db.VarChar
+  observacion         String?      @db.VarChar(500)
   fecha               DateTime     @default(now()) @db.Timestamptz(6)
   estado_venta        Estado_venta @default(Pendiente)
 
@@ -267,6 +264,7 @@ model Categoria {
   descripcion  String?  @db.VarChar(500)
   estado       Boolean @default(true)
 
+  @@unique([id_empresa, nombre])
   empresa Empresa @relation(fields: [id_empresa], references: [id_empresa])
   items   Item[]
 }
@@ -288,6 +286,7 @@ model Item {
   imagen_url   String?   @db.VarChar(500)
   estado       Boolean   @default(true)
 
+  @@unique([id_empresa, nombre])
   categoria       Categoria               @relation(fields: [id_categoria], references: [id_categoria])
   empresa         Empresa                 @relation(fields: [id_empresa], references: [id_empresa])
   inventarios     Inventario[]
@@ -298,7 +297,7 @@ model Item {
 
 model Bodega {
   id_bodega      Int      @id @default(autoincrement())
-  id_empresa     Int      @db.Integer
+  id_empresa     Int      @unique @db.Integer
   nombre         String   @db.VarChar(150)
   descripcion    String?   @db.VarChar(500)
   ubicacion      String?   @db.VarChar(300)
@@ -364,7 +363,8 @@ model Proveedor {
   email          String?  @db.VarChar(255)
   estado         Boolean  @default(true)
   fecha_registro DateTime @default(now()) @db.Timestamptz(6)
-
+  
+  @@unique([id_empresa, nombre])
   compras Compra[]
 
   empresa Empresa @relation(fields: [id_empresa], references: [id_empresa])
@@ -378,7 +378,7 @@ model Compra {
   id_periodo_contable Int           @db.Integer
   total               Decimal       @db.Decimal(10, 2)
   fecha_compra        DateTime      @default(now()) @db.Timestamptz(6)
-  observacion         String        @db.VarChar
+  observacion         String?       @db.VarChar(500)
   estado_compra       Estado_compra @default(Pendiente)
 
   proveedor               Proveedor               @relation(fields: [id_proveedor], references: [id_proveedor])
@@ -411,32 +411,6 @@ model Detalle_Compra {
 }
 
 //Modulo de reportes
-model Gasto_operativo {
-  id_gasto_operativo  Int                  @id @default(autoincrement())
-  id_empresa          Int                  @db.Integer
-  id_usuario          Int                  @db.Integer
-  id_periodo_contable Int                  @db.Integer
-  descripcion         String               @db.VarChar
-  total               Decimal              @db.Decimal(10, 2)
-  tipo_gasto          Tipo_gasto_operativo
-  fecha_gasto         DateTime             @db.Timestamptz(6)
-  fecha_registro      DateTime             @default(now()) @db.Timestamptz(6)
-
-  empresa          Empresa           @relation(fields: [id_empresa], references: [id_empresa])
-  usuario          Usuario           @relation(fields: [id_usuario], references: [id_usuario])
-  periodo_contable Periodo_Contable  @relation(fields: [id_periodo_contable], references: [id_periodo_contable])
-  movimientos_caja Movimiento_caja[]
-}
-
-enum Tipo_gasto_operativo {
-  Servicios
-  Transporte
-  Mantenimiento
-  Limpieza
-  Arriendo
-  Otros
-}
-
 enum Estado_periodo_contable {
   Abierto
   Cerrado
@@ -457,7 +431,6 @@ model Periodo_Contable {
   turno_caja        Turno_caja[]
   ventas            Venta[]
   compras           Compra[]
-  gastos_operativos Gasto_operativo[]
   cierres           Cierre_Periodo[]
 }
 
@@ -469,7 +442,7 @@ model Cierre_Periodo {
   total_ingresos      Decimal  @db.Decimal(10, 2)
   total_egresos       Decimal  @db.Decimal(10, 2)
   utilidad            Decimal  @db.Decimal(10, 2)
-  observacion         String?  @db.VarChar
+  observacion         String?  @db.VarChar(500)
 
   periodo_contable Periodo_Contable @relation(fields: [id_periodo_contable], references: [id_periodo_contable])
   usuario          Usuario          @relation(fields: [id_usuario], references: [id_usuario])

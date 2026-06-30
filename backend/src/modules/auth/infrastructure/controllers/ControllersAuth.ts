@@ -31,7 +31,14 @@ export class ControllersAuth {
                 maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
             });
             
-            return res.status(200).json({ success: true, message: "Login exitoso", data: result.usuario });
+            return res.status(200).json({ 
+                success: true, 
+                message: "Login exitoso", 
+                data: {
+                    must_change_password: result.must_change_password,
+                    usuario: result.usuario
+                }
+            });
         } catch (error: any) {
             if(error.message==="Credenciales incorrectas"){
                 return res.status(401).json({ success: false, message: error.message });
@@ -88,6 +95,7 @@ export class ControllersAuth {
             const usuario = await this.serviceUsuario.obtenerUsuarioId(user.id_usuario);
 
             return res.status(200).json({ success: true, data: {
+                must_change_password: usuario.must_change_password,
                 usuario:{
                     id_usuario: usuario.id_usuario,
                     id_empresa: usuario.id_empresa,

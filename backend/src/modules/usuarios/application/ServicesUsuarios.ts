@@ -230,4 +230,11 @@ export class ServicesUsuarios{
         
         await this.repository.actualizarUltimoAcceso(id_usuario);
     }
+
+    async actualizarMustChangePasswordFalse(id_usuario: number){
+        const usuario = await this.obtenerUsuarioId(id_usuario);
+        if(usuario.must_change_password === true){
+            await this.repository.actualizarMustChangePassword(id_usuario, false);
+        }
+    }
 }
