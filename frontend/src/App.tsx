@@ -33,11 +33,11 @@ function App() {
           <Routes>
             {/* Rutas publicas */}
             <Route path="/auth" element={<PageAuth />} />
-            <Route path="/auth/primer-acceso" element={<PageForcePasswordChange />} />
             <Route path="/reset-password" element={<PageResetPassword />} />
             <Route path="/onboarding" element={<PageOnboarding />} />
             {/* Rutas privadas */}
             <Route element={<AuthGuard />}>
+              <Route path="/auth/primer-acceso" element={<PageForcePasswordChange />} />
               <Route element={<MainLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/items" element={<PageTienda />} />

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { AuthService } from '../services/AuthService';
 
 export const PageChangePassword: React.FC = () => {
   const navigate = useNavigate();
@@ -8,6 +10,12 @@ export const PageChangePassword: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Estados para visualizar contraseñas
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Validaciones
   const hasMinLength = newPassword.length >= 8;
@@ -15,7 +23,7 @@ export const PageChangePassword: React.FC = () => {
   const hasNumber = /[0-9]/.test(newPassword);
   const match = newPassword === confirmPassword && confirmPassword !== '';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!hasMinLength || !hasUpperCase || !hasNumber) {
@@ -28,15 +36,38 @@ export const PageChangePassword: React.FC = () => {
       return;
     }
 
-    // Simulación de guardado exitoso
-    setSuccess(true);
-    setError('');
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setTimeout(() => {
-      setSuccess(false);
-    }, 4000);
+    try {
+      setIsSubmitting(true);
+      setError('');
+      await AuthService.cambiarPasswordUsuario(currentPassword, newPassword);
+      
+      setSuccess(true);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      
+      Swal.fire({
+        icon: 'success',
+        title: '¡Contraseña Cambiada!',
+        text: 'Tu contraseña ha sido actualizada correctamente.',
+        confirmButtonColor: '#059669'
+      });
+
+      setTimeout(() => {
+        setSuccess(false);
+        navigate('/');
+      }, 2000);
+    } catch (err: any) {
+      setError(err.message || 'Error al cambiar la contraseña');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err.message || 'Error al cambiar la contraseña',
+        confirmButtonColor: '#059669'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -79,13 +110,20 @@ export const PageChangePassword: React.FC = () => {
               <div className="relative">
                 <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  type="password"
+                  type={showCurrentPassword ? "text" : "password"}
                   placeholder="Tu contraseña actual"
                   required
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-4 pl-11 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-12 pl-11 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <i className={`fas ${showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'}`} />
+                </button>
               </div>
             </div>
 
@@ -97,13 +135,20 @@ export const PageChangePassword: React.FC = () => {
               <div className="relative">
                 <i className="fas fa-key absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  type="password"
+                  type={showNewPassword ? "text" : "password"}
                   placeholder="Elige una nueva contraseña fuerte"
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-4 pl-11 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-12 pl-11 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <i className={`fas ${showNewPassword ? 'fa-eye-slash' : 'fa-eye'}`} />
+                </button>
               </div>
             </div>
 
@@ -115,13 +160,20 @@ export const PageChangePassword: React.FC = () => {
               <div className="relative">
                 <i className="fas fa-shield-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="Repite la contraseña exactamente"
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-4 pl-11 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-12 pl-11 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <i className={`fas ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'}`} />
+                </button>
               </div>
             </div>
 
@@ -158,9 +210,10 @@ export const PageChangePassword: React.FC = () => {
               </button>
               <button
                 type="submit"
-                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-2.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98] text-sm"
+                disabled={isSubmitting}
+                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white rounded-xl font-bold py-2.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98] text-sm"
               >
-                Guardar Cambios
+                {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
               </button>
             </div>
           </form>

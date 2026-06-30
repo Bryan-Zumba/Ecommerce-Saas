@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { FormularioBodega, DatosFormularioBodega } from '../../bodegas/components/FormularioBodega';
 import { FormularioEmpresa, DatosFormularioEmpresa } from '../../empresa/components/FormularioEmpresa';
 import { AuthService } from '../services/AuthService';
@@ -93,12 +94,26 @@ export const PageOnboarding: React.FC = () => {
 
       await AuthService.registerTienda(payload);
       
-      // Registro exitoso, nos vamos al inicio
+      Swal.fire({
+        icon: 'success',
+        title: '¡Tienda Registrada!',
+        text: 'Tu empresa y usuario administrador han sido configurados con éxito.',
+        confirmButtonColor: '#059669'
+      });
+
+      // Registro exitoso, iniciamos sesión y redirigimos
       await AuthService.login(authState.usuario.email, authState.usuario.password);
-      //navigate('/');
+      navigate('/');
     } catch (err: any) {
       console.error('Error al registrar la tienda:', err);
-      setErrorRegistro(err.message || 'Error al procesar el registro.');
+      const msg = err.message || 'Error al procesar el registro.';
+      setErrorRegistro(msg);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de Registro',
+        text: msg,
+        confirmButtonColor: '#059669'
+      });
     } finally {
       setIsRegistering(false);
     }

@@ -39,4 +39,14 @@ export const AuthService = {
     registerTienda: async (data: RegisterTiendaRequest): Promise<RegisterTiendaResponse> => {
         return apiClient.post<RegisterTiendaResponse>('/api/auth/registrar-tienda', data);
     },
+
+    //METODO CAMBIAR CONTRASEÑA (USUARIO LOGUEADO)
+    cambiarPasswordUsuario: async (password_actual: string, password_nueva: string): Promise<{ success: boolean; message: string }> => {
+        return apiClient.put<{ success: boolean; message: string }>('/api/usuario/actualizar-contrasena-usuario', { password_actual, password_nueva });
+    },
+
+    //METODO ACTUALIZAR MUST CHANGE PASSWORD
+    actualizarMustChangePasswordFalse: async (): Promise<{ success: boolean; message: string }> => {
+        return apiClient.put<{ success: boolean; message: string }>('/api/usuario/actualizar-must-change-password-false', {});
+    },
 }
