@@ -1,9 +1,66 @@
-import React, { useState } from 'react';
-import { mockRoles } from '../data/mockRoles';
-import { Rol } from '../../domain/RolesTypes';
+import React, { useState, useEffect } from 'react';
+import { Rol } from '../types/RolesTypes';
+import { useRoles } from '../hooks/useRoles';
+import { RolService } from '../services/RolService';
+
+interface PermisoAgrupado {
+  modulo: string;
+  acciones: string[];
+}
 
 export const PageConsultaRoles: React.FC = () => {
-  const [selectedRol, setSelectedRol] = useState<Rol | null>(mockRoles[0] || null);
+  const { roles, cargando, error } = useRoles();
+  const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
+  const [permisosRol, setPermisosRol] = useState<PermisoAgrupado[]>([]);
+  const [cargandoPermisos, setCargandoPermisos] = useState(false);
+
+  // Seleccionar automáticamente el primer rol cuando carguen
+  useEffect(() => {
+    if (roles && roles.length > 0 && !selectedRol) {
+      setSelectedRol(roles[0]);
+    }
+  }, [roles, selectedRol]);
+
+  useEffect(() => {
+    if (selectedRol) {
+      setCargandoPermisos(true);
+      setPermisosRol([]);
+      RolService.obtenerPermisosRol(selectedRol.nombre)
+        .then((data) => {
+          const permisosRaw: string[] = data.permisos || [];
+          const agrupados: Record<string, string[]> = {};
+          
+          permisosRaw.forEach((p) => {
+            const partes = p.split(':');
+            if (partes.length === 2) {
+              const [modulo, accion] = partes;
+              const moduloCapitalized = modulo.charAt(0).toUpperCase() + modulo.slice(1);
+              if (!agrupados[moduloCapitalized]) {
+                agrupados[moduloCapitalized] = [];
+              }
+              agrupados[moduloCapitalized].push(accion);
+            } else {
+              if (!agrupados['Otros']) agrupados['Otros'] = [];
+              agrupados['Otros'].push(p);
+            }
+          });
+
+          const resultado: PermisoAgrupado[] = Object.keys(agrupados).map((modulo) => ({
+            modulo,
+            acciones: agrupados[modulo]
+          }));
+
+          setPermisosRol(resultado);
+        })
+        .catch((err) => {
+          console.error("Error obteniendo permisos", err);
+          setPermisosRol([]);
+        })
+        .finally(() => {
+          setCargandoPermisos(false);
+        });
+    }
+  }, [selectedRol]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -14,7 +71,17 @@ export const PageConsultaRoles: React.FC = () => {
         </p>
       </div>
 
-      {mockRoles.length === 0 ? (
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl font-medium">
+          ⚠️ {error}
+        </div>
+      )}
+
+      {cargando ? (
+        <div className="bg-blue-50 text-blue-700 p-4 rounded-lg flex items-center gap-3">
+          <p>Cargando roles...</p>
+        </div>
+      ) : !roles || roles.length === 0 ? (
         <div className="bg-blue-50 text-blue-700 p-4 rounded-lg flex items-center gap-3">
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -26,14 +93,14 @@ export const PageConsultaRoles: React.FC = () => {
           {/* Lista de Roles */}
           <div className="lg:w-1/3 flex flex-col gap-3">
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Roles Disponibles</h2>
-            {mockRoles.map((rol) => (
+            {roles.map((rol) => (
               <div
                 key={rol.id_rol}
                 onClick={() => setSelectedRol(rol)}
                 className={`
                   p-4 rounded-xl cursor-pointer transition-all border
-                  ${selectedRol?.id_rol === rol.id_rol 
-                    ? 'bg-emerald-50 border-emerald-200 shadow-sm' 
+                  ${selectedRol?.id_rol === rol.id_rol
+                    ? 'bg-emerald-50 border-emerald-200 shadow-sm'
                     : 'bg-white border-gray-200 hover:border-emerald-300 hover:shadow-sm'
                   }
                 `}
@@ -67,12 +134,12 @@ export const PageConsultaRoles: React.FC = () => {
                   <p className="text-gray-600">{selectedRol.descripcion}</p>
                 </div>
 
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                  Permisos de Acceso
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  Permisos de Acceso {cargandoPermisos && <span className="text-xs text-emerald-500 normal-case animate-pulse">(Cargando...)</span>}
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {selectedRol.permisos.map((permiso, index) => (
+                  {permisosRol.map((permiso, index) => (
                     <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                       <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                         <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,11 +147,11 @@ export const PageConsultaRoles: React.FC = () => {
                         </svg>
                         Módulo: {permiso.modulo}
                       </h4>
-                      {permiso.acciones.length > 0 ? (
+                      {permiso.acciones && permiso.acciones.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {permiso.acciones.map((accion, i) => (
-                            <span 
-                              key={i} 
+                            <span
+                              key={i}
                               className="px-2 py-1 bg-white border border-gray-200 text-gray-600 text-xs rounded-md shadow-sm"
                             >
                               {accion}
@@ -96,6 +163,9 @@ export const PageConsultaRoles: React.FC = () => {
                       )}
                     </div>
                   ))}
+                  {(!permisosRol || permisosRol.length === 0) && !cargandoPermisos && (
+                    <p className="text-sm text-gray-500 col-span-2">Este rol no tiene permisos definidos.</p>
+                  )}
                 </div>
               </div>
             ) : (

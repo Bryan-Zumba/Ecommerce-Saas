@@ -21,8 +21,8 @@ import { PageChangePassword } from "./modules/auth/pages/PageUpdatePassword";
 import { PageResetPassword } from "./modules/auth/pages/PageRecoverPassword";
 
 import { PageMonitoreoInventario } from "./modules/inventario/infrastructure/pages/PageMonitoreoInventario";
-import { PageGestionUsuarios } from "./modules/usuarios/infrastructure/pages/PageGestionUsuarios";
-import { PageConsultaRoles } from "./modules/roles/infrastructure/pages/PageConsultaRoles";
+import { PageGestionUsuarios } from "./modules/usuarios/pages/PageGestionUsuarios";
+import { PageConsultaRoles } from "./modules/usuarios/pages/PageConsultaRoles";
 import { AuthProvider } from "./shared/context/auth/AuthContext";
 
 function App() {

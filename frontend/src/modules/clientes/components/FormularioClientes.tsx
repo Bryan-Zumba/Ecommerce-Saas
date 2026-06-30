@@ -1,16 +1,14 @@
-import { Cliente } from "../domain/Cliente";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import { ClienteResponse } from "../types/ClienteResponse";
+import { ClienteCreateDTO } from "../types/ClienteRequest";
 
-export interface DatosFormularioCliente {
-    cedula: string;
-    nombres: string;
-    apellidos: string;
-    email?: string;
-    telefono?: string;
-}
+export interface DatosFormularioCliente extends Omit<ClienteCreateDTO, "id_empresa"> {}
+
+type ClienteLocal = ClienteResponse["clientes"][0];
 
 interface FormularioClientesProps {
-    clienteActual?: Cliente | null;
+    clienteActual?: ClienteLocal | null;
     onGuardar: (datos: DatosFormularioCliente) => void;
     onCancelar: () => void;
 }
@@ -21,12 +19,19 @@ const FormularioCliente: React.FC<FormularioClientesProps> = ({ clienteActual, o
     const [apellidos, setApellidos] = useState(clienteActual?.apellidos || '');
     const [email, setEmail] = useState(clienteActual?.email || '');
     const [telefono, setTelefono] = useState(clienteActual?.telefono || '');
+    const [direccion, setDireccion] = useState(clienteActual?.direccion || '');
 
     const manejarEnvio = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if ((!cedula || !nombres || !apellidos) && !clienteActual) {//soloo para cuando es crear cliente
-            alert("Cedula, nombres y apellidos son obligatorios")
+        if ((!cedula || !nombres || !apellidos) && !clienteActual) {
+            Swal.fire({
+                title: "Datos incompletos",
+                text: "Cedula, nombres y apellidos son obligatorios.",
+                icon: "warning",
+                confirmButtonColor: "#059669",
+                confirmButtonText: "Entendido",
+            });
             return;
         }
 
@@ -34,14 +39,13 @@ const FormularioCliente: React.FC<FormularioClientesProps> = ({ clienteActual, o
             cedula,
             nombres,
             apellidos,
-            email,
-            telefono,
+            email: email || undefined,
+            telefono: telefono || undefined,
+            direccion: direccion || undefined,
         });
-
     }
 
     return (
-
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
             <form onSubmit={manejarEnvio} className="p-6 space-y-4">
                 <h3 className="text-lg font-bold text-gray-800">
@@ -49,10 +53,12 @@ const FormularioCliente: React.FC<FormularioClientesProps> = ({ clienteActual, o
                 </h3>
 
                 <div className="space-y-1 text-left">
-                    <label className="font-bold text-gray-400 ml-1" htmlFor="cedula">Cedula:</label>
+                    <label className="font-bold text-gray-400 ml-1" htmlFor="cedula">Cedula <span className="text-red-500">*</span>:</label>
                     <input
                         id="cedula"
                         type="text"
+                        maxLength={20}
+                        required={!clienteActual}
                         className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all disabled:bg-gray-50 disabled:text-gray-400"
                         placeholder="Cédula"
                         value={cedula}
@@ -62,10 +68,12 @@ const FormularioCliente: React.FC<FormularioClientesProps> = ({ clienteActual, o
                 </div>
 
                 <div className="space-y-1 text-left">
-                    <label htmlFor="nombres" className="font-bold text-gray-400 ml-1" >Nombres:</label>
+                    <label htmlFor="nombres" className="font-bold text-gray-400 ml-1" >Nombres <span className="text-red-500">*</span>:</label>
                     <input
                         id="nombres"
                         type="text"
+                        maxLength={100}
+                        required
                         className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all disabled:bg-gray-50 disabled:text-gray-400"
                         placeholder="Nombres"
                         value={nombres}
@@ -74,10 +82,12 @@ const FormularioCliente: React.FC<FormularioClientesProps> = ({ clienteActual, o
                 </div>
 
                 <div className="space-y-1 text-left">
-                    <label htmlFor="apellidos" className="font-bold text-gray-400 ml-1">Apellidos:</label>
+                    <label htmlFor="apellidos" className="font-bold text-gray-400 ml-1">Apellidos <span className="text-red-500">*</span>:</label>
                     <input
                         id="apellidos"
                         type="text"
+                        maxLength={100}
+                        required
                         className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all disabled:bg-gray-50 disabled:text-gray-400"
                         placeholder="Apellidos"
                         value={apellidos}
@@ -91,6 +101,7 @@ const FormularioCliente: React.FC<FormularioClientesProps> = ({ clienteActual, o
                         id="email"
                         autoComplete="email"
                         type="email"
+                        maxLength={255}
                         className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all disabled:bg-gray-50 disabled:text-gray-400"
                         placeholder="Email"
                         value={email}
@@ -103,10 +114,24 @@ const FormularioCliente: React.FC<FormularioClientesProps> = ({ clienteActual, o
                     <input
                         id="telefono"
                         type="text"
+                        maxLength={20}
                         className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all disabled:bg-gray-50 disabled:text-gray-400"
                         placeholder="Telefono"
                         value={telefono}
                         onChange={(e) => setTelefono(e.target.value)}
+                    />
+                </div>
+
+                <div className="space-y-1 text-left">
+                    <label htmlFor="direccion" className="font-bold text-gray-400 ml-1">Direccion:</label>
+                    <input
+                        id="direccion"
+                        type="text"
+                        maxLength={300}
+                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all disabled:bg-gray-50 disabled:text-gray-400"
+                        placeholder="Direccion"
+                        value={direccion}
+                        onChange={(e) => setDireccion(e.target.value)}
                     />
                 </div>
 

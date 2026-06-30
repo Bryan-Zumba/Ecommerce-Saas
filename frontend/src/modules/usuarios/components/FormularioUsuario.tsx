@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Usuario } from '../../domain/UsuariosTypes';
-import { mockRoles } from '@/modules/roles/infrastructure/data/mockRoles';
+import { Usuario } from '../types/UsuariosTypes';
+import { Rol } from '../types/RolesTypes';
 
 interface FormularioUsuarioProps {
   isOpen: boolean;
   onClose: () => void;
   usuarioAEditar: Usuario | null;
   onGuardar: (datos: {
-    nombre: string;
-    apellido: string;
+    nombres: string;
+    apellidos: string;
     email: string;
-    telefono: string;
+    telefono?: string;
     id_rol: number;
+    password?: string;
   }) => void;
+  roles: Rol[];
 }
 
 export const FormularioUsuario: React.FC<FormularioUsuarioProps> = ({
@@ -20,27 +22,31 @@ export const FormularioUsuario: React.FC<FormularioUsuarioProps> = ({
   onClose,
   usuarioAEditar,
   onGuardar,
+  roles,
 }) => {
   const [formNombre, setFormNombre] = useState('');
   const [formApellido, setFormApellido] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [formTelefono, setFormTelefono] = useState('');
   const [formIdRol, setFormIdRol] = useState(3);
+  const [formPassword, setFormPassword] = useState('');
+  const [mostrarPassword, setMostrarPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (usuarioAEditar) {
-      setFormNombre(usuarioAEditar.nombre);
-      setFormApellido(usuarioAEditar.apellido);
-      setFormEmail(usuarioAEditar.email);
-      setFormTelefono(usuarioAEditar.telefono);
-      setFormIdRol(usuarioAEditar.id_rol);
+      setFormNombre(usuarioAEditar.nombres || '');
+      setFormApellido(usuarioAEditar.apellidos || '');
+      setFormEmail(usuarioAEditar.email || '');
+      setFormTelefono(usuarioAEditar.telefono || '');
+      setFormIdRol(usuarioAEditar.id_rol || 3);
     } else {
       setFormNombre('');
       setFormApellido('');
       setFormEmail('');
       setFormTelefono('');
       setFormIdRol(3);
+      setFormPassword('');
     }
     setErrors({});
   }, [usuarioAEditar, isOpen]);
@@ -59,10 +65,18 @@ export const FormularioUsuario: React.FC<FormularioUsuarioProps> = ({
       newErrors.email = 'Ingresa un correo electrónico válido.';
     }
 
-    if (!formTelefono.trim()) {
-      newErrors.telefono = 'El teléfono es obligatorio.';
-    } else if (!/^\d{7,15}$/.test(formTelefono.replace(/\s/g, ''))) {
-      newErrors.telefono = 'Ingresa un número de teléfono válido (7-15 dígitos).';
+    if (formTelefono.trim()) {
+      if (!/^\d{7,15}$/.test(formTelefono.replace(/\s/g, ''))) {
+        newErrors.telefono = 'Ingresa un número de teléfono válido (7-15 dígitos).';
+      }
+    }
+
+    if (!usuarioAEditar) {
+      if (!formPassword.trim()) {
+        newErrors.password = 'La contraseña es obligatoria.';
+      } else if (formPassword.length < 8) {
+        newErrors.password = 'La contraseña debe tener al menos 8 caracteres.';
+      }
     }
 
     setErrors(newErrors);
@@ -74,15 +88,16 @@ export const FormularioUsuario: React.FC<FormularioUsuarioProps> = ({
     if (!validate()) return;
 
     onGuardar({
-      nombre: formNombre.trim(),
-      apellido: formApellido.trim(),
+      nombres: formNombre.trim(),
+      apellidos: formApellido.trim(),
       email: formEmail.trim(),
-      telefono: formTelefono.trim(),
+      telefono: formTelefono.trim() || undefined,
       id_rol: formIdRol,
+      password: !usuarioAEditar ? formPassword.trim() : undefined,
     });
   };
 
-  const rolSeleccionado = mockRoles.find(r => r.id_rol === formIdRol);
+  const rolSeleccionado = roles.find(r => r.id_rol === formIdRol);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
@@ -127,9 +142,8 @@ export const FormularioUsuario: React.FC<FormularioUsuarioProps> = ({
                 maxLength={30}
                 value={formNombre}
                 onChange={(e) => setFormNombre(e.target.value)}
-                className={`block w-full px-4 py-2.5 border rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all ${
-                  errors.nombre ? 'border-red-300' : 'border-gray-100'
-                }`}
+                className={`block w-full px-4 py-2.5 border rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all ${errors.nombre ? 'border-red-300' : 'border-gray-100'
+                  }`}
                 placeholder="Ej. Juan"
               />
               {errors.nombre && <p className="text-xs font-bold text-red-500">{errors.nombre}</p>}
@@ -148,9 +162,8 @@ export const FormularioUsuario: React.FC<FormularioUsuarioProps> = ({
                 maxLength={30}
                 value={formApellido}
                 onChange={(e) => setFormApellido(e.target.value)}
-                className={`block w-full px-4 py-2.5 border rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all ${
-                  errors.apellido ? 'border-red-300' : 'border-gray-100'
-                }`}
+                className={`block w-full px-4 py-2.5 border rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all ${errors.apellido ? 'border-red-300' : 'border-gray-100'
+                  }`}
                 placeholder="Ej. Pérez"
               />
               {errors.apellido && <p className="text-xs font-bold text-red-500">{errors.apellido}</p>}
@@ -163,9 +176,8 @@ export const FormularioUsuario: React.FC<FormularioUsuarioProps> = ({
                 type="email"
                 value={formEmail}
                 onChange={(e) => setFormEmail(e.target.value)}
-                className={`block w-full px-4 py-2.5 border rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all ${
-                  errors.email ? 'border-red-300' : 'border-gray-100'
-                }`}
+                className={`block w-full px-4 py-2.5 border rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all ${errors.email ? 'border-red-300' : 'border-gray-100'
+                  }`}
                 placeholder="usuario@empresa.com"
               />
               {errors.email && <p className="text-xs font-bold text-red-500">{errors.email}</p>}
@@ -173,18 +185,51 @@ export const FormularioUsuario: React.FC<FormularioUsuarioProps> = ({
 
             {/* Teléfono */}
             <div className="space-y-1">
-              <label className="text-xs font-extrabold text-gray-500 uppercase tracking-wider">Teléfono *</label>
+              <label className="text-xs font-extrabold text-gray-500 uppercase tracking-wider">Teléfono</label>
               <input
                 type="tel"
                 value={formTelefono}
                 onChange={(e) => setFormTelefono(e.target.value)}
-                className={`block w-full px-4 py-2.5 border rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all ${
-                  errors.telefono ? 'border-red-300' : 'border-gray-100'
-                }`}
+                className={`block w-full px-4 py-2.5 border rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all ${errors.telefono ? 'border-red-300' : 'border-gray-100'
+                  }`}
                 placeholder="0991234567"
               />
               {errors.telefono && <p className="text-xs font-bold text-red-500">{errors.telefono}</p>}
             </div>
+
+            {/* Contraseña */}
+            {!usuarioAEditar && (
+              <div className="space-y-1">
+                <label className="text-xs font-extrabold text-gray-500 uppercase tracking-wider">Contraseña *</label>
+                <div className="relative">
+                  <input
+                    type={mostrarPassword ? "text" : "password"}
+                    value={formPassword}
+                    onChange={(e) => setFormPassword(e.target.value)}
+                    className={`block w-full px-4 py-2.5 pr-12 border rounded-xl bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm font-semibold text-gray-800 transition-all ${errors.password ? 'border-red-300' : 'border-gray-100'
+                      }`}
+                    placeholder="Mínimo 8 caracteres"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setMostrarPassword(!mostrarPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-emerald-500 transition-colors"
+                  >
+                    {mostrarPassword ? (
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    ) : (
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.52-3.15m2.78-2.78A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.05 10.05 0 01-1.52 3.15m-2.78 2.78l-8.5-8.5M15 12a3 3 0 11-6 0" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+                {errors.password && <p className="text-xs font-bold text-red-500">{errors.password}</p>}
+              </div>
+            )}
 
             {/* Asignación de Rol */}
             <div className="space-y-2 pt-2">
@@ -194,7 +239,7 @@ export const FormularioUsuario: React.FC<FormularioUsuarioProps> = ({
                 onChange={(e) => setFormIdRol(Number(e.target.value))}
                 className="block w-full px-4 py-2.5 border border-gray-100 rounded-xl bg-gray-50/50 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
               >
-                {mockRoles.map(rol => (
+                {roles.map(rol => (
                   <option key={rol.id_rol} value={rol.id_rol}>{rol.nombre}</option>
                 ))}
               </select>

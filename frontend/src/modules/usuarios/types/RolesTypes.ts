@@ -10,3 +10,7 @@ export interface Rol {
   estado: boolean;
   permisos: Permiso[];
 }
+
+export interface RolesResponse {
+  roles: Rol[];
+}
