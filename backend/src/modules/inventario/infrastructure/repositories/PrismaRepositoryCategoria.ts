@@ -30,14 +30,15 @@ export class PrismaRepositoryCategoria implements IRepositoryCategoria {
         return nuevaCategoria;
     }
 
-    async existeCategoriaPorNombre(nombre: string, id_empresa: number): Promise<boolean> {
+    async existeCategoriaPorNombre(nombre: string, id_empresa: number, id_categoria?: number): Promise<boolean> {
         const categoria = await prisma.categoria.findFirst({
             where: {
                 nombre: {
                     equals: nombre.trim(),
                     mode: "insensitive"
                 },
-                id_empresa
+                id_empresa,
+                ...(id_categoria && { id_categoria: { not: id_categoria } })
             }
         });
         return !!categoria;

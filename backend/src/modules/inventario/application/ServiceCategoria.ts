@@ -65,7 +65,7 @@ export class ServiceCategoria {
             throw new Error("Nombre de categoría inválido, debe tener menos de 100 caracteres");
         }
         if(categoria.nombre && categoria.nombre.trim() !== categoriaActual.nombre.trim()){
-            const existe = await this.repository.existeCategoriaPorNombre(categoria.nombre.trim(), categoriaActual.id_empresa);
+            const existe = await this.repository.existeCategoriaPorNombre(categoria.nombre.trim(), categoriaActual.id_empresa,id_categoria);
             if(existe){
                 throw new Error("Ya existe una categoría con ese nombre para esta empresa");
             }
