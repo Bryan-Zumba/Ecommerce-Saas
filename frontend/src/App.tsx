@@ -4,7 +4,7 @@ import { AuthGuard } from "./shared/guards/AuthGuard";
 import { ProveedorCarrito } from "@/shared/context/ContextoCarrito";
 import Home from "./pages/Page_Inicio";
 import { PageTienda } from "./modules/items/infrastructure/pages/PageTienda";
-import { PageGestionItems } from "./modules/items/infrastructure/pages/PageGestionItems";
+import { PageGestionItems } from "./modules/inventario/pages/PageGestionItems";
 import { PageCategorias } from "./modules/inventario/pages/PageCategorias";
 import Caja from "./pages/Page_Caja";
 import VentaExitosa from "./pages/Page_VentaExitosa";
