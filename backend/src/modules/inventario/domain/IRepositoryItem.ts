@@ -10,5 +10,5 @@ export interface IRepositoryItem {
     actualizarItem(id_item: number, item: ItemUpdateDTO): Promise<Item>;
     activarItem(id_item: number): Promise<Item>;
     desactivarItem(id_item: number): Promise<Item>;
-    existeItemPorNombre(nombre: string, id_empresa: number): Promise<boolean>;
+    existeItemPorNombre(nombre: string, id_empresa: number, id_item?: number): Promise<boolean>;
 }

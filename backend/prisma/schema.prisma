@@ -284,6 +284,7 @@ model Item {
   precio       Decimal   @db.Decimal(10, 2)
   tipo_item    Tipo_Item
   imagen_url   String?   @db.VarChar(500)
+  imagen_public_id String? @db.VarChar(500)
   estado       Boolean   @default(true)
 
   @@unique([id_empresa, nombre])

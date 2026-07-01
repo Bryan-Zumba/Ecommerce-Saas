@@ -11,14 +11,16 @@ export class ControllerItem {
 
     obtenerItems = async (req: Request, res: Response) => {
         try {
-            const id_empresa = Number(req.params.id_empresa);
+            const id_empresa = Number(req.user?.id_empresa);
+            if(!id_empresa){
+                return res.status(401).json({ success: false, message: "No autorizado" });
+            }
             const items = await this.service.obtenerItems(id_empresa);
             return res.status(200).json({ success: true, items });
         } catch (error: any) {
             return res.status(400).json({ success: false, message: error.message });
         }
     }
-
 
     obtenerItemsPorCategoria = async (req: Request, res: Response) => {
         try {
@@ -44,17 +46,25 @@ export class ControllerItem {
 
     crearItem = async (req: Request, res: Response) => {
         try {
-            const { id_empresa, id_categoria, nombre, descripcion, costo, precio, tipo_item, imagen_url, estado } = req.body;
+            if (!req.user?.id_empresa) {
+                return res.status(401).json({ success: false, message: "No autorizado" });
+            }
+            const id_empresa = Number(req.user?.id_empresa);
+            const file = req.file;
+            
+            const { id_categoria, nombre, descripcion, costo, precio, tipo_item } = req.body;
+
+            console.log(req.body)
+            console.log(file)
             const item = await this.service.crearItem({
-                id_empresa: Number(id_empresa),
-                id_categoria: Number(id_categoria),
+                id_empresa,
+                id_categoria,
                 nombre,
                 descripcion,
-                costo: new Decimal(costo),
-                precio: new Decimal(precio),
+                costo,
+                precio,
                 tipo_item,
-                imagen_url,
-                estado
+                file
             });
             return res.status(200).json({ success: true, item });
 
@@ -66,16 +76,16 @@ export class ControllerItem {
     actualizarItem = async (req: Request, res: Response) => {
         try {
             const id_item = Number(req.params.id_item);
-            const { id_categoria, nombre, descripcion, costo, precio, tipo_item, imagen_url, estado } = req.body;
+            const file = req.file;
+            const { id_categoria, nombre, descripcion, costo, precio, tipo_item } = req.body;
             const item = await this.service.actualizarItem(id_item, {
-                id_categoria: Number(id_categoria),
+                id_categoria: id_categoria !== undefined ? Number(id_categoria) : undefined,
                 nombre,
                 descripcion,
-                costo: new Decimal(costo),
-                precio: new Decimal(precio),
-                tipo_item,
-                imagen_url,
-                estado
+                costo: costo !== undefined ? new Decimal(costo) : undefined,
+                precio: precio !== undefined ? new Decimal(precio) : undefined,
+                tipo_item: tipo_item !== undefined ? tipo_item : undefined,
+                file
             });
             return res.status(200).json({ success: true, item });
         } catch (error: any) {
@@ -102,8 +112,6 @@ export class ControllerItem {
             return res.status(400).json({ success: false, message: error.message });
         }
     }
-
-
 }
 
 

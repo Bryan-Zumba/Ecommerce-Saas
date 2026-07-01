@@ -6,9 +6,10 @@ export interface ItemInputDTO {
     id_empresa: number;
     nombre: string;
     descripcion?: string | null;
-    costo: Decimal;
+    costo: string;
     precio: Decimal;
     tipo_item: Tipo_Item;
     imagen_url?: string | null;
-    estado: boolean;
+    imagen_public_id?: string | null;
+    file?:Express.Multer.File
 }

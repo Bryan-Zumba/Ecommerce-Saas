@@ -41,20 +41,20 @@ export class PrismaRepositoryItem implements IRepositoryItem {
     }
 
     //VERIFICAR SI ES IMPORTANTE
-    async existeItemPorNombre(nombre: string, id_empresa: number): Promise<boolean> {
+    async existeItemPorNombre(nombre: string, id_empresa: number, id_item?: number): Promise<boolean> {
         const item = await prisma.item.findFirst({
             where: {
                 nombre: {
                     equals: nombre.trim(),
                     mode: "insensitive"
                 },
-                id_empresa
+                id_empresa,
+                ...(id_item ? { id_item: { not: id_item } } : {})
             }
         });
 
         return !!item;
     }
-
 
     async actualizarItem(id_item: number, item: ItemUpdateDTO): Promise<Item> {
         const itemActualizado = await prisma.item.update({
@@ -62,13 +62,14 @@ export class PrismaRepositoryItem implements IRepositoryItem {
                 id_item: id_item,
             },
             data: {
+                id_categoria: item.id_categoria,
                 nombre: item.nombre,
                 descripcion: item.descripcion,
                 costo: item.costo,
                 precio: item.precio,
                 tipo_item: item.tipo_item,
                 imagen_url: item.imagen_url,
-                estado: item.estado
+                imagen_public_id: item.imagen_public_id,
             }
         });
         return itemActualizado

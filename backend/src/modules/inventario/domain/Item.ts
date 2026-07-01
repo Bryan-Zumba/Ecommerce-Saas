@@ -11,5 +11,6 @@ export interface Item {
     precio: Decimal;
     tipo_item: Tipo_Item;
     imagen_url?: string | null;
+    imagen_public_id?: string | null;
     estado: boolean;
 }

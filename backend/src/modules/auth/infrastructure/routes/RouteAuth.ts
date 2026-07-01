@@ -32,7 +32,7 @@ const repositoryBodega = new PrismaRepositoryBodega();
 const repositorySesion = new PrismaRepositorySesion();
 
 const serviceEmpresa = new ServicesEmpresa(repositoryEmpresa);
-const serviceBodega = new ServicesBodega(repositoryBodega)
+const serviceBodega = new ServicesBodega(repositoryBodega, serviceEmpresa)
 const serviceRol = new ServicesRol(repositoryRol);
 const serviceUsuario = new ServicesUsuarios(repositoryUsuario, serviceEmpresa, serviceRol);
 const serviceSesion = new ServicesSesion(repositorySesion);
