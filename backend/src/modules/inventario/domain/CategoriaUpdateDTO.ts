@@ -1,5 +1,4 @@
 export interface CategoriaUpdateDTO {
-    nombre: string;
+    nombre?: string;
     descripcion?: string | null;
-    estado: boolean;
 }

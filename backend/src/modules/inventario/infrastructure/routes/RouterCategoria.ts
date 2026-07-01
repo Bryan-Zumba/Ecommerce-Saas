@@ -13,20 +13,13 @@ const repositoryEmpresa = new PrismaRepositoryEmpresa();
 const servicesEmpresa = new ServicesEmpresa(repositoryEmpresa);
 const serviceCategoria = new ServiceCategoria(repositoryCategoria, servicesEmpresa);
 
-
 const controllerCategoria = new ControllerCategoria(serviceCategoria);
 
-
-routerCategoria.get("/obtener-categorias/empresa/:id_empresa", controllerCategoria.obtenerCategorias);
-
+routerCategoria.get("/obtener-categorias", controllerCategoria.obtenerCategorias);
 routerCategoria.get("/obtener-categoria/:id_categoria", controllerCategoria.obtenerCategoriaId);
-
-routerCategoria.post("/crear-categorias", controllerCategoria.crearCategoria);
-
+routerCategoria.post("/crear-categoria", controllerCategoria.crearCategoria);
 routerCategoria.put("/actualizar-categoria/:id_categoria", controllerCategoria.actualizarCategoria);
-
 routerCategoria.put("/desactivar-categoria/:id_categoria", controllerCategoria.desactivarCategoria);
-
 routerCategoria.put("/activar-categoria/:id_categoria", controllerCategoria.activarCategoria);
 
 export default routerCategoria;

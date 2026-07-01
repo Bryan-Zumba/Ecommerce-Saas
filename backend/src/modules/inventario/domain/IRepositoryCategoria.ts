@@ -9,5 +9,5 @@ export interface IRepositoryCategoria {
     actualizarCategoria(id_categoria: number, categoria: CategoriaUpdateDTO): Promise<Categoria>;
     desactivarCategoria(id_categoria: number): Promise<Categoria>;
     activarCategoria(id_categoria: number): Promise<Categoria>;
-    existeCategoriaPorNombre(nombre:string, id_empresa:Number):Promise<boolean>;
+    existeCategoriaPorNombre(nombre:string, id_empresa:number):Promise<boolean>;
 }

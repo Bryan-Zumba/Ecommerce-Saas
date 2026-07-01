@@ -40,7 +40,6 @@ export class PrismaRepositoryCategoria implements IRepositoryCategoria {
                 id_empresa
             }
         });
-
         return !!categoria;
     }
 
@@ -52,7 +51,6 @@ export class PrismaRepositoryCategoria implements IRepositoryCategoria {
             data: {
                 nombre: categoria.nombre,
                 descripcion: categoria.descripcion,
-                estado: categoria.estado
             },
         });
         return categoriaActualizada;

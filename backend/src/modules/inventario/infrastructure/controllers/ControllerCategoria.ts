@@ -10,7 +10,7 @@ export class ControllerCategoria {
 
     obtenerCategorias = async (req: Request, res: Response) => {
         try {
-            const id_empresa = Number(req.params.id_empresa);
+            const id_empresa = Number(req.user?.id_empresa);
             const categorias = await this.service.obtenerCategorias(id_empresa);
             return res.status(200).json({ success: true, categorias });
         } catch (error: any) {
@@ -30,12 +30,12 @@ export class ControllerCategoria {
 
     crearCategoria = async (req: Request, res: Response) => {
         try {
-            const { id_empresa, nombre, descripcion, estado } = req.body;
+            const { nombre, descripcion } = req.body;
+            const id_empresa = Number(req.user?.id_empresa);
             const categoria = await this.service.crearCategoria({
-                id_empresa: Number(id_empresa),
+                id_empresa:id_empresa,
                 nombre,
-                descripcion,
-                estado
+                descripcion
             });
             return res.status(200).json({ success: true, categoria });
         } catch (error: any) {
@@ -46,11 +46,10 @@ export class ControllerCategoria {
     actualizarCategoria = async (req: Request, res: Response) => {
         try {
             const id_categoria = Number(req.params.id_categoria);
-            const { nombre, descripcion, estado } = req.body;
+            const { nombre, descripcion } = req.body;
             const categoria = await this.service.actualizarCategoria(id_categoria, {
                 nombre,
                 descripcion,
-                estado
             });
             return res.status(200).json({ success: true, categoria });
         } catch (error: any) {
@@ -60,7 +59,6 @@ export class ControllerCategoria {
 
     desactivarCategoria = async (req: Request, res: Response) => {
         try {
-
             const id_categoria = Number(req.params.id_categoria);
             const categoria = await this.service.desactivarCategoria(id_categoria);
             return res.status(200).json({ success: true, categoria });
