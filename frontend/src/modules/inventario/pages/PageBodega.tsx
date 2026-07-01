@@ -1,35 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useBodega } from '../../application/useBodega';
-import { LocalstorageBodegaRepository } from '../repositories/LocalstorageBodegaRepository';
-import { VistaBodega } from '../../components/VistaBodega';
-import { FormularioBodega } from '../../components/FormularioBodega';
-
-const repository = new LocalstorageBodegaRepository();
-
-// ID de empresa por defecto (se integrará con autenticación más adelante)
-const ID_EMPRESA = 1;
+import React, { useState, useEffect } from 'react';
+import { useBodegas } from '../hooks/useBodegas';
+import { VistaBodega } from '../components/VistaBodega';
+import { FormularioBodega } from '../components/FormularioBodega';
+import Swal from 'sweetalert2';
 
 export const PageBodega: React.FC = () => {
   const {
     bodega,
-    cargando,
+    loading: cargando,
     error,
-    existeBodega,
-    cargarBodega,
-    editarBodega,
-  } = useBodega(repository);
+    fetchBodegaEmpresa,
+    updateBodega,
+  } = useBodegas();
 
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
-    cargarBodega(ID_EMPRESA);
-  }, [cargarBodega]);
-
-  const lanzarToast = useCallback((message: string, type: 'success' | 'error' = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3500);
-  }, []);
+    fetchBodegaEmpresa();
+  }, [fetchBodegaEmpresa]);
 
   const manejarGuardarEdicion = async (datosFormulario: {
     nombre: string;
@@ -37,28 +25,25 @@ export const PageBodega: React.FC = () => {
     ubicacion: string;
   }) => {
     if (!datosFormulario.nombre.trim()) {
-      lanzarToast('El nombre de la bodega es requerido.', 'error');
+      Swal.fire('Error', 'El nombre de la bodega es requerido.', 'error');
       return;
     }
+    if (!bodega?.id_bodega) return;
 
-    const res = await editarBodega(ID_EMPRESA, {
+    const success = await updateBodega(bodega.id_bodega, {
       nombre: datosFormulario.nombre,
       descripcion: datosFormulario.descripcion,
       ubicacion: datosFormulario.ubicacion,
     });
 
-    if (res.success) {
-      lanzarToast(`Bodega "${datosFormulario.nombre}" actualizada exitosamente.`, 'success');
+    if (success) {
       setModoEdicion(false);
-    } else {
-      lanzarToast(res.error || 'Error al actualizar la bodega', 'error');
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50/50 animate-in fade-in duration-500 relative flex flex-col">
       <main className="max-w-4xl mx-auto p-6 lg:p-10 flex-1 w-full text-left">
-
         {/* Cabecera de Página */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <div className="text-left">
@@ -79,23 +64,23 @@ export const PageBodega: React.FC = () => {
         )}
 
         {/* Contenido Principal */}
-        {cargando ? (
+        {cargando && !bodega ? (
           <div className="bg-white rounded-[2.5rem] p-12 text-center border border-gray-100 shadow-sm">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500 mb-2" />
             <p className="text-gray-400 text-sm font-medium">Cargando información de bodega...</p>
           </div>
-        ) : !existeBodega ? (
+        ) : !bodega ? (
           /* Sin bodega registrada */
           <div className="bg-white rounded-[2.5rem] p-12 text-center border border-gray-100 shadow-sm">
             <div className="text-6xl mb-4">📦</div>
             <h3 className="text-xl font-bold text-gray-700 mb-2">No hay bodega registrada</h3>
             <p className="text-gray-400 max-w-md mx-auto text-sm font-medium mb-6">
-              La bodega de tu empresa aún no ha sido configurada. Puedes registrarla desde la 
+              La bodega de tu empresa aún no ha sido configurada. Puedes registrarla desde la
               <span className="text-emerald-600 font-bold"> configuración inicial (Onboarding)</span>.
             </p>
           </div>
         ) : modoEdicion ? (
-          /* HU-016: Formulario de edición */
+          /* Formulario de edición */
           <FormularioBodega
             bodegaAEditar={bodega}
             onGuardar={manejarGuardarEdicion}
@@ -103,27 +88,13 @@ export const PageBodega: React.FC = () => {
             modo="edicion"
           />
         ) : (
-          /* HU-014: Vista de detalle */
+          /* Vista de detalle */
           <VistaBodega
             bodega={bodega!}
             onEditar={() => setModoEdicion(true)}
           />
         )}
       </main>
-
-      {/* Toast de notificación */}
-      {toast && (
-        <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-4 fade-in duration-300">
-          <div className={`px-5 py-3.5 rounded-2xl shadow-lg font-bold text-sm flex items-center gap-2 ${
-            toast.type === 'success'
-              ? 'bg-emerald-600 text-white shadow-emerald-600/20'
-              : 'bg-red-600 text-white shadow-red-600/20'
-          }`}>
-            <span>{toast.type === 'success' ? '✅' : '❌'}</span>
-            {toast.message}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

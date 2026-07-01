@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bodega } from '../../domain/Bodega';
+import { Bodega } from '../types/BodegaTypes';
 
 interface VistaBodegaProps {
   bodega: Bodega;

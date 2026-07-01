@@ -1,7 +1,6 @@
 import React, { useState, useMemo, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LocalstorageBodegaRepository } from '@/modules/bodegas/infrastructure/repositories/LocalstorageBodegaRepository';
-import { useBodega } from '@/modules/bodegas/application/useBodega';
+import { useBodegas } from '@/modules/inventario/hooks/useBodegas';
 import FormularioFactura, { DatosFacturaType } from '@/modules/stock/infrastructure/components/FormularioFactura';
 import MatrizProductos, { ProductoIngreso } from '@/modules/stock/infrastructure/components/MatrizProductos';
 import { enviarSolicitudStock } from '@/modules/stock/infrastructure/repositories/servicioStock';
@@ -72,8 +71,7 @@ function Page_GestionStock() {
   };
 
   // ================= ESTADOS PARA EL FORMULARIO =================
-  const repositoryBodega = useMemo(() => new LocalstorageBodegaRepository(), []);
-  const { bodega, cargando: cargandoBodegas, cargarBodega } = useBodega(repositoryBodega);
+  const { bodega, loading: cargandoBodegas, fetchBodegaEmpresa: cargarBodega } = useBodegas();
   const [cargandoForm, setCargandoForm] = useState(false);
   const [exito, setExito] = useState<null | { ordenIngreso: string }>(null);
   const [bodegaSeleccionada, setBodegaSeleccionada] = useState<number | null>(null);
@@ -88,7 +86,7 @@ function Page_GestionStock() {
   const [productos, setProductos] = useState<ProductoIngreso[]>([]);
 
   useEffect(() => {
-    cargarBodega(ID_EMPRESA);
+    cargarBodega();
   }, [cargarBodega]);
 
   useEffect(() => {

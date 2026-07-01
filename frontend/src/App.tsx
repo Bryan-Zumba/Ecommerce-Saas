@@ -5,10 +5,10 @@ import { ProveedorCarrito } from "@/shared/context/ContextoCarrito";
 import Home from "./pages/Page_Inicio";
 import { PageTienda } from "./modules/items/infrastructure/pages/PageTienda";
 import { PageGestionItems } from "./modules/items/infrastructure/pages/PageGestionItems";
-import { PageGestionCategorias } from "./modules/items/infrastructure/pages/PageGestionCategorias";
+import { PageCategorias } from "./modules/inventario/pages/PageCategorias";
 import Caja from "./pages/Page_Caja";
 import VentaExitosa from "./pages/Page_VentaExitosa";
-import { PageBodega } from "./modules/bodegas/infrastructure/pages/PageBodega";
+import { PageBodega } from "./modules/inventario/pages/PageBodega";
 import Page_GestionStock from "./modules/stock/infrastructure/pages/Page_GestionStock";
 import HistorialPersonal from "./pages/Pages_Historial_Personal";
 import MainLayout from "@/shared/layout/MainLayout";
@@ -20,7 +20,7 @@ import { PageForcePasswordChange } from "./modules/auth/pages/PageForcePasswordC
 import { PageChangePassword } from "./modules/auth/pages/PageUpdatePassword";
 import { PageResetPassword } from "./modules/auth/pages/PageRecoverPassword";
 
-import { PageMonitoreoInventario } from "./modules/inventario/infrastructure/pages/PageMonitoreoInventario";
+import { PageMonitoreoInventario } from "./modules/inventario/pages/PageMonitoreoInventario";
 import { PageGestionUsuarios } from "./modules/usuarios/pages/PageGestionUsuarios";
 import { PageConsultaRoles } from "./modules/usuarios/pages/PageConsultaRoles";
 import { AuthProvider } from "./shared/context/auth/AuthContext";
@@ -42,7 +42,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/items" element={<PageTienda />} />
                 <Route path="/gestion-items" element={<PageGestionItems />} />
-                <Route path="/gestion-categorias" element={<PageGestionCategorias />} />
+                <Route path="/gestion-categorias" element={<PageCategorias />} />
                 <Route path="/checkout" element={<Caja />} />
                 <Route path="/success" element={<VentaExitosa />} />
                 <Route path="/clientes" element={<PageClientes />} />

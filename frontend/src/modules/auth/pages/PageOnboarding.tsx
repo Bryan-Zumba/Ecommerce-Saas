@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { FormularioBodega, DatosFormularioBodega } from '../../bodegas/components/FormularioBodega';
+import { FormularioBodega, DatosFormularioBodega } from '../../inventario/components/FormularioBodega';
 import { FormularioEmpresa, DatosFormularioEmpresa } from '../../empresa/components/FormularioEmpresa';
 import { AuthService } from '../services/AuthService';
 import type { RegisterTiendaRequest } from '../types/RegisterTienda';
@@ -25,7 +25,7 @@ const bodegaInicial: DatosFormularioBodega = {
 export const PageOnboarding: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Extraemos los datos iniciales de auth
   const authState = location.state as {
     codigo_acceso: string;
@@ -93,7 +93,7 @@ export const PageOnboarding: React.FC = () => {
       };
 
       await AuthService.registerTienda(payload);
-      
+
       Swal.fire({
         icon: 'success',
         title: '¡Tienda Registrada!',
@@ -123,8 +123,8 @@ export const PageOnboarding: React.FC = () => {
     <div className="flex items-center justify-center gap-3 mb-8">
       <div className="flex items-center gap-2">
         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${pasoActivo === 1
-            ? 'bg-white text-emerald-700 shadow-md'
-            : 'bg-emerald-500/40 text-white'
+          ? 'bg-white text-emerald-700 shadow-md'
+          : 'bg-emerald-500/40 text-white'
           }`}>
           {pasoActivo > 1 ? <i className="fas fa-check" /> : '1'}
         </div>
@@ -135,8 +135,8 @@ export const PageOnboarding: React.FC = () => {
 
       <div className="flex items-center gap-2">
         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${pasoActivo === 2
-            ? 'bg-white text-emerald-700 shadow-md'
-            : 'bg-emerald-500/20 text-white/50'
+          ? 'bg-white text-emerald-700 shadow-md'
+          : 'bg-emerald-500/20 text-white/50'
           }`}>
           2
         </div>

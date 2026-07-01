@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { mockMovimientos } from '../data/mockData';
-import { TipoMovimiento } from '../../domain/InventarioTypes';
+import { mockMovimientos } from '../infrastructure/data/mockData';
+import { TipoMovimiento } from '../types/InventarioTypes';
 
 interface PageMovimientosProps {
   isSubcomponent?: boolean;
@@ -16,7 +16,7 @@ export const PageMovimientos: React.FC<PageMovimientosProps> = ({ isSubcomponent
     return mockMovimientos.filter((mov) => {
       const matchesSearch = mov.producto_nombre.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesTipo = selectedTipo === 'ALL' || mov.tipo === selectedTipo;
-      
+
       let matchesFecha = true;
       const movDate = new Date(mov.fecha);
       if (fechaInicio) {
@@ -51,7 +51,7 @@ export const PageMovimientos: React.FC<PageMovimientosProps> = ({ isSubcomponent
           <p className="text-gray-500 mt-1">Historial de ingresos y salidas de productos.</p>
         </div>
       )}
-      
+
       <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 mb-6 flex flex-col md:flex-row gap-4 flex-wrap">
         <div className="flex-1 min-w-[200px] relative">
           <label className="block text-xs font-medium text-gray-700 mb-1">Producto</label>
@@ -63,7 +63,7 @@ export const PageMovimientos: React.FC<PageMovimientosProps> = ({ isSubcomponent
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
+
         <div className="flex-1 min-w-[150px]">
           <label className="block text-xs font-medium text-gray-700 mb-1">Tipo de Movimiento</label>
           <select
@@ -137,11 +137,10 @@ export const PageMovimientos: React.FC<PageMovimientosProps> = ({ isSubcomponent
                       <div className="text-sm text-gray-700">{mov.bodega_nombre}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${
-                        mov.tipo === 'Ingreso' 
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200' 
-                          : 'bg-orange-50 text-orange-700 border border-orange-200'
-                      }`}>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${mov.tipo === 'Ingreso'
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                        : 'bg-orange-50 text-orange-700 border border-orange-200'
+                        }`}>
                         {mov.tipo === 'Ingreso' ? (
                           <svg className="-ml-0.5 mr-1.5 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />

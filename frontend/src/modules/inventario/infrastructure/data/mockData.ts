@@ -1,4 +1,4 @@
-import { InventarioItem, MovimientoInventario } from '../../domain/InventarioTypes';
+import { InventarioItem, MovimientoInventario } from '../../types/InventarioTypes';
 
 export const mockInventario: InventarioItem[] = [
   {

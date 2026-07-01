@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { mockInventario } from '../data/mockData';
+import { mockInventario } from '../infrastructure/data/mockData';
 
 interface PageInventarioProps {
   isSubcomponent?: boolean;
@@ -26,7 +26,7 @@ export const PageInventario: React.FC<PageInventarioProps> = ({ isSubcomponent =
         ) : (
           <div className="hidden md:block"></div>
         )}
-        
+
         <div className={`flex flex-col sm:flex-row gap-3 w-full ${isSubcomponent ? 'md:w-full justify-between' : 'md:w-auto'}`}>
           <div className="relative flex-1 md:max-w-xs">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
