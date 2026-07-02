@@ -26,6 +26,7 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
   const [formImagenPreview, setFormImagenPreview] = useState('');
   const [formImagenNombre, setFormImagenNombre] = useState('');
   const [formFile, setFormFile] = useState<File | null>(null);
+  const [imagenEliminada, setImagenEliminada] = useState(false);
   const [errorImagen, setErrorImagen] = useState('');
   const [errorGeneral, setErrorGeneral] = useState('');
 
@@ -40,6 +41,7 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
       setFormImagenPreview(itemAEditar.imagen_url || '');
       setFormImagenNombre(itemAEditar.imagen_url ? 'Imagen actual' : '');
       setFormFile(null);
+      setImagenEliminada(false);
       setErrorImagen('');
       setErrorGeneral('');
     } else {
@@ -52,6 +54,7 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
       setFormImagenPreview('');
       setFormImagenNombre('');
       setFormFile(null);
+      setImagenEliminada(false);
       setErrorImagen('');
       setErrorGeneral('');
     }
@@ -86,7 +89,8 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
       costo: costoNum,
       precio: precioNum,
       tipo_item: formTipoItem,
-      file: formFile
+      file: formFile,
+      imagen_eliminar: imagenEliminada,
     });
   };
 
@@ -121,6 +125,10 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
   };
 
   const quitarImagen = () => {
+    // Si el item en edicion tenia imagen guardada en el servidor, marcamos para eliminarla
+    if (itemAEditar?.imagen_url && formImagenPreview === itemAEditar.imagen_url) {
+      setImagenEliminada(true);
+    }
     setFormImagenPreview('');
     setFormImagenNombre('');
     setFormFile(null);
@@ -272,14 +280,18 @@ export const FormularioItem: React.FC<FormularioItemProps> = ({
             <div className="space-y-2">
               <label className="text-xs font-extrabold text-gray-500 uppercase tracking-wider">Imagen (Opcional)</label>
               <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50/50 p-3">
-                <img
-                  src={formImagenPreview || '/assets/coca_cola_sin_azu_300ml.png'}
-                  alt="Vista previa"
-                  className="h-16 w-16 rounded-xl border border-gray-100 object-cover bg-white"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/assets/coca_cola_sin_azu_300ml.png';
-                  }}
-                />
+                {formImagenPreview ? (
+                  <img
+                    src={formImagenPreview}
+                    alt="Vista previa"
+                    className="h-16 w-16 rounded-xl border border-gray-100 object-cover bg-white flex-shrink-0"
+                  />
+                ) : (
+                  <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-100 flex flex-col items-center justify-center flex-shrink-0 gap-0.5">
+                    <span className="text-xl leading-none">📷</span>
+                    <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Sin foto</span>
+                  </div>
+                )}
                 <div className="min-w-0 flex-1">
                   <label className="inline-flex cursor-pointer items-center rounded-xl bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-widest text-gray-700 shadow-sm border border-gray-100 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">
                     Adjuntar imagen

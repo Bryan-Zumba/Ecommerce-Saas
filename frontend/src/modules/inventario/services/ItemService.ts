@@ -38,6 +38,7 @@ export const ItemService = {
         if (data.costo !== undefined) formData.append('costo', data.costo.toString());
         if (data.precio !== undefined) formData.append('precio', data.precio.toString());
         if (data.tipo_item !== undefined) formData.append('tipo_item', data.tipo_item);
+        if (data.imagen_eliminar) formData.append('imagen_eliminar', 'true');
         if (data.file) formData.append('imagen', data.file);
 
         return apiClient.put<ItemResponse>(`/api/item/actualizar-item/${id_item}`, formData);

@@ -91,25 +91,33 @@ export const apiClient = {
 
     //PARA REALIZAR SOLICITUDES POST
     post: async <T>(endpoint: string, data: unknown): Promise<T> => {
+        const isFormData = data instanceof FormData;
+        const headers: HeadersInit = {};
+        if (!isFormData) {
+            headers['Content-Type'] = 'application/json';
+        }
+
         return request<T>(endpoint, {
             method: 'POST',
             credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
+            headers,
+            body: isFormData ? data : JSON.stringify(data),
         });
     },
 
     //PARA REALIZAR SOLICITUDES PUT
     put: async <T>(endpoint: string, data: unknown): Promise<T> => {
+        const isFormData = data instanceof FormData;
+        const headers: HeadersInit = {};
+        if (!isFormData) {
+            headers['Content-Type'] = 'application/json';
+        }
+
         return request<T>(endpoint, {
             method: 'PUT',
             credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
+            headers,
+            body: isFormData ? data : JSON.stringify(data),
         });
     },
 

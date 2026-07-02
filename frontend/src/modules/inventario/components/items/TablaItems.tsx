@@ -33,14 +33,18 @@ export const TablaItems: React.FC<TablaItemsProps> = ({
               <tr key={item.id_item} className="hover:bg-gray-50/50 transition-colors">
                 <td className="p-5 text-sm font-extrabold text-gray-400">#{item.id_item}</td>
                 <td className="p-5">
-                  <img
-                    src={item.imagen_url || '/assets/coca_cola_sin_azu_300ml.png'}
-                    alt={item.nombre}
-                    className="w-12 h-12 object-cover rounded-xl border border-gray-100"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/assets/coca_cola_sin_azu_300ml.png';
-                    }}
-                  />
+                  {item.imagen_url ? (
+                    <img
+                      src={item.imagen_url}
+                      alt={item.nombre}
+                      className="w-12 h-12 object-cover rounded-xl border border-gray-100"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-100 flex flex-col items-center justify-center gap-0.5">
+                      <span className="text-base leading-none">📷</span>
+                      <span className="text-[7px] font-bold text-gray-400 uppercase tracking-wider">Sin foto</span>
+                    </div>
+                  )}
                 </td>
                 <td className="p-5">
                   <div className="font-bold text-gray-800 text-base">{item.nombre}</div>

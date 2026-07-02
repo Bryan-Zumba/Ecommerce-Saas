@@ -29,7 +29,7 @@ export const useItems = () => {
     try {
       const response = await ItemService.crearItem(datos);
       if (response.success) {
-        Swal.fire('Éxito', 'Item creado correctamente', 'success');
+        await Swal.fire('Éxito', 'Item creado correctamente', 'success');
         await fetchItems();
         return true;
       }
@@ -37,7 +37,7 @@ export const useItems = () => {
     } catch (err: any) {
       const msg = err.response?.data?.message || err.message || 'Error al crear item';
       setError(msg);
-      Swal.fire('Error', msg, 'error');
+      await Swal.fire('Error', msg, 'error');
       return false;
     } finally {
       setLoading(false);
@@ -50,7 +50,7 @@ export const useItems = () => {
     try {
       const response = await ItemService.actualizarItem(id_item, datos);
       if (response.success) {
-        Swal.fire('Éxito', 'Item actualizado correctamente', 'success');
+        await Swal.fire('Éxito', 'Item actualizado correctamente', 'success');
         await fetchItems();
         return true;
       }
@@ -58,7 +58,7 @@ export const useItems = () => {
     } catch (err: any) {
       const msg = err.response?.data?.message || err.message || 'Error al actualizar item';
       setError(msg);
-      Swal.fire('Error', msg, 'error');
+      await Swal.fire('Error', msg, 'error');
       return false;
     } finally {
       setLoading(false);
@@ -77,7 +77,7 @@ export const useItems = () => {
       }
       
       if (response.success) {
-        Swal.fire('Éxito', `Item ${estadoActual ? 'desactivado' : 'activado'} correctamente`, 'success');
+        await Swal.fire('Éxito', `Item ${estadoActual ? 'desactivado' : 'activado'} correctamente`, 'success');
         await fetchItems();
         return true;
       }
@@ -85,7 +85,7 @@ export const useItems = () => {
     } catch (err: any) {
       const msg = err.response?.data?.message || err.message || 'Error al cambiar estado de item';
       setError(msg);
-      Swal.fire('Error', msg, 'error');
+      await Swal.fire('Error', msg, 'error');
       return false;
     } finally {
       setLoading(false);

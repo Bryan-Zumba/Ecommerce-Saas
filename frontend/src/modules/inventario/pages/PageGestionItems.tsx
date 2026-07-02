@@ -50,8 +50,6 @@ export const PageGestionItems: React.FC = () => {
   const totalProductos = itemsFiltrados.filter(i => i.tipo_item === 'Producto').length;
   const totalServicios = itemsFiltrados.filter(i => i.tipo_item === 'Servicio').length;
 
-  const categoriasActivas = categorias.filter(c => c.estado);
-
   return (
     <div className="min-h-screen bg-gray-50/50 animate-in fade-in duration-500 relative flex flex-col">
       <main className="max-w-7xl mx-auto p-6 lg:p-10 flex-1 w-full text-left">
@@ -121,7 +119,7 @@ export const PageGestionItems: React.FC = () => {
           <FormularioItem
             isOpen={modalAbierto}
             itemAEditar={itemSeleccionado}
-            categorias={categoriasActivas}
+            categorias={categorias}
             onClose={cerrarModal}
             onGuardar={async (datos) => {
               if (itemSeleccionado) {

@@ -35,6 +35,7 @@ export interface ItemUpdateDTO {
     precio?: number;
     tipo_item?: Tipo_Item;
     file?: File | null;
+    imagen_eliminar?: boolean;
 }
 
 export interface ItemResponse {
