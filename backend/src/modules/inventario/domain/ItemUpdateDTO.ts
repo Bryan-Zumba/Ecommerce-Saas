@@ -11,4 +11,5 @@ export interface ItemUpdateDTO {
     imagen_url?: string | null;
     imagen_public_id?: string | null;
     file?:Express.Multer.File
+    eliminarImagen?: boolean;
 }

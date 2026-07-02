@@ -51,8 +51,8 @@ export class ControllerItem {
             }
             const id_empresa = Number(req.user?.id_empresa);
             const file = req.file;
-            
-            const { id_categoria, nombre, descripcion, costo, precio, tipo_item } = req.body;
+            const id_categoria= Number(req.body.id_categoria);
+            const { nombre, descripcion, costo, precio, tipo_item } = req.body;
 
             console.log(req.body)
             console.log(file)
@@ -72,20 +72,26 @@ export class ControllerItem {
             return res.status(400).json({ success: false, message: error.message });
         }
     }
-    //revisar si id:categoria tambien se puede actualizar
+
     actualizarItem = async (req: Request, res: Response) => {
         try {
             const id_item = Number(req.params.id_item);
             const file = req.file;
-            const { id_categoria, nombre, descripcion, costo, precio, tipo_item } = req.body;
+            const id_categoria= Number(req.body.id_categoria);
+            const {  nombre, descripcion, costo, precio, tipo_item } = req.body;
+            const eliminarImagen = req.body.imagen_eliminar === 'true';
+
+            console.log(req.body)
+            console.log(file)
             const item = await this.service.actualizarItem(id_item, {
-                id_categoria: id_categoria !== undefined ? Number(id_categoria) : undefined,
+                id_categoria,
                 nombre,
                 descripcion,
-                costo: costo !== undefined ? new Decimal(costo) : undefined,
-                precio: precio !== undefined ? new Decimal(precio) : undefined,
-                tipo_item: tipo_item !== undefined ? tipo_item : undefined,
-                file
+                costo,
+                precio,
+                tipo_item,
+                file,
+                eliminarImagen
             });
             return res.status(200).json({ success: true, item });
         } catch (error: any) {

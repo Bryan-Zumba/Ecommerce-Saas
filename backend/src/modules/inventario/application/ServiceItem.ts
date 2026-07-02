@@ -6,6 +6,7 @@ import { ItemInputDTO } from "../domain/ItemInputDTO";
 import { Item } from "../domain/Item"
 import { ItemUpdateDTO } from "../domain/ItemUpdateDTO";
 import { Tipo_Item } from "@prisma/client";
+import { normalizerDecimal } from "../../../shared/normalizerDecimal";
 import { Decimal } from "@prisma/client/runtime/library";
 
 export class ServiceItem {
@@ -46,20 +47,14 @@ export class ServiceItem {
         if (existeItemPorNombre) {
             throw new Error("Ya existe un item con el nombre: " + item.nombre);
         }
-        if(item.costo === undefined || item.costo === null || item.costo === ""){
-            throw new Error("Costo del item es requerido");
+        const costoDecimal = normalizerDecimal(item.costo, "Costo");
+        const precioDecimal = normalizerDecimal(item.precio, "Precio");
+
+        if(costoDecimal.lte(0)){
+            throw new Error("Costo del item debe ser mayor a 0");
         }
-        if(!item.precio){
-            throw new Error("Precio del item es requerido");
-        }
-        const costoDecimal = new Decimal(String(item.costo).replace(",", "."));
-        const precioDecimal = new Decimal(String(item.precio).replace(",", "."));
-        
-        if(costoDecimal.lte(new Decimal(0))){
-            throw new Error("Costo de item debe ser decimal");
-        }
-        if (precioDecimal.lte(new Decimal(0))) {
-            throw new Error("Precio de item debe ser decimal");
+        if(precioDecimal.lte(0)){
+            throw new Error("Precio del item debe ser mayor a 0");
         }
         if (precioDecimal.lt(costoDecimal)) {
             throw new Error("Precio debe ser mayor al costo");
@@ -97,9 +92,13 @@ export class ServiceItem {
         if(item.imagen_public_id && item.imagen_public_id.length > 500){
             throw new Error ("Imagen public id no puede tener mas de 500 caracteres");
         }
-        //const itemCreado = await this.repository.crearItem(item);
-
-        //return itemCreado;
+        const itemCreado = await this.repository.crearItem(
+            {
+                ...item,
+                costo: costoDecimal,
+                precio: precioDecimal,
+            });
+        return itemCreado;
     }
 
     async obtenerItems(id_empresa:number):Promise<Item[]>{
@@ -133,13 +132,23 @@ export class ServiceItem {
         return item; 
      } 
 
-     async actualizarItem(id_item:number,item:ItemUpdateDTO){
+    async actualizarItem(id_item:number,item:ItemUpdateDTO){
 
         const itemActual= await this.obtenerItemPorId(id_item);
-
-        const costoFinal = item.costo ?? itemActual.costo;
-        const precioFinal = item.precio ?? itemActual.precio;
         
+        if(item.id_categoria && isNaN(Number(item.id_categoria))){
+            throw new Error("Id de categoria inválido");
+        }
+
+        if(item.id_categoria){
+            const categoria = await this.serviceCategoria.obtenerCategoriaId(item.id_categoria);
+            if(categoria.id_empresa !== itemActual.id_empresa) {
+                throw new Error("La categoria no pertenece a la misma empresa");
+            }
+            if(categoria.estado == false) {
+                throw new Error("La categoria no esta activa");
+            }
+        }
         if(item.nombre && item.nombre.trim().length>100){
             throw new Error("Nombre del item no puede excederse de los 100 caracteres");
         }
@@ -153,15 +162,23 @@ export class ServiceItem {
             throw new Error("Descripcion del item no puede excederse de los 500 caracteres");
         }
         
+        if (item.eliminarImagen && itemActual.imagen_public_id) {
+            await this.cloudinaryService.borrarImagen(itemActual.imagen_public_id);
+
+            item.imagen_url = null;
+            item.imagen_public_id = null;
+        }
+
         if(item.file){
+            //subir nueva imagen
             const resultCloudinary= await this.cloudinaryService.subirImagen(
                 item.file,
                 `empresa_${itemActual.id_empresa}/items`
             )
+            //eliminar imagen anterior en proveedor de imagenes
             if(itemActual.imagen_public_id){
                 await this.cloudinaryService.borrarImagen(itemActual.imagen_public_id);
             }
-
             item.imagen_url= resultCloudinary.secure_url;
             item.imagen_public_id=resultCloudinary.public_id;
             delete item.file;
@@ -172,15 +189,24 @@ export class ServiceItem {
         if(item.imagen_public_id && item.imagen_public_id.length>500){
             throw new Error("Imagen public id no puede excederse de los 500 caracteres");
         }
+        let costoDecimal=item.costo;
+        let precioDecimal=item.precio;
 
-        if(costoFinal.lte(0)){
+        if(item.costo){
+            costoDecimal=normalizerDecimal(item.costo,"Costo");
+        }
+        if(item.precio){
+            precioDecimal=normalizerDecimal(item.precio,"Precio");
+        }
+
+        if(costoDecimal && costoDecimal.lte(0)){
             throw new Error("Costo del item debe ser mayor a 0");
         }
-        if(precioFinal.lte(0)){
+        if(precioDecimal && precioDecimal.lte(0)){
             throw new Error("Precio del item debe ser mayor a 0");
         }
         
-        if(precioFinal.lt(costoFinal)){
+        if(precioDecimal && costoDecimal && precioDecimal.lt(costoDecimal)){
             throw new Error("Precio del item debe ser mayor al costo");
         }
 
@@ -188,17 +214,12 @@ export class ServiceItem {
             throw new Error("Tipo de Item no válido");
         }
 
-        if(item.id_categoria){
-            const categoria = await this.serviceCategoria.obtenerCategoriaId(item.id_categoria);
-            if(categoria.id_empresa !== itemActual.id_empresa) {
-                throw new Error("La categoria no pertenece a la misma empresa");
-            }
-            if(categoria.estado == false) {
-                throw new Error("La categoria no esta activa");
-            }
-        }
-
-        const itemActualizado = await this.repository.actualizarItem(id_item,item);
+        const itemActualizado = await this.repository.actualizarItem(id_item,
+            {
+                ...item,
+                costo: costoDecimal,
+                precio: precioDecimal,
+            });
         return itemActualizado; 
      }
 
@@ -214,7 +235,4 @@ export class ServiceItem {
         const itemActivado = await this.repository.activarItem(id_item);
         return itemActivado; 
      }  
-
-    
-
-    }
+}

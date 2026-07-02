@@ -6,7 +6,7 @@ export interface ItemInputDTO {
     id_empresa: number;
     nombre: string;
     descripcion?: string | null;
-    costo: string;
+    costo: Decimal;
     precio: Decimal;
     tipo_item: Tipo_Item;
     imagen_url?: string | null;
