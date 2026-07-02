@@ -7,7 +7,6 @@ import { Item } from "../domain/Item"
 import { ItemUpdateDTO } from "../domain/ItemUpdateDTO";
 import { Tipo_Item } from "@prisma/client";
 import { normalizerDecimal } from "../../../shared/normalizerDecimal";
-import { Decimal } from "@prisma/client/runtime/library";
 
 export class ServiceItem {
 
