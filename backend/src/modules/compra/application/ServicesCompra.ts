@@ -1,6 +1,6 @@
 import { ServicesEmpresa } from "../../empresa/application/ServicesEmpresa";
 import { Compra } from "../domain/Compra";
-import { CompraInputDTO } from "../domain/CompraInputDTO";
+import { CompraCreateDTO, CompraInputDTO } from "../domain/CompraInputDTO";
 import { IRepositoryCompra } from "../domain/IRepositoryCompra";
 import { normalizerDecimal } from "../../../shared/normalizerDecimal";
 import { CloudinaryService } from "../../../core/cloudinary/CloudinaryServices";
@@ -24,47 +24,61 @@ export class ServicesCompra{
     }
 
     //HU crear solicitud de ingreso de stock o compra de stock
-    async crearSolicitudCompra(data: SolicitudCompraDTO){
+    async crearSolicitudCompra(solicitudCompra: SolicitudCompraDTO){
         return await prisma.$transaction(async(tx: Prisma.TransactionClient)=>{
+            
+        if(!solicitudCompra.file){
+            throw new Error("Se requiere adjuntar la imagen de la factura");
+        }
+        const resultCloudinary = await this.cloudinaryService.subirImagen(
+            solicitudCompra.file,
+            `empresa_${solicitudCompra.id_empresa}/compras_facturas`
+        )
+        const imagen_url= resultCloudinary.secure_url;
+        const imagen_public_id= resultCloudinary.public_id;
+
+        delete solicitudCompra.file;
+
             let total = new Prisma.Decimal(0);
 
-            for (const detalle of data.detalles){
+            for (const detalle of solicitudCompra.detalles){
                 const subtotal = normalizerDecimal(detalle.costo_unitario, "Costo unitario").mul(detalle.cantidad);
                 total = total.add(subtotal);
             }
 
             //Crear la compra
+            const compraCreada = await this.crearCompra({
+                 ...solicitudCompra,
+                 imagen_url,
+                 imagen_public_id,
+                 total
+            }, tx);
+
             // const compraCreada = await this.crearCompra({
-            //     ...data,
-            //     total: total
+            //     id_proveedor: data.id_proveedor,
+            //     id_usuario: data.id_usuario,
+            //     id_empresa: data.id_empresa,
+            //     id_periodo_contable: data.id_periodo_contable,
+            //     codigo_factura: data.codigo_factura,
+            //     observacion: data.observacion ?? null,
+            //     file: data.file,
+            //     imagen_url: "", // temporal (luego se sobreescribe)
+            //     imagen_public_id: "", // temporal
+            //     total
             // }, tx);
 
-            const compraCreada = await this.crearCompra({
-    id_proveedor: data.id_proveedor,
-    id_usuario: data.id_usuario,
-    id_empresa: data.id_empresa,
-    id_periodo_contable: data.id_periodo_contable,
-    codigo_factura: data.codigo_factura,
-    observacion: data.observacion ?? null,
-    file: data.file,
-    imagen_url: "", // temporal (luego se sobreescribe)
-    imagen_public_id: "", // temporal
-    total
-}, tx);
-
             //Crear los detalles de la compra
-            for (const detalle of data.detalles) {
+            for (const detalle of solicitudCompra.detalles) {
 
                 await this.serviceDetalleCompra.crearDetalleCompra({
                     ...detalle, 
                     id_compra: compraCreada.id_compra
                 }, tx);
             }
-            
         })
     }
 
-    private async crearCompra(compra: CompraInputDTO, client?: DBClient){
+    private async crearCompra(compra: CompraCreateDTO, client?: DBClient){
 
         if(!compra.id_proveedor){
             throw new Error("El id del proveedor es requerido");
@@ -79,16 +93,6 @@ export class ServicesCompra{
         if(!compra.codigo_factura){
             throw new Error("El codigo de factura es requerido");
         }
-        if(!compra.file){
-            throw new Error("Se requiere adjuntar la imagen de la factura");
-        }
-        const resultCloudinary = await this.cloudinaryService.subirImagen(
-            compra.file,
-            `empresa_${compra.id_empresa}/compras_facturas`
-        )
-        compra.imagen_url= resultCloudinary.secure_url;
-        compra.imagen_public_id= resultCloudinary.public_id;
-        delete compra.file;
 
         if (!compra.imagen_url || !compra.imagen_public_id) {
             throw new Error("No se pudo registrar la imagen de la factura.");

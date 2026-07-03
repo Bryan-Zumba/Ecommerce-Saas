@@ -16,19 +16,19 @@ export class ControllersCompra{
             const file = req.file;
             const id_periodo_contable = Number(req.body.id_periodo_contable);
             const {codigo_factura, total, observacion} = req.body;
-            const compraCreada = await this.service.crearCompra({
-                id_proveedor,
-                id_usuario,
-                id_empresa,
-                id_periodo_contable,
-                codigo_factura,
-                total,
-                observacion,
-                file,
-                imagen_url: "",
-                imagen_public_id: ""
-            });
-            return res.status(201).json(compraCreada);
+            // const compraCreada = await this.service.crearCompra({
+            //     id_proveedor,
+            //     id_usuario,
+            //     id_empresa,
+            //     id_periodo_contable,
+            //     codigo_factura,
+            //     total,
+            //     observacion,
+            //     file,
+            //     imagen_url: "",
+            //     imagen_public_id: ""
+            // });
+            return res.status(201).json(/*compraCreada*/);
         } catch (error: any) {
             return res.status(error.statusCode || 500).json({ message: error.message });
         }
