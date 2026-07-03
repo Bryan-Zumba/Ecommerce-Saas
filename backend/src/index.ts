@@ -9,11 +9,20 @@ import routerAuth from './modules/auth/infrastructure/routes/RouteAuth';
 import routerEmpresa from './modules/empresa/infrastructure/routes/RoutesEmpresa';
 import routerRol from './modules/usuarios/infrastructure/routes/RoutesRol';
 import routerUsuario from './modules/usuarios/infrastructure/routes/RoutesUsuario';
+<<<<<<< Updated upstream
 import routerBodega from './modules/inventario/infrastructure/routes/RoutesBodega';
 import routerCategoria from './modules/inventario/infrastructure/routes/RouterCategoria';
 import routerItem from './modules/inventario/infrastructure/routes/routerItem';
 import routesInventario from './modules/inventario/infrastructure/routes/routesInventario';
 import routesCompra from './modules/compra/infrastructure/routes/RoutesCompras';
+=======
+import routerBodega from './modules/bodega/infrastructure/routes/RoutesBodega';
+import routerCategoria from './modules/categoria/infraestructure/routes/RouterCategoria';
+import routerItem from './modules/item/infraestructure/routes/routerItem';
+import routerInventario from './modules/inventario/infraestructure/routes/RoutesInventario';
+import routerCompra from './modules/compra/infrastructure/routes/RoutesCompra';
+import routerProveedor from './modules/proveedor/infrastructure/routes/RoutesProveedor';
+>>>>>>> Stashed changes
 
 dotenv.config();
 
@@ -51,8 +60,15 @@ app.use('/api/bodega', routerBodega);
 app.use('/api/cliente', routerCliente);
 app.use('/api/categoria', routerCategoria);
 app.use('/api/item', routerItem);
+<<<<<<< Updated upstream
 app.use('/api/inventario', routesInventario);
 app.use('/api/compra', routesCompra);
+=======
+app.use('/api/inventario', routerInventario);
+app.use('/api/proveedor', routerProveedor);
+app.use('/api/compra', routerCompra);
+
+>>>>>>> Stashed changes
 
 // Inicio del servidor
 app.listen(PORT, () => {
