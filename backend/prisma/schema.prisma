@@ -377,7 +377,11 @@ model Compra {
   id_usuario          Int           @db.Integer
   id_empresa          Int           @db.Integer
   id_periodo_contable Int           @db.Integer
+  codigo_factura      String        @db.VarChar(50)
+  imagen_url          String        @db.VarChar(500)
+  imagen_public_id    String        @db.VarChar(500)
   total               Decimal       @db.Decimal(10, 2)
+
   fecha_compra        DateTime      @default(now()) @db.Timestamptz(6)
   observacion         String?       @db.VarChar(500)
   estado_compra       Estado_compra @default(Pendiente)

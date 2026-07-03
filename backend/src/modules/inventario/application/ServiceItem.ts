@@ -1,12 +1,13 @@
 import { ServicesEmpresa } from "../../empresa/application/ServicesEmpresa";
 import { IRepositoryItem } from "../domain/IRepositoryItem";
 import { ServiceCategoria } from "./ServiceCategoria";
-import { CloudinaryService } from "@/core/cloudinary/CloudinaryServices";
+import { CloudinaryService } from "../../../core/cloudinary/CloudinaryServices";
 import { ItemInputDTO } from "../domain/ItemInputDTO";
 import { Item } from "../domain/Item"
 import { ItemUpdateDTO } from "../domain/ItemUpdateDTO";
 import { Tipo_Item } from "@prisma/client";
 import { normalizerDecimal } from "../../../shared/normalizerDecimal";
+import { DBClient } from "../../../core/database/DBClient";
 
 export class ServiceItem {
 
@@ -120,11 +121,11 @@ export class ServiceItem {
         return items;
     }
 
-    async obtenerItemPorId(id_item:number):Promise<Item>{
+    async obtenerItemPorId(id_item:number,client? : DBClient):Promise<Item>{
         if(!id_item || id_item <=0) {
             throw new Error("Id de item inválido");
         }  
-        const item = await this.repository.obtenerItemPorId(id_item);
+        const item = await this.repository.obtenerItemPorId(id_item,client);
         if (!item){
             throw new Error ("Item no encontrado");
         }

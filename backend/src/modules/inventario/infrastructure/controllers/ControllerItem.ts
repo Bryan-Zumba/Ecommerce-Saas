@@ -1,6 +1,5 @@
 import { ServiceItem } from "../../application/ServiceItem";
 import { Request, Response } from "express";
-import { Decimal } from "@prisma/client/runtime/library";
 
 export class ControllerItem {
     private service: ServiceItem;
@@ -54,8 +53,6 @@ export class ControllerItem {
             const id_categoria= Number(req.body.id_categoria);
             const { nombre, descripcion, costo, precio, tipo_item } = req.body;
 
-            console.log(req.body)
-            console.log(file)
             const item = await this.service.crearItem({
                 id_empresa,
                 id_categoria,
@@ -81,8 +78,6 @@ export class ControllerItem {
             const {  nombre, descripcion, costo, precio, tipo_item } = req.body;
             const eliminarImagen = req.body.imagen_eliminar === 'true';
 
-            console.log(req.body)
-            console.log(file)
             const item = await this.service.actualizarItem(id_item, {
                 id_categoria,
                 nombre,

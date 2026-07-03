@@ -1,3 +1,4 @@
+import { Estado_empresa } from "@prisma/client";
 import { DBClient } from "../../../core/database/DBClient";
 import { EmpresaInputDTO } from "../domain/EmpresaInputDTO";
 import { IRepositoryEmpresa } from "../domain/IRepositoryEmpresa";
@@ -52,6 +53,9 @@ export class ServicesEmpresa {
         const data = await this.repository.obtenerEmpresaPorId(id_empresa, client);
         if (!data) {
             throw new Error("Empresa no encontrada");
+        }
+        if(data.estado_empresa===Estado_empresa.Inactivo || data.estado_empresa===Estado_empresa.Suspendido){
+            throw new Error("Empresa inactiva o suspendida");
         }
         return data;
     }

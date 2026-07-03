@@ -1,3 +1,4 @@
+import { DBClient } from "../../../../core/database/DBClient";
 import { prisma } from "../../../../core/database/prisma";
 import { IRepositoryItem } from "../../domain/IRepositoryItem";
 import { Item } from "../../domain/Item";
@@ -24,8 +25,8 @@ export class PrismaRepositoryItem implements IRepositoryItem {
         return items;
     }
 
-    async obtenerItemPorId(id_item: number): Promise<Item | null> {
-        const item = await prisma.item.findUnique({
+    async obtenerItemPorId(id_item: number, client: DBClient = prisma): Promise<Item | null> {
+        const item = await client.item.findUnique({
             where: {
                 id_item: id_item,
             },

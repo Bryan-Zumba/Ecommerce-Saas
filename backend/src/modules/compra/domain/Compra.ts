@@ -7,6 +7,9 @@ export interface Compra{
     id_usuario:number;
     id_empresa:number;
     id_periodo_contable:number;
+    codigo_factura:string;
+    imagen_url:string;
+    imagen_public_id:string;
     total:Decimal;
     fecha_compra:Date;
     observacion?:string|null;

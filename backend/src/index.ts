@@ -13,6 +13,7 @@ import routerBodega from './modules/inventario/infrastructure/routes/RoutesBodeg
 import routerCategoria from './modules/inventario/infrastructure/routes/RouterCategoria';
 import routerItem from './modules/inventario/infrastructure/routes/routerItem';
 import routesInventario from './modules/inventario/infrastructure/routes/routesInventario';
+import routesCompra from './modules/compra/infrastructure/routes/RoutesCompras';
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ app.use('/api/cliente', routerCliente);
 app.use('/api/categoria', routerCategoria);
 app.use('/api/item', routerItem);
 app.use('/api/inventario', routesInventario);
+app.use('/api/compra', routesCompra);
 
 // Inicio del servidor
 app.listen(PORT, () => {
