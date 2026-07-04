@@ -5,11 +5,40 @@ import { ControllersCompra } from "../controllers/ControllersCompra";
 import { PrismaRepositoryEmpresa } from "../../../empresa/infrastructure/repositories/PrismaRepositoryEmpresa";
 import { ServicesEmpresa } from "../../../empresa/application/ServicesEmpresa";
 import authMiddleware from "../../../auth/infrastructure/middleware/AuthMiddleware";
-import { CloudinaryService } from "@/core/cloudinary/CloudinaryServices";
+import { CloudinaryService } from "../../../../core/cloudinary/CloudinaryServices";
+import { PrismaRepositoryDetalleCompra } from "../repositories/PrismaRepositoryDetalleCompra";
+import { ServicesDetalleCompra } from "../../application/ServicesDetalleCompra";
+import { PrismaRepositoryBodega } from "../../../inventario/infrastructure/repositories/PrismaRepositoryBodega";
+import { ServicesBodega } from "../../../inventario/application/ServicesBodega";
+import { PrismaRepositoryItem } from "../../../inventario/infrastructure/repositories/PrismaRepositoryItem";
+import { ServiceItem } from "../../../inventario/application/ServiceItem";
+import { ServiceCategoria } from "../../../inventario/application/ServiceCategoria";
+import { PrismaRepositoryCategoria } from "../../../inventario/infrastructure/repositories/PrismaRepositoryCategoria";
+import { PrismaRepositoryProveedor } from "../../../proveedor/infrastructure/repositories/PrismaRepositoryProveedor";
+import { ServiceProveedor } from "../../../proveedor/application/ServiceProveedor";
+import imageUploadMiddleware from "../../../../core/middleware/imageUploadMiddleware";
 
 const routesCompra = Router();
 
+const cloudinaryService = new CloudinaryService();
 
+const repositoryEmpresa = new PrismaRepositoryEmpresa();
+const servicesEmpresa = new ServicesEmpresa(repositoryEmpresa);
+const repositoryCategoria = new PrismaRepositoryCategoria()
+const serviceCategoria = new ServiceCategoria(repositoryCategoria, servicesEmpresa)
+const repositoryItem = new PrismaRepositoryItem()
+const serviceItem = new ServiceItem(repositoryItem, servicesEmpresa, serviceCategoria, cloudinaryService)
+const repositoryBodega = new PrismaRepositoryBodega()
+const serviceBodega = new ServicesBodega(repositoryBodega, servicesEmpresa)
+const repositoryProveedor = new PrismaRepositoryProveedor();
+const serviceProveedor = new ServiceProveedor(repositoryProveedor, servicesEmpresa)
+const repositoryDetalleCompra = new PrismaRepositoryDetalleCompra();
+const servicesDetalleCompra = new ServicesDetalleCompra(repositoryDetalleCompra, serviceBodega, serviceItem);
 
+const repositoryCompra = new PrismaRepositoryCompra();
+const serviceCompra = new ServicesCompra(repositoryCompra, servicesDetalleCompra, servicesEmpresa, serviceProveedor,cloudinaryService)
+const controllerCompra = new ControllersCompra(serviceCompra)
+
+routesCompra.post('/crear-solicitud-compra', authMiddleware,imageUploadMiddleware.single('imagen'),controllerCompra.crearSolicitudCompra);
 
 export default routesCompra;

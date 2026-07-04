@@ -33,14 +33,16 @@ export class ControllerProveedores {
 
     crearProveedor = async (req:Request, res:Response) => {
         try{
-            const {id_empresa,nombre,direccion,descripcion,telefono,email} = req.body;
+            const id_empresa = Number(req.user?.id_empresa);
+            const {nombre,direccion,descripcion,telefono,email} = req.body;
+            
             const proveedor = await this.service.crearProveedor({
-                id_empresa:Number(id_empresa),
-                nombre:String(nombre),
-                direccion:String(direccion),
-                descripcion:String(descripcion),
-                telefono:String(telefono),
-                email:String(email),
+                id_empresa,
+                nombre,
+                direccion,
+                descripcion,
+                telefono,
+                email,
             });
             return res.status(200).json({success:true, proveedor});
         }catch(error:any){
@@ -52,12 +54,12 @@ export class ControllerProveedores {
         try{
             const id_proveedor = Number(req.params.id_proveedor);
             const {nombre,direccion,descripcion,telefono,email} = req.body;
-            const proveedor = await this.service.actualizarProveedor(Number(id_proveedor),{
-                nombre:String(nombre),
-                direccion:String(direccion),
-                descripcion:String(descripcion),
-                telefono:String(telefono),
-                email:String(email),
+            const proveedor = await this.service.actualizarProveedor(id_proveedor,{
+                nombre,
+                direccion,
+                descripcion,
+                telefono,
+                email,
             });
             return res.status(200).json({success:true, proveedor});
         }catch(error:any){
@@ -84,15 +86,4 @@ export class ControllerProveedores {
             res.status(400).json({success:false, message:error.message});
         }
     };
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
  }

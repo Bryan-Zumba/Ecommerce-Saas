@@ -19,19 +19,13 @@ export class ServiceProveedor {
         if(!proveedor.id_empresa){
             throw new Error("El proveedor debe pertenecer a una empresa");
         }
-        if (proveedor.nombre !== undefined) {
+        if (!proveedor.nombre?.trim()) {
+            throw new Error("El nombre del proveedor es requerido");
+        }
 
-    if (!proveedor.nombre.trim()) {
-        throw new Error("El nombre del proveedor es requerido");
-    }
-
-    if (proveedor.nombre.trim().length > 100) {
-        throw new Error("El nombre del proveedor no puede exceder los 100 caracteres");
-    }
-}
-        const existeProveedorPorNombre = await this.repository.existeProveedorPorNombre(proveedor.nombre.trim(),proveedor.id_empresa);
+        const existeProveedorPorNombre = await this.repository.existeProveedorPorNombre(proveedor.nombre,proveedor.id_empresa);
             if(existeProveedorPorNombre){
-                throw new Error("El proveedor ya existe");
+                throw new Error("Ya existe un proveedor con ese nombre");
         }
         if(proveedor.email?.trim()){
             const emailRegex =/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,13 +42,12 @@ export class ServiceProveedor {
             throw new Error("La dirección del proveedor no puede exceder los 300 caracteres");
         }
         //**IMPORTAR ARREGLAR PARA QUE SEAN SOLO LOS 10 DIGITOS DE UN NUMERO DE TELEFON  */
-        if (proveedor.descripcion && proveedor.descripcion.length > 5000){
+        if (proveedor.descripcion && proveedor.descripcion.length > 500){
             throw new Error("La descripción no puede exceder los 500 caracteres")
         }
         if (proveedor.telefono && proveedor.telefono.length > 20){
             throw new Error("El teléfono del proveedor no puede exceder los 20 caracteres");
         }
-
         if (proveedor.email && proveedor.email.length > 255){
             throw new Error("El email del proveedor no puede exceder los 255 caracteres");
         }
@@ -85,38 +78,44 @@ export class ServiceProveedor {
         if(!id_proveedor || id_proveedor <=0){
             throw new Error("El id del proveedor es invalido");
         }
-        await this.obtenerProveedorPorId(id_proveedor);
-
+       const proveedorExiste= await this.obtenerProveedorPorId(id_proveedor);
+        if(proveedor.nombre===null){
+            throw new Error("No se puede eliminar el nombre del proveedor, debe actualizarlo por otro nombre");
+        }
+        if(proveedor.nombre){
+            const existeProveedorPorNombre = await this.repository.existeProveedorPorNombre(proveedor.nombre,proveedorExiste!.id_empresa);
+            if(existeProveedorPorNombre){
+                throw new Error("Ya existe un proveedor con ese nombre");
+            }
+        }
+        
         //validar logitud de camposs
-
         if (proveedor.nombre && proveedor.nombre.length > 100){
             throw new Error("El nombre del proveedor no puede exceder los 100 caracteres");
         }
         if (proveedor.direccion && proveedor.direccion.length > 300){
             throw new Error("La dirección del proveedor no puede exceder los 300 caracteres");
         }
-        if (proveedor.descripcion && proveedor.descripcion.length > 5000){
+        if (proveedor.descripcion && proveedor.descripcion.length > 500){
             throw new Error("La descripción no puede exceder los 500 caracteres")
         }
         if (proveedor.telefono && proveedor.telefono.length > 20){
             throw new Error("El teléfono del proveedor no puede exceder los 20 caracteres");
         }
-
         if (proveedor.email && proveedor.email.length > 255){
             throw new Error("El email del proveedor no puede exceder los 255 caracteres");
         }
 
-       if(proveedor.email?.trim()){
-        const emailRegex =/^[\s@]+@[\s@]+\.[\s@]+$/;
-        if(!emailRegex.test(proveedor.email.trim())){
-            throw new Error("El email del proveedor no es valido");
+        if(proveedor.email?.trim()){
+            const emailRegex =/^[\s@]+@[\s@]+\.[\s@]+$/;
+            if(!emailRegex.test(proveedor.email.trim())){
+                throw new Error("El email del proveedor no es valido");
+            }
         }
-       }
 
         const proveedorActualizado = await this.repository.actualizarProveedor(id_proveedor,proveedor);
         return proveedorActualizado;
     }
-
 
     async activarProveedor(id_proveedor: number): Promise<Proveedor>{
         await this.obtenerProveedorPorId(id_proveedor);
@@ -132,11 +131,4 @@ export class ServiceProveedor {
         const proveedorDesactivado = await this.repository.desactivarProveedor(id_proveedor);
         return proveedorDesactivado;
     }
-
- }
-
-
-
-
-
-
+}

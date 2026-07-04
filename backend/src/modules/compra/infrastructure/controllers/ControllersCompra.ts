@@ -15,20 +15,20 @@ export class ControllersCompra{
             const id_empresa = Number(req.user?.id_empresa);
             const file = req.file;
             const id_periodo_contable = Number(req.body.id_periodo_contable);
-            const {codigo_factura, total, observacion} = req.body;
-            // const compraCreada = await this.service.crearCompra({
-            //     id_proveedor,
-            //     id_usuario,
-            //     id_empresa,
-            //     id_periodo_contable,
-            //     codigo_factura,
-            //     total,
-            //     observacion,
-            //     file,
-            //     imagen_url: "",
-            //     imagen_public_id: ""
-            // });
-            return res.status(201).json(/*compraCreada*/);
+            const {codigo_factura, observacion} = req.body;
+            console.log(req.body.detalles);
+            const solitudCompra = await this.service.crearSolicitudCompra({
+                id_proveedor,
+                id_usuario,
+                id_empresa,
+                id_periodo_contable,
+                codigo_factura,
+                observacion,
+                file: file!,
+                //detalles: []
+                detalles: JSON.parse(req.body.detalles)
+            })
+            return res.status(201).json(solitudCompra);
         } catch (error: any) {
             return res.status(error.statusCode || 500).json({ message: error.message });
         }

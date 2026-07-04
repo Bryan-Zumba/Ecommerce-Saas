@@ -3,7 +3,7 @@ import { DetalleCompraInputDTO } from "../domain/DetalleCompraInputDTO";
 import { IRepositoryDetalleCompra } from "../domain/IRepositoryDetalleCompra";
 import { ServicesBodega } from "../../inventario/application/ServicesBodega";
 import { ServiceItem } from "../../inventario/application/ServiceItem";
-import { normalizerDecimal } from "@/shared/normalizerDecimal";
+import { normalizerDecimal } from "../../../shared/normalizerDecimal";
 
 export class ServicesDetalleCompra{
     private repository: IRepositoryDetalleCompra;
