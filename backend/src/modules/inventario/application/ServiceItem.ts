@@ -5,9 +5,12 @@ import { CloudinaryService } from "../../../core/cloudinary/CloudinaryServices";
 import { ItemInputDTO } from "../domain/ItemInputDTO";
 import { Item } from "../domain/Item"
 import { ItemUpdateDTO } from "../domain/ItemUpdateDTO";
-import { Tipo_Item } from "@prisma/client";
+import { Prisma, Tipo_Item } from "@prisma/client";
 import { normalizerDecimal } from "../../../shared/normalizerDecimal";
 import { DBClient } from "../../../core/database/DBClient";
+import { ServicesInventario } from "./ServicesInventario";
+import { ServicesBodega } from "./ServicesBodega";
+import { prisma } from "../../../core/database/prisma";
 
 export class ServiceItem {
 
@@ -15,12 +18,16 @@ export class ServiceItem {
     private serviceEmpresa: ServicesEmpresa;
     private serviceCategoria: ServiceCategoria;
     private cloudinaryService: CloudinaryService;
+    private serviceInventario: ServicesInventario;
+    private serviceBodega: ServicesBodega;
 
-     constructor(repository:IRepositoryItem, serviceEmpresa:ServicesEmpresa,serviceCategoria:ServiceCategoria,cloudinaryService:CloudinaryService){
+     constructor(repository:IRepositoryItem, serviceEmpresa:ServicesEmpresa,serviceCategoria:ServiceCategoria,cloudinaryService:CloudinaryService,serviceInventario:ServicesInventario, serviceBodega: ServicesBodega){
         this.repository=repository;
         this.serviceEmpresa=serviceEmpresa;
         this.serviceCategoria=serviceCategoria;
         this.cloudinaryService=cloudinaryService;
+        this.serviceInventario=serviceInventario;
+        this.serviceBodega = serviceBodega;
     }
 
     async crearItem(item:ItemInputDTO){
@@ -92,13 +99,26 @@ export class ServiceItem {
         if(item.imagen_public_id && item.imagen_public_id.length > 500){
             throw new Error ("Imagen public id no puede tener mas de 500 caracteres");
         }
-        const itemCreado = await this.repository.crearItem(
-            {
-                ...item,
-                costo: costoDecimal,
-                precio: precioDecimal,
-            });
-        return itemCreado;
+
+        return await prisma.$transaction(async(tx:Prisma.TransactionClient)=>{
+            const itemCreado = await this.repository.crearItem(
+                {
+                    ...item,
+                    costo: costoDecimal,
+                    precio: precioDecimal,
+                },tx);
+
+            if(itemCreado.tipo_item === Tipo_Item.Producto){
+                const bodega = await this.serviceBodega.obtenerBodegaEmpresa(itemCreado.id_empresa, tx);
+                
+                await this.serviceInventario.crearInventario({
+                    id_item:itemCreado.id_item,
+                    id_bodega:bodega.id_bodega
+                },itemCreado.id_empresa, tx);
+
+                return itemCreado;
+                }
+        });
     }
 
     async obtenerItems(id_empresa:number,client?:DBClient):Promise<Item[]>{

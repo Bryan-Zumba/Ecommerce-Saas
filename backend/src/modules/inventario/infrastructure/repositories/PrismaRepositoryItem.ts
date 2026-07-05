@@ -44,8 +44,8 @@ export class PrismaRepositoryItem implements IRepositoryItem {
         return item;
     }
 
-    async crearItem(item: ItemInputDTO): Promise<Item> {
-        const newItem = await prisma.item.create({
+    async crearItem(item: ItemInputDTO, client: DBClient = prisma): Promise<Item> {
+        const newItem = await client.item.create({
             data: item
         });
         return newItem;

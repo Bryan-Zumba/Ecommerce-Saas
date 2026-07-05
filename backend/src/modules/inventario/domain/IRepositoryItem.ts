@@ -8,7 +8,7 @@ export interface IRepositoryItem {
     obtenerItemsPorCategoria(id_categoria: number): Promise<Item[]>;
     obtenerItemPorId(id_item: number, client?: DBClient): Promise<Item | null>;
     obtenerItemEmpresa(id_item: number,id_empresa: number, client?: DBClient): Promise<Item | null>;
-    crearItem(item: ItemInputDTO): Promise<Item>;
+    crearItem(item: ItemInputDTO, client?: DBClient): Promise<Item>;
     actualizarItem(id_item: number, item: ItemUpdateDTO): Promise<Item>;
     activarItem(id_item: number): Promise<Item>;
     desactivarItem(id_item: number): Promise<Item>;
