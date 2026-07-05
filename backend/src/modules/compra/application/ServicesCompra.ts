@@ -48,7 +48,7 @@ export class ServicesCompra{
             
             return await prisma.$transaction(async(tx: Prisma.TransactionClient)=>{
                 
-                for (const detalle of solicitudCompra.detalles){
+                for (const detalle of detalles){
                     const subtotal = normalizerDecimal(detalle.costo_unitario, "Costo unitario").mul(detalle.cantidad);
                     total = total.add(subtotal);
                 }
@@ -68,14 +68,16 @@ export class ServicesCompra{
 
                 //Crear los detalles de la compra
                 for (const detalle of detalles) {
-
+                    console.log("Detalle: ",detalle);
                     await this.serviceDetalleCompra.crearDetalleCompra({
                         ...detalle, 
                         id_compra: compraCreada.id_compra
-                    }, tx);
+                    }, compraCreada.id_empresa,tx);
                 }
 
                 return compraCreada;
+            },{
+                timeout: 20000,
             });
 
         } catch (error) {
@@ -90,8 +92,8 @@ export class ServicesCompra{
 
         await this.serviceProveedor.obtenerProveedorPorId(compra.id_proveedor)
         await this.serviceEmpresa.obtenerEmpresaPorId(compra.id_empresa);
-        console.log(typeof compra.id_periodo_contable);
-        console.log(compra.id_periodo_contable)
+        //console.log(typeof compra.id_periodo_contable);
+        //console.log(compra.id_periodo_contable)
         //validar aqui api de periodo contable
         if(!compra.id_periodo_contable){
             //console.log(typeof compra.id_periodo_contable);
@@ -122,7 +124,7 @@ export class ServicesCompra{
         if(compra.observacion && compra.observacion.length >500){
             throw new Error("La observacion no puede tener mas de 500 caracteres");
         }
-        console.log("Envia a crear compra")
+        //console.log("Envia a crear compra")
         const compraCreada = await this.repository.crearCompra({
             ...compra
         }, client);

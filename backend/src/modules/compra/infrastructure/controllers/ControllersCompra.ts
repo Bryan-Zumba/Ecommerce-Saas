@@ -16,7 +16,7 @@ export class ControllersCompra{
             const file = req.file;
             const id_periodo_contable = Number(req.body.id_periodo_contable);
             const {codigo_factura, observacion} = req.body;
-            console.log(req.body.detalles);
+            //console.log(req.body.detalles);
             const solitudCompra = await this.service.crearSolicitudCompra({
                 id_proveedor,
                 id_usuario,

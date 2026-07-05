@@ -16,13 +16,18 @@ export class ServicesDetalleCompra{
         this.servicesItem = servicesItem;
     }
 
-    async crearDetalleCompra(detalleCompra: DetalleCompraInputDTO, client?: DBClient){
+    async crearDetalleCompra(detalleCompra: DetalleCompraInputDTO, id_empresa: number, client?: DBClient){
         //poner api compra obtenerid
         if(!detalleCompra.id_compra){
             throw new Error("El id de la compra es requerido");
         }
-        await this.servicesBodega.obtenerBodegaId(detalleCompra.id_bodega, client)
-        await this.servicesItem.obtenerItemPorId(detalleCompra.id_item, client)
+        
+        const bodegaEmpresa= await this.servicesBodega.obtenerBodegaEmpresa(id_empresa, client);
+        if(detalleCompra.id_bodega !== bodegaEmpresa.id_bodega){
+            throw new Error("La bodega seleccionada no existe para esta empresa");
+        }
+        
+        await this.servicesItem.obtenerItemEmpresa(detalleCompra.id_item, id_empresa, client);
 
         if(!detalleCompra.cantidad){
             throw new Error("La cantidad del item es requerida");

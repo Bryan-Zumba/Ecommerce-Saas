@@ -101,10 +101,10 @@ export class ServiceItem {
         return itemCreado;
     }
 
-    async obtenerItems(id_empresa:number):Promise<Item[]>{
+    async obtenerItems(id_empresa:number,client?:DBClient):Promise<Item[]>{
         await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa);
 
-        const items = await this.repository.obtenerItems(id_empresa);
+        const items = await this.repository.obtenerItems(id_empresa,client);
         return items;   
      } 
 
@@ -130,7 +130,20 @@ export class ServiceItem {
             throw new Error ("Item no encontrado");
         }
         return item; 
-     } 
+    }
+
+    async obtenerItemEmpresa(id_item: number, id_empresa: number, client?: DBClient): Promise<Item> {
+        if(!id_item || id_item <=0) {
+            throw new Error("Id de item inválido");
+        }
+        await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa);
+
+        const item = await this.repository.obtenerItemEmpresa(id_item, id_empresa, client);
+        if (!item) {
+            throw new Error("El item no existe en esta empresa");
+        }
+        return item;
+    }
 
     async actualizarItem(id_item:number,item:ItemUpdateDTO){
 

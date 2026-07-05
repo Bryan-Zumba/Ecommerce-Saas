@@ -9,6 +9,7 @@ export class PrismaRepositoryCompra implements IRepositoryCompra {
         const data = await client.compra.create({
             data: compra
         })
+        console.log(data)
         return data;
     }
 }

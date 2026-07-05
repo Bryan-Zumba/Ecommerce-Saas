@@ -6,8 +6,8 @@ import { ItemInputDTO } from "../../domain/ItemInputDTO";
 import { ItemUpdateDTO } from "../../domain/ItemUpdateDTO";
 
 export class PrismaRepositoryItem implements IRepositoryItem {
-    async obtenerItems(id_empresa: number): Promise<Item[]> {
-        const items = await prisma.item.findMany({
+    async obtenerItems(id_empresa: number, client: DBClient = prisma): Promise<Item[]> {
+        const items = await client.item.findMany({
             where: {
                 id_empresa: id_empresa,
             },
@@ -29,6 +29,16 @@ export class PrismaRepositoryItem implements IRepositoryItem {
         const item = await client.item.findUnique({
             where: {
                 id_item: id_item,
+            },
+        });
+        return item;
+    }
+
+    async obtenerItemEmpresa(id_item: number, id_empresa: number, client: DBClient = prisma): Promise<Item | null> {
+        const item = await client.item.findFirst({
+            where: {
+                id_item: id_item,
+                id_empresa: id_empresa,
             },
         });
         return item;

@@ -4,9 +4,10 @@ import { ItemUpdateDTO } from "./ItemUpdateDTO";
 import { DBClient } from "../../../core/database/DBClient";
 
 export interface IRepositoryItem {
-    obtenerItems(id_empresa: number): Promise<Item[]>;
+    obtenerItems(id_empresa: number, client?: DBClient): Promise<Item[]>;
     obtenerItemsPorCategoria(id_categoria: number): Promise<Item[]>;
     obtenerItemPorId(id_item: number, client?: DBClient): Promise<Item | null>;
+    obtenerItemEmpresa(id_item: number,id_empresa: number, client?: DBClient): Promise<Item | null>;
     crearItem(item: ItemInputDTO): Promise<Item>;
     actualizarItem(id_item: number, item: ItemUpdateDTO): Promise<Item>;
     activarItem(id_item: number): Promise<Item>;
