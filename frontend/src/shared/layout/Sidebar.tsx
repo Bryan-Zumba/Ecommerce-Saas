@@ -28,6 +28,7 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         { id: 'bodega', label: 'Configuración de bodega', icon: '🏬', path: '/bodega' },
         { id: 'stock', label: 'Gestión de stock', icon: '📦', path: '/ingreso-stock' },
         { id: 'monitoreo-inventario', label: 'Monitoreo de inventario', icon: '📋', path: '/monitoreo-inventario' },
+        { id: 'solicitar-compra', label: 'Compras', icon: '🛒', path: '/compras' },
       ]
     },
     {
@@ -39,6 +40,7 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     {
       title: 'Administración',
       items: [
+        { id: 'proveedores', label: 'Gestión de proveedores', icon: '🚚', path: '/proveedores' },
         { id: 'clientes', label: 'Gestión de clientes', icon: '👥', path: '/clientes' },
         { id: 'usuarios', label: 'Gestión de usuarios', icon: '🧑‍💻', path: '/usuarios/gestion' },
         { id: 'roles', label: 'Consulta de roles', icon: '🛡️', path: '/roles/consulta' },

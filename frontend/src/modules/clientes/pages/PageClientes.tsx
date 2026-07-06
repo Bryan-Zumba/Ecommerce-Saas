@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { TableClientes } from '../components/TableClientes';
 import { useClientes } from '../hooks/useClientes';
-import PanelLateralDer from '@/shared/layout/PanelLateralDer';
 import FormularioCliente, { DatosFormularioCliente } from '../components/FormularioClientes';
 import { useAuth } from '@/shared/context/auth/AuthContext';
 import { usePermisos } from '@/shared/hooks/usePermisos';
@@ -101,31 +100,33 @@ export const PageClientes: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 animate-in fade-in duration-500">
-      <main className="max-w-7xl mx-auto p-6 lg:p-12">
+    <div className="min-h-screen bg-gray-50/50 animate-in fade-in duration-500 relative flex flex-col">
+      <main className="max-w-7xl mx-auto p-6 lg:p-10 flex-1 w-full text-left">
 
-        <PanelLateralDer
-          abierto={drawerAbierto}
-          titulo={clienteSeleccionado ? 'Editar Cliente' : 'Nuevo Cliente'}
-          onCerrar={cerrarFormulario}
-        >
-          <FormularioCliente
-            clienteActual={clienteSeleccionado}
-            onGuardar={guardarCliente}
-            onCancelar={cerrarFormulario}
-          />
-        </PanelLateralDer>
+        <FormularioCliente
+          isOpen={drawerAbierto}
+          clienteActual={clienteSeleccionado}
+          onGuardar={guardarCliente}
+          onCancelar={cerrarFormulario}
+        />
 
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col mb-8 text-left">
-            <h1 className="text-3xl font-black text-gray-900 tracking-tight">Gestión de Clientes</h1>
-            <p className="text-gray-500 mt-1 font-medium">Administra tu cartera de clientes, añade nuevos o edita los existentes.</p>
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+          <div className="text-left">
+            <h1 className="text-4xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              👥 Gestión de Clientes
+            </h1>
+            <p className="text-gray-500 mt-1 font-medium text-sm lg:text-base">
+              Administra tu cartera de clientes, añade nuevos o edita los existentes.
+            </p>
           </div>
-          {permisoCrearCliente && (
-            <button onClick={abrirFormularioNuevo} className='px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-semibold shadow transition-all'>
-              Registrar nuevo cliente
-            </button>
-          )}
+          
+          <div className="flex gap-3 w-full md:w-auto">
+            {permisoCrearCliente && (
+              <button onClick={abrirFormularioNuevo} className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-md shadow-emerald-600/10 flex items-center justify-center gap-2">
+                <span>+</span> Añadir Cliente
+              </button>
+            )}
+          </div>
         </div>
 
         {(error || errorAccion) && (

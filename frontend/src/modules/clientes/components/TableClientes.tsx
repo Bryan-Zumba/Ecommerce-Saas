@@ -33,8 +33,8 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
   const mostrarColumnaAcciones = !!onSelect || !!onEdit;
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200">
-      <div className='flex justify-between items-center gap-4 mx-3 my-3'>
+    <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden animate-in fade-in duration-300">
+      <div className='flex justify-between items-center gap-4 p-5 pb-2'>
         <div className='flex-1'>
           <FiltrosBusqueda search={consultaBusqueda} setSearch={setConsultaBusqueda} />
         </div>
@@ -45,21 +45,22 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
         </button>
       </div>
 
-      <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Cédula/RUC</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nombres</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Apellidos</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Teléfono</th>
-            <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
-            {mostrarColumnaAcciones && (
-              <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
-            )}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-100">
+              <th className="p-5 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Cédula/RUC</th>
+              <th className="p-5 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Nombres</th>
+              <th className="p-5 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Apellidos</th>
+              <th className="p-5 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Email</th>
+              <th className="p-5 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Teléfono</th>
+              <th className="p-5 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">Estado</th>
+              {mostrarColumnaAcciones && (
+                <th className="p-5 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">Acciones</th>
+              )}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
           {cargando ? (
             <tr>
               <td colSpan={mostrarColumnaAcciones ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
@@ -77,14 +78,14 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
           ) : (
             clientesFiltrados.map((cliente) => (
               <tr key={cliente.id_cliente} className="hover:bg-gray-50/50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{cliente.cedula}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-700">{cliente.nombres || 'No registrado'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-700">{cliente.apellidos || 'No registrado'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-600">{cliente.email || 'No registrado'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-600">{cliente.telefono || 'No registrado'}</td>
+                <td className="p-5 font-bold text-gray-800 text-base">{cliente.cedula}</td>
+                <td className="p-5 text-sm font-semibold text-gray-500">{cliente.nombres || 'No registrado'}</td>
+                <td className="p-5 text-sm font-semibold text-gray-500">{cliente.apellidos || 'No registrado'}</td>
+                <td className="p-5 text-sm font-semibold text-gray-500">{cliente.email || 'No registrado'}</td>
+                <td className="p-5 text-sm font-semibold text-gray-500">{cliente.telefono || 'No registrado'}</td>
 
                 {/* Columna Estado - toggle switch igual que en usuarios */}
-                <td className="px-6 py-4 whitespace-nowrap text-center">
+                <td className="p-5 text-center">
                   {onToggleEstado ? (
                     <>
                       <button
@@ -114,8 +115,8 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
 
                 {/* Columna Acciones - igual estilo que usuarios */}
                 {mostrarColumnaAcciones && (
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex justify-end gap-2">
+                  <td className="p-5 text-center">
+                    <div className="flex justify-center gap-2">
                       {onSelect && (
                         <button
                           onClick={() => onSelect(cliente)}
@@ -143,6 +144,7 @@ export const TableClientes: React.FC<TableClientesProps> = ({ clientes, cargando
           )}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

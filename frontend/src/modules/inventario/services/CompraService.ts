@@ -1,0 +1,24 @@
+import { apiClient } from '@/core/apiClient';
+import { CompraResponse, SolicitudCompraRequest } from '../types/CompraTypes';
+
+export const CompraService = {
+  crearSolicitudCompra: async (data: SolicitudCompraRequest): Promise<CompraResponse> => {
+    const formData = new FormData();
+
+    formData.append('id_proveedor', String(data.id_proveedor));
+    formData.append('codigo_factura', data.codigo_factura);
+
+    if (data.observacion) {
+      formData.append('observacion', data.observacion);
+    }
+
+    if (data.imagen) {
+      formData.append('imagen', data.imagen);
+    }
+
+    // El backend parsea con JSON.parse(req.body.detalles)
+    formData.append('detalles', JSON.stringify(data.detalles));
+
+    return apiClient.post<CompraResponse>('/api/compra/crear-solicitud-compra', formData);
+  },
+};

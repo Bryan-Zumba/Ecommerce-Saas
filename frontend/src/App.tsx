@@ -21,8 +21,11 @@ import { PageChangePassword } from "./modules/auth/pages/PageUpdatePassword";
 import { PageResetPassword } from "./modules/auth/pages/PageRecoverPassword";
 
 import { PageMonitoreoInventario } from "./modules/inventario/pages/PageMonitoreoInventario";
+import { PageCompras } from "./modules/inventario/pages/PageCompras";
+import { PageSolicitudCompra } from "./modules/inventario/pages/PageSolicitudCompra";
 import { PageGestionUsuarios } from "./modules/usuarios/pages/PageGestionUsuarios";
 import { PageConsultaRoles } from "./modules/usuarios/pages/PageConsultaRoles";
+import { PageGestionProveedores } from "./modules/proveedores/pages/PageGestionProveedores";
 import { AuthProvider } from "./shared/context/auth/AuthContext";
 
 function App() {
@@ -49,6 +52,9 @@ function App() {
                 <Route path="/bodega" element={<PageBodega />} />
                 <Route path="/ingreso-stock" element={<Page_GestionStock />} />
                 <Route path="/monitoreo-inventario" element={<PageMonitoreoInventario />} />
+                <Route path="/compras" element={<PageCompras />} />
+                <Route path="/compras/solicitar" element={<PageSolicitudCompra />} />
+                <Route path="/proveedores" element={<PageGestionProveedores />} />
                 <Route path="/usuarios/gestion" element={<PageGestionUsuarios />} />
                 <Route path="/roles/consulta" element={<PageConsultaRoles />} />
                 <Route path="/historial" element={<HistorialPersonal />} />
