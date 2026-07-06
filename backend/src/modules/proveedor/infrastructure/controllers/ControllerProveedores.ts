@@ -12,7 +12,7 @@ export class ControllerProveedores {
 
     obtenerProveedores = async (req:Request, res:Response) => {
         try{
-            const id_empresa = Number(req.params?.id_empresa);
+            const id_empresa = Number(req.user?.id_empresa);
             const proveedores = await this.service.obtenerProveedores(id_empresa);
             return res.status(200).json({success:true, proveedores});
         }catch(error:any){

@@ -30,4 +30,10 @@ export const PERMISOS = {
     ITEMS_ACTUALIZAR: "items.actualizar",
     ITEMS_DESACTIVAR: "items.desactivar",
     ITEMS_ACTIVAR: "items.activar",
+
+    PROVEEDOR_VER: "proveedor.ver",
+    PROVEEDOR_CREAR: "proveedor.crear",
+    PROVEEDOR_ACTUALIZAR: "proveedor.actualizar",
+    PROVEEDOR_DESACTIVAR: "proveedor.desactivar",
+    PROVEEDOR_ACTIVAR: "proveedor.activar",
 }

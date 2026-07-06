@@ -4,6 +4,7 @@ import { IRepositoryDetalleCompra } from "../domain/IRepositoryDetalleCompra";
 import { ServicesBodega } from "../../inventario/application/ServicesBodega";
 import { ServiceItem } from "../../inventario/application/ServiceItem";
 import { normalizerDecimal } from "../../../shared/normalizerDecimal";
+import { Tipo_Item } from "@prisma/client";
 
 export class ServicesDetalleCompra{
     private repository: IRepositoryDetalleCompra;
@@ -28,6 +29,11 @@ export class ServicesDetalleCompra{
         }
         
         await this.servicesItem.obtenerItemEmpresa(detalleCompra.id_item, id_empresa, client);
+
+        const item= await this.servicesItem.obtenerItemPorId(detalleCompra.id_item, client);
+        if(item.tipo_item === Tipo_Item.Servicio){
+           throw new Error("El item seleccionado es un servicio, no se puede agregar a una solicitud de compra"); 
+        }
 
         if(!detalleCompra.cantidad){
             throw new Error("La cantidad del item es requerida");

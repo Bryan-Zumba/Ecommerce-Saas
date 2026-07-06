@@ -14,14 +14,12 @@ export class ControllersCompra{
             const id_usuario = Number(req.user?.id_usuario);
             const id_empresa = Number(req.user?.id_empresa);
             const file = req.file;
-            const id_periodo_contable = Number(req.body.id_periodo_contable);
             const {codigo_factura, observacion} = req.body;
             //console.log(req.body.detalles);
             const solitudCompra = await this.service.crearSolicitudCompra({
                 id_proveedor,
                 id_usuario,
                 id_empresa,
-                id_periodo_contable,
                 codigo_factura,
                 observacion,
                 file: file!,

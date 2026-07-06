@@ -17,6 +17,8 @@ import { PrismaRepositoryCategoria } from "../../../inventario/infrastructure/re
 import { PrismaRepositoryProveedor } from "../../../proveedor/infrastructure/repositories/PrismaRepositoryProveedor";
 import { ServiceProveedor } from "../../../proveedor/application/ServiceProveedor";
 import imageUploadMiddleware from "../../../../core/middleware/imageUploadMiddleware";
+import { PrismaRepositoryInventario } from "../../../inventario/infrastructure/repositories/PrismaRepositoryInventario";
+import { ServicesInventario } from "../../../inventario/application/ServicesInventario";
 
 const routesCompra = Router();
 
@@ -27,9 +29,12 @@ const servicesEmpresa = new ServicesEmpresa(repositoryEmpresa);
 const repositoryCategoria = new PrismaRepositoryCategoria()
 const serviceCategoria = new ServiceCategoria(repositoryCategoria, servicesEmpresa)
 const repositoryItem = new PrismaRepositoryItem()
-const serviceItem = new ServiceItem(repositoryItem, servicesEmpresa, serviceCategoria, cloudinaryService)
 const repositoryBodega = new PrismaRepositoryBodega()
+const repositoryInventario = new PrismaRepositoryInventario();
 const serviceBodega = new ServicesBodega(repositoryBodega, servicesEmpresa)
+
+const serviceInventario = new ServicesInventario(repositoryInventario, serviceBodega,repositoryItem,servicesEmpresa)
+const serviceItem = new ServiceItem(repositoryItem, servicesEmpresa, serviceCategoria, cloudinaryService, serviceInventario, serviceBodega)
 const repositoryProveedor = new PrismaRepositoryProveedor();
 const serviceProveedor = new ServiceProveedor(repositoryProveedor, servicesEmpresa)
 const repositoryDetalleCompra = new PrismaRepositoryDetalleCompra();

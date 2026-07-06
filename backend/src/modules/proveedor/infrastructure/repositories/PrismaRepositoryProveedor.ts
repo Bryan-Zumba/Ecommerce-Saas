@@ -84,17 +84,4 @@ export class PrismaRepositoryProveedor implements IRepositoryProveedor {
         });
         return proveedor !== null;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

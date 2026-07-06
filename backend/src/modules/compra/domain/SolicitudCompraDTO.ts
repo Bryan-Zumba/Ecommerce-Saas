@@ -6,7 +6,6 @@ export interface SolicitudCompraDTO {
     id_proveedor: number;
     id_usuario: number;
     id_empresa: number;
-    id_periodo_contable: number;
     codigo_factura: string;
     observacion?: string | null;
     file: Express.Multer.File;

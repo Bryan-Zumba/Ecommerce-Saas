@@ -52,10 +52,13 @@ export class ServicesCompra{
                     const subtotal = normalizerDecimal(detalle.costo_unitario, "Costo unitario").mul(detalle.cantidad);
                     total = total.add(subtotal);
                 }
+                
+                const id_periodo_contable = 3;
 
                 //Crear la compra
                 const compraCreada = await this.crearCompra({
                     ...data,
+                    id_periodo_contable,
                     imagen_url,
                     imagen_public_id,
                     total
@@ -89,7 +92,6 @@ export class ServicesCompra{
     }
 
     private async crearCompra(compra: CompraCreateDTO, client?: DBClient){
-
         await this.serviceProveedor.obtenerProveedorPorId(compra.id_proveedor)
         await this.serviceEmpresa.obtenerEmpresaPorId(compra.id_empresa);
         //console.log(typeof compra.id_periodo_contable);

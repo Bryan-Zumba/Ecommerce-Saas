@@ -83,7 +83,7 @@ export class ServiceProveedor {
             throw new Error("No se puede eliminar el nombre del proveedor, debe actualizarlo por otro nombre");
         }
         if(proveedor.nombre){
-            const existeProveedorPorNombre = await this.repository.existeProveedorPorNombre(proveedor.nombre,proveedorExiste!.id_empresa);
+            const existeProveedorPorNombre = await this.repository.existeProveedorPorNombre(proveedor.nombre,proveedorExiste!.id_empresa,id_proveedor);
             if(existeProveedorPorNombre){
                 throw new Error("Ya existe un proveedor con ese nombre");
             }
