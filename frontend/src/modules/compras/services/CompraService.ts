@@ -1,5 +1,10 @@
-import { apiClient } from '@/core/apiClient';
-import { CompraResponse, SolicitudCompraRequest } from '../types/CompraTypes';
+﻿import { apiClient } from '@/core/apiClient';
+import {
+  CompraResponse,
+  ComprasEmpresaResponse,
+  DetalleCompraResponse,
+  SolicitudCompraRequest,
+} from '../types/CompraTypes';
 
 export const CompraService = {
   crearSolicitudCompra: async (data: SolicitudCompraRequest): Promise<CompraResponse> => {
@@ -21,4 +26,13 @@ export const CompraService = {
 
     return apiClient.post<CompraResponse>('/api/compra/crear-solicitud-compra', formData);
   },
+
+  obtenerComprasEmpresa: async (): Promise<ComprasEmpresaResponse> => {
+    return apiClient.get<ComprasEmpresaResponse>('/api/compra/obtener-compras-empresa');
+  },
+
+  obtenerDetalleCompra: async (id_compra: number): Promise<DetalleCompraResponse> => {
+    return apiClient.get<DetalleCompraResponse>(`/api/detalle-compra/obtener-detalle-compra/${id_compra}`);
+  },
 };
+

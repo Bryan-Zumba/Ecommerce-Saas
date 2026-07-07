@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthGuard } from "./shared/guards/AuthGuard";
 
 import { ProveedorCarrito } from "@/shared/context/ContextoCarrito";
@@ -21,8 +21,9 @@ import { PageChangePassword } from "./modules/auth/pages/PageUpdatePassword";
 import { PageResetPassword } from "./modules/auth/pages/PageRecoverPassword";
 
 import { PageMonitoreoInventario } from "./modules/inventario/pages/PageMonitoreoInventario";
-import { PageCompras } from "./modules/inventario/pages/PageCompras";
-import { PageSolicitudCompra } from "./modules/inventario/pages/PageSolicitudCompra";
+import { PageCompras } from "./modules/compras/pages/PageCompras";
+import { PageSolicitudCompra } from "./modules/compras/pages/PageSolicitudCompra";
+import { PageHistorialCompras } from "./modules/compras/pages/PageHistorialCompras";
 import { PageGestionUsuarios } from "./modules/usuarios/pages/PageGestionUsuarios";
 import { PageConsultaRoles } from "./modules/usuarios/pages/PageConsultaRoles";
 import { PageGestionProveedores } from "./modules/proveedores/pages/PageGestionProveedores";
@@ -54,6 +55,7 @@ function App() {
                 <Route path="/monitoreo-inventario" element={<PageMonitoreoInventario />} />
                 <Route path="/compras" element={<PageCompras />} />
                 <Route path="/compras/solicitar" element={<PageSolicitudCompra />} />
+                <Route path="/compras/historial" element={<PageHistorialCompras />} />
                 <Route path="/proveedores" element={<PageGestionProveedores />} />
                 <Route path="/usuarios/gestion" element={<PageGestionUsuarios />} />
                 <Route path="/roles/consulta" element={<PageConsultaRoles />} />

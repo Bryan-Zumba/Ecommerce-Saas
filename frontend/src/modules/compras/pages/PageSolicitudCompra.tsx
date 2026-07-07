@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef, FormEvent } from 'react';
+﻿import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import Swal from 'sweetalert2';
-import { useBodegas } from '../hooks/useBodegas';
-import { useItems } from '../hooks/useItems';
+import { useBodegas } from '../../inventario/hooks/useBodegas';
+import { useItems } from '../../inventario/hooks/useItems';
 import { ProveedorService } from '@/modules/proveedores/services/ProveedorService';
 import { ProveedorLocal } from '@/modules/proveedores/types/ProveedorTypes';
 import { CompraService } from '../services/CompraService';
 import { FilaDetalle } from '../types/CompraTypes';
-import { Tipo_Item } from '../types/ItemTypes';
+import { Tipo_Item } from '../../inventario/types/ItemTypes';
 import { useNavigate } from 'react-router-dom';
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
@@ -187,7 +187,7 @@ export const PageSolicitudCompra: React.FC = () => {
           </button>
           <div>
             <h1 className="text-3xl font-black text-gray-900 tracking-tight">
-              🧾 Solicitar Registro de Compra
+              🧾 Solicitar registro de compra
             </h1>
             <p className="text-gray-500 mt-0.5 font-medium text-sm">
               Selecciona el proveedor y los productos en los paneles izquierdos, luego completa el formulario.
@@ -206,7 +206,7 @@ export const PageSolicitudCompra: React.FC = () => {
               <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
                 {/* Header */}
                 <div className="px-5 py-4 bg-emerald-600 rounded-t-[2rem]">
-                  <p className="text-white font-extrabold uppercase tracking-widest text-[10px]">Proveedores</p>
+                  <p className="text-white font-extrabold text-[10px]">Proveedores</p>
                   <p className="text-white/70 text-xs mt-0.5">Selecciona uno para la solicitud</p>
                 </div>
                 {/* Buscador */}
@@ -267,7 +267,7 @@ export const PageSolicitudCompra: React.FC = () => {
               <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
                 {/* Header */}
                 <div className="px-5 py-4 bg-emerald-700 rounded-t-[2rem]">
-                  <p className="text-white font-extrabold uppercase tracking-widest text-[10px]">Productos</p>
+                  <p className="text-white font-extrabold text-[10px]">Productos</p>
                   <p className="text-white/70 text-xs mt-0.5">Haz clic en "+" para agregar al detalle</p>
                 </div>
                 {/* Buscador */}
@@ -331,17 +331,17 @@ export const PageSolicitudCompra: React.FC = () => {
             {/* ════ COLUMNA DERECHA — Formulario ════ */}
             <div className="flex-1 min-w-0 flex flex-col gap-6">
 
-              {/* ── Datos de la Compra ── */}
+              {/* ── Datos de la compra ── */}
               <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
                 <div className="px-7 py-5 bg-emerald-600 rounded-t-[2rem]">
-                  <p className="text-white font-extrabold uppercase tracking-widest text-[10px]">Datos de la Compra</p>
+                  <p className="text-white font-extrabold text-[10px]">Datos de la compra</p>
                 </div>
                 <div className="p-7 space-y-5">
 
                   {/* Proveedor seleccionado (badge) */}
                   <div>
-                    <label className="block text-[10px] font-extrabold uppercase tracking-widest text-gray-600 mb-2">
-                      Proveedor Seleccionado
+                    <label className="block text-[10px] font-extrabold text-gray-600 mb-2">
+                      Proveedor seleccionado
                     </label>
                     {proveedorSeleccionado ? (
                       <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
@@ -371,8 +371,8 @@ export const PageSolicitudCompra: React.FC = () => {
 
                   {/* Código de factura */}
                   <div>
-                    <label className="block text-[10px] font-extrabold uppercase tracking-widest text-gray-600 mb-2">
-                      Código de Factura *
+                    <label className="block text-[10px] font-extrabold text-gray-600 mb-2">
+                      Código de factura *
                     </label>
                     <input
                       type="text"
@@ -386,7 +386,7 @@ export const PageSolicitudCompra: React.FC = () => {
 
                   {/* Observación */}
                   <div>
-                    <label className="block text-[10px] font-extrabold uppercase tracking-widest text-gray-600 mb-2">
+                    <label className="block text-[10px] font-extrabold text-gray-600 mb-2">
                       Observación
                     </label>
                     <textarea
@@ -401,8 +401,8 @@ export const PageSolicitudCompra: React.FC = () => {
 
                   {/* Imagen */}
                   <div>
-                    <label className="block text-[10px] font-extrabold uppercase tracking-widest text-gray-600 mb-2">
-                      Imagen de Factura
+                    <label className="block text-[10px] font-extrabold text-gray-600 mb-2">
+                      Imagen de factura
                     </label>
                     {imagenPreview ? (
                       <div className="flex items-start gap-4">
@@ -435,11 +435,11 @@ export const PageSolicitudCompra: React.FC = () => {
                 </div>
               </div>
 
-              {/* ── Detalle de Productos ── */}
+              {/* ── Detalle de productos ── */}
               <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
                 <div className="px-7 py-5 bg-emerald-600 rounded-t-[2rem] flex items-center justify-between">
                   <div>
-                    <p className="text-white font-extrabold uppercase tracking-widest text-[10px]">Detalle de Productos</p>
+                    <p className="text-white font-extrabold text-[10px]">Detalle de productos</p>
                     {!cargandoBodega && bodega && (
                       <p className="text-white/70 text-[10px] mt-0.5">Bodega: {bodega.nombre}</p>
                     )}
@@ -461,7 +461,7 @@ export const PageSolicitudCompra: React.FC = () => {
                       <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
                           <thead>
-                            <tr className="bg-gray-50 text-gray-500 text-[10px] font-extrabold uppercase tracking-widest">
+                            <tr className="bg-gray-50 text-gray-500 text-[10px] font-extrabold">
                               <th className="px-4 py-3 rounded-l-xl">Producto</th>
                               <th className="px-3 py-3 text-center w-24">Cantidad</th>
                               <th className="px-3 py-3 text-center w-28">Costo Unit.</th>
@@ -517,7 +517,7 @@ export const PageSolicitudCompra: React.FC = () => {
                           {/* Total */}
                           <tfoot>
                             <tr className="border-t-2 border-gray-100">
-                              <td colSpan={3} className="px-4 pt-4 text-right text-xs font-extrabold text-gray-600 uppercase tracking-widest">
+                              <td colSpan={3} className="px-4 pt-4 text-right text-xs font-extrabold text-gray-600">
                                 Total estimado:
                               </td>
                               <td className="px-3 pt-4 text-right text-base font-black text-emerald-700">
@@ -545,7 +545,7 @@ export const PageSolicitudCompra: React.FC = () => {
                 <button
                   type="submit"
                   disabled={enviando}
-                  className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all active:scale-95 shadow-md shadow-emerald-600/20 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-black text-xs hover:bg-emerald-700 transition-all active:scale-95 shadow-md shadow-emerald-600/20 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {enviando ? (
                     <>
@@ -565,3 +565,5 @@ export const PageSolicitudCompra: React.FC = () => {
     </div>
   );
 };
+
+
