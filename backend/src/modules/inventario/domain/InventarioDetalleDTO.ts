@@ -3,6 +3,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 
 export interface InventarioDetalleDTO {
     id_inventario: number;
+    id_bodega:number
 
     stock_actual: number;
     stock_disponible: number;

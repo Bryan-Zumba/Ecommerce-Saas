@@ -11,4 +11,13 @@ export class PrismaRepositoryDetalleCompra implements IRepositoryDetalleCompra {
         })
         return data;
     }
+
+    async obtenerDetalleCompraPorIdCompra(id_compra: number, client: DBClient = prisma): Promise<DetalleCompra[]> {
+        const data = await client.detalle_Compra.findMany({
+            where: {
+                id_compra: id_compra
+            }
+        })
+        return data;
+    }
 }

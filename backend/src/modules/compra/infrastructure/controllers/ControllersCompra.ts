@@ -26,9 +26,19 @@ export class ControllersCompra{
                 //detalles: []
                 detalles: JSON.parse(req.body.detalles)
             })
-            return res.status(201).json(solitudCompra);
+            return res.status(201).json({success:true,message:"Solicitud de compra creada exitosamente",solitudCompra});
         } catch (error: any) {
-            return res.status(error.statusCode || 500).json({ message: error.message });
+            return res.status(error.statusCode || 500).json({success:false,message: error.message });
+        }
+    }
+
+    obtenerComprasEmpresa = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const id_empresa = Number(req.user?.id_empresa);
+            const compras = await this.service.obtenerCompraEmpresa(id_empresa);
+            return res.status(200).json({success:true,message:"Compras obtenidas exitosamente",compras});
+        } catch (error: any) {
+            return res.status(error.statusCode || 500).json({success:false,message: error.message });
         }
     }
 }

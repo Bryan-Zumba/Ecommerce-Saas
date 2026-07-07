@@ -16,6 +16,7 @@ import routesInventario from './modules/inventario/infrastructure/routes/routesI
 import routesCompra from './modules/compra/infrastructure/routes/RoutesCompras';
 import routerProveedor from './modules/proveedor/infrastructure/routes/RouterProveedor';
 import routerMovimiento_Inventario from './modules/inventario/infrastructure/routes/RouterMovimiento_Inventario';
+import routesDetalleCompra from './modules/compra/infrastructure/routes/RoutesDetalleCompra';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ app.use('/api/item', routerItem);
 app.use('/api/inventario', routesInventario);
 app.use('/api/proveedor', routerProveedor);
 app.use('/api/compra', routesCompra);
+app.use('/api/detalle-compra', routesDetalleCompra);
 app.use('/api/movimiento-inventario', routerMovimiento_Inventario);
 
 // Inicio del servidor

@@ -4,4 +4,5 @@ import { DetalleCompra } from "./DetalleCompra";
 
 export interface IRepositoryDetalleCompra {
     crearDetalleCompra(detalleCompra: DetalleCompraCreateDTO, client?: DBClient): Promise<DetalleCompra>;
+    obtenerDetalleCompraPorIdCompra(id_compra: number, client?: DBClient): Promise<DetalleCompra[]>;
 }

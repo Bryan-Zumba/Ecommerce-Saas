@@ -5,16 +5,20 @@ import { ServicesBodega } from "../../inventario/application/ServicesBodega";
 import { ServiceItem } from "../../inventario/application/ServiceItem";
 import { normalizerDecimal } from "../../../shared/normalizerDecimal";
 import { Tipo_Item } from "@prisma/client";
+import { DetalleCompra } from "../domain/DetalleCompra";
+import { IRepositoryCompra } from "../domain/IRepositoryCompra";
 
 export class ServicesDetalleCompra{
     private repository: IRepositoryDetalleCompra;
     private servicesBodega: ServicesBodega;
     private servicesItem: ServiceItem;
+    private repositoryCompra: IRepositoryCompra;
 
-    constructor(repository: IRepositoryDetalleCompra, servicesBodega: ServicesBodega, servicesItem: ServiceItem){
+    constructor(repository: IRepositoryDetalleCompra, servicesBodega: ServicesBodega, servicesItem: ServiceItem, repositoryCompra: IRepositoryCompra){
         this.repository = repository;
         this.servicesBodega = servicesBodega;
         this.servicesItem = servicesItem;
+        this.repositoryCompra = repositoryCompra;
     }
 
     async crearDetalleCompra(detalleCompra: DetalleCompraInputDTO, id_empresa: number, client?: DBClient){
@@ -54,5 +58,21 @@ export class ServicesDetalleCompra{
             subtotal: subtotalDecimal
         }, client);
         return detalleCompraCreado;
+    }
+
+    async obtenerDetalleCompraPorIdCompra(id_compra: number, id_empresa: number, client?: DBClient): Promise<DetalleCompra[]> {
+        if(!id_compra){
+            throw new Error("El id de la compra es requerido");
+        }
+        const compra = await this.repositoryCompra.obtenerCompraPorId(id_compra, client);
+        if(!compra){
+            throw new Error("No se encontro la compra");
+        }
+        if(compra.id_empresa !== id_empresa){
+            throw new Error("La compra seleccionada no pertenece a su empresa");
+        }
+
+        const detalleCompra = await this.repository.obtenerDetalleCompraPorIdCompra(id_compra, client);
+        return detalleCompra;
     }
 }

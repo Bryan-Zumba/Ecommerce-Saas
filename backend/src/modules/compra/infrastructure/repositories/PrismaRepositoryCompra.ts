@@ -9,7 +9,24 @@ export class PrismaRepositoryCompra implements IRepositoryCompra {
         const data = await client.compra.create({
             data: compra
         })
-        console.log(data)
+        return data;
+    }
+
+    async obtenerCompraPorId(id_compra: number, client: DBClient = prisma): Promise<Compra | null> {
+        const data = await client.compra.findUnique({
+            where: {
+                id_compra: id_compra
+            }
+        })
+        return data;
+    }
+
+    async obtenerComprasPorEmpresa(id_empresa: number, client: DBClient = prisma): Promise<Compra[]> {
+        const data = await client.compra.findMany({
+            where: {
+                id_empresa: id_empresa
+            }
+        })
         return data;
     }
 }

@@ -38,12 +38,13 @@ const serviceItem = new ServiceItem(repositoryItem, servicesEmpresa, serviceCate
 const repositoryProveedor = new PrismaRepositoryProveedor();
 const serviceProveedor = new ServiceProveedor(repositoryProveedor, servicesEmpresa)
 const repositoryDetalleCompra = new PrismaRepositoryDetalleCompra();
-const servicesDetalleCompra = new ServicesDetalleCompra(repositoryDetalleCompra, serviceBodega, serviceItem);
-
 const repositoryCompra = new PrismaRepositoryCompra();
+const servicesDetalleCompra = new ServicesDetalleCompra(repositoryDetalleCompra, serviceBodega, serviceItem,repositoryCompra);
+
 const serviceCompra = new ServicesCompra(repositoryCompra, servicesDetalleCompra, servicesEmpresa, serviceProveedor,cloudinaryService)
 const controllerCompra = new ControllersCompra(serviceCompra)
 
 routesCompra.post('/crear-solicitud-compra', authMiddleware,imageUploadMiddleware.single('imagen'),controllerCompra.crearSolicitudCompra);
+routesCompra.get('/obtener-compras-empresa', authMiddleware,controllerCompra.obtenerComprasEmpresa);
 
 export default routesCompra;

@@ -4,7 +4,7 @@ import { IRepositoryCompra } from "../domain/IRepositoryCompra";
 import { normalizerDecimal } from "../../../shared/normalizerDecimal";
 import { CloudinaryService } from "../../../core/cloudinary/CloudinaryServices";
 import { DBClient } from "../../../core/database/DBClient";
-import { Prisma } from "@prisma/client";
+import { Estado_compra, Prisma } from "@prisma/client";
 import { prisma } from "../../../core/database/prisma";
 import { ServicesDetalleCompra } from "./ServicesDetalleCompra";
 import { SolicitudCompraDTO } from "../domain/SolicitudCompraDTO";
@@ -91,6 +91,27 @@ export class ServicesCompra{
         }
     }
 
+    //HU Aprobar compra
+    async aprobarCompra(id_compra: number, client?: DBClient){
+        const compra = await this.obtenerCompraPorId(id_compra, client);
+
+        if(compra.estado_compra == Estado_compra.Completada){
+            throw new Error("La compra ya se encuentra completada");
+        }
+        
+        if(compra.estado_compra == Estado_compra.Cancelada){
+            throw new Error("La compra se encuentra cancelada");
+        }
+        
+        const detallesCompra = await this.serviceDetalleCompra.obtenerDetalleCompraPorIdCompra(id_compra, compra.id_empresa);
+        
+        for (const detalle of detallesCompra) {
+            
+        }
+        
+        
+    }
+
     private async crearCompra(compra: CompraCreateDTO, client?: DBClient){
         await this.serviceProveedor.obtenerProveedorPorId(compra.id_proveedor)
         await this.serviceEmpresa.obtenerEmpresaPorId(compra.id_empresa);
@@ -131,5 +152,23 @@ export class ServicesCompra{
             ...compra
         }, client);
         return compraCreada;
+    }
+
+    async obtenerCompraPorId(id_compra: number, client?: DBClient){
+        //Validar que la compra exista
+        const compra = await this.repository.obtenerCompraPorId(id_compra, client);
+        if(!compra){
+            throw new Error("No se encontro la compra");
+        }
+        return compra;
+    }
+
+    async obtenerCompraEmpresa(id_empresa: number, client?: DBClient){
+        await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa);
+        const compras = await this.repository.obtenerComprasPorEmpresa(id_empresa, client);
+        if(!compras){
+            throw new Error("No se encontro la compra");
+        }
+        return compras;
     }
 }

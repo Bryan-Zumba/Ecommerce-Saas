@@ -72,10 +72,8 @@ export class ServicesInventario {
         return data;
     }
 
-    async actualizarInventario(id_item:number,id_bodega:number,inventario:InventarioUpdateDTO,id_empresa:number,client?:DBClient):Promise<Inventario>{
+    async actualizarInventario(id_inventario:number,inventario:InventarioUpdateDTO, client?:DBClient):Promise<Inventario>{
         
-        const inventarioActual = await this.obtenerInventarioItem(id_item,id_bodega,id_empresa,client);
-
         if(inventario.stock_actual !== undefined && inventario.stock_actual < 0){
             throw new Error("El stock actual no puede ser negativo")
         }
@@ -87,7 +85,29 @@ export class ServicesInventario {
         if(inventario.stock_reservado !== undefined && inventario.stock_reservado < 0){
             throw new Error("El stock reservado no puede ser negativo")
         }
-        const data = await this.repository.actualizarInventario(inventarioActual.id_inventario, inventario, client);
+        const data = await this.repository.actualizarInventario(id_inventario, inventario, client);
+        return data;
+    }
+
+    async ingresarStock(id_item:number,id_bodega:number,cantidad:number,id_empresa:number,client?:DBClient):Promise<Inventario>{
+        const inventarioActual = await this.obtenerInventarioItem(id_item,id_bodega,id_empresa,client);
+        const inventario:InventarioUpdateDTO = {
+            stock_actual:inventarioActual.stock_actual + cantidad,
+            stock_disponible:inventarioActual.stock_disponible + cantidad,
+            stock_reservado:inventarioActual.stock_reservado
+        }
+        const data = await this.actualizarInventario(inventarioActual.id_inventario,inventario, client);
+        return data;
+    }
+
+    async retirarStock(id_item:number,id_bodega:number,cantidad:number,id_empresa:number,client?:DBClient):Promise<Inventario>{
+        const inventarioActual = await this.obtenerInventarioItem(id_item,id_bodega,id_empresa,client);
+        const inventario:InventarioUpdateDTO = {
+            stock_actual:inventarioActual.stock_actual - cantidad,
+            stock_disponible:inventarioActual.stock_disponible - cantidad,
+            stock_reservado:inventarioActual.stock_reservado
+        }
+        const data = await this.actualizarInventario(inventarioActual.id_inventario,inventario, client);
         return data;
     }
 }

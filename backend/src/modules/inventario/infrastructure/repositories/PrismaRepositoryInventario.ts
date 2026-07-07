@@ -13,6 +13,7 @@ export class PrismaRepositoryInventario implements IRepositoryInventario {
             },
             select: {
                 id_inventario: true,
+                id_bodega:true,
                 stock_actual: true,
                 stock_disponible: true,
                 stock_reservado: true,
@@ -48,6 +49,7 @@ export class PrismaRepositoryInventario implements IRepositoryInventario {
             },
             select: {
                 id_inventario: true,
+                id_bodega:true,
                 stock_actual: true,
                 stock_disponible: true,
                 stock_reservado: true,
