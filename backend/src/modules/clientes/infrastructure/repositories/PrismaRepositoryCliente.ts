@@ -1,3 +1,4 @@
+import { DBClient } from "../../../../core/database/DBClient";
 import { prisma } from "../../../../core/database/prisma";
 import { Cliente } from "../../domain/Cliente";
 import { ClienteInputDTO } from "../../domain/ClienteInputDTO";
@@ -14,8 +15,8 @@ export class PrismaRepositoryCliente implements RepositoryCliente {
         return clientes;
     }
 
-    async obtenerClienteId(id_cliente: number) {
-        const cliente = await prisma.cliente.findUnique({
+    async obtenerClienteId(id_cliente: number, client: DBClient = prisma) {
+        const cliente = await client.cliente.findUnique({
             where: {
                 id_cliente: id_cliente,
             }

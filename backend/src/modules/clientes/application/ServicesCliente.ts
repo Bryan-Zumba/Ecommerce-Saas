@@ -1,3 +1,4 @@
+import { DBClient } from "../../../core/database/DBClient";
 import { ServicesEmpresa } from "@/modules/empresa/application/ServicesEmpresa";
 import { Cliente } from "../domain/Cliente";
 import { ClienteInputDTO } from "../domain/ClienteInputDTO";
@@ -21,12 +22,12 @@ export class ServiceCliente {
         return clientes;
     }
 
-    async obtenerClienteId(id_cliente: number): Promise<Cliente | null> {
+    async obtenerClienteId(id_cliente: number, client?: DBClient): Promise<Cliente | null> {
         if(!id_cliente || id_cliente <= 0){
             throw new Error("El id del cliente es requerido");
         }
         //validar que el cliente exista
-        const cliente = await this.repository.obtenerClienteId(id_cliente);
+        const cliente = await this.repository.obtenerClienteId(id_cliente, client);
         if(!cliente){
             throw new Error("Cliente no encontrado");
         }

@@ -18,6 +18,8 @@ import routerProveedor from './modules/proveedor/infrastructure/routes/RouterPro
 import routerMovimiento_Inventario from './modules/inventario/infrastructure/routes/RouterMovimiento_Inventario';
 import routesDetalleCompra from './modules/compra/infrastructure/routes/RoutesDetalleCompra';
 import routerMovimientoCaja from './modules/caja/infrastructure/routes/RoutesMovimientoCaja';
+import routesVenta from './modules/venta/infrastructure/routes/RoutesVenta';
+import routesDetalleVenta from './modules/venta/infrastructure/routes/RoutesDetalleVenta';
 
 dotenv.config();
 
@@ -61,6 +63,8 @@ app.use('/api/compra', routesCompra);
 app.use('/api/detalle-compra', routesDetalleCompra);
 app.use('/api/movimiento-inventario', routerMovimiento_Inventario);
 app.use('/api/movimiento-caja', routerMovimientoCaja);
+app.use('/api/venta', routesVenta);
+app.use('/api/detalle-venta', routesDetalleVenta);
 
 // Inicio del servidor
 app.listen(PORT, () => {
