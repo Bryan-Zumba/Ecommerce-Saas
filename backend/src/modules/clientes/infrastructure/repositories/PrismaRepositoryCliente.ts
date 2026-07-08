@@ -24,8 +24,8 @@ export class PrismaRepositoryCliente implements RepositoryCliente {
         return cliente;
     }
 
-    async obtenerClienteCedula(id_empresa: number, cedula: string){
-        const cliente = await prisma.cliente.findUnique({
+    async obtenerClienteCedula(id_empresa: number, cedula: string, client: DBClient = prisma){
+        const cliente = await client.cliente.findUnique({
             where: {
                 cedula_id_empresa: {
                     id_empresa: id_empresa,
@@ -36,8 +36,8 @@ export class PrismaRepositoryCliente implements RepositoryCliente {
         return cliente;
     }
 
-    async crearCliente(cliente: ClienteInputDTO): Promise<Cliente> {
-        const nuevoCliente = await prisma.cliente.create({
+    async crearCliente(cliente: ClienteInputDTO, client: DBClient = prisma): Promise<Cliente> {
+        const nuevoCliente = await client.cliente.create({
             data: cliente
         });
         return nuevoCliente;

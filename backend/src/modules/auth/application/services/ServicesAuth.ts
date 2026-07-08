@@ -66,7 +66,11 @@ export class ServicesAuth{
             id_rol: usuario.id_rol,
             nombres: usuario.nombres,
             apellidos: usuario.apellidos,
-            email: usuario.email
+            telefono: usuario.telefono,
+            email: usuario.email,
+            ultimo_acceso: usuario.ultimo_acceso,
+            rol: usuario.rol?.nombre,
+            empresa: usuario.empresa
         } };
     }
 

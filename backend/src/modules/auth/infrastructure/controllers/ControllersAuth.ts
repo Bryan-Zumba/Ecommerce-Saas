@@ -103,7 +103,10 @@ export class ControllersAuth {
                     nombres: usuario.nombres,
                     apellidos: usuario.apellidos,
                     telefono: usuario.telefono,
-                    email: usuario.email
+                    email: usuario.email,
+                    ultimo_acceso: usuario.ultimo_acceso,
+                    rol: usuario.rol?.nombre,
+                    empresa: usuario.empresa
                 }
             } });
         } catch (error: any) {

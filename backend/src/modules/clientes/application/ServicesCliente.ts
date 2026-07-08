@@ -34,7 +34,7 @@ export class ServiceCliente {
         return cliente;
     }
 
-    async obtenerClienteCedula(id_empresa: number, cedula: string): Promise<Cliente | null> {
+    async obtenerClienteCedula(id_empresa: number, cedula: string, client?: DBClient): Promise<Cliente | null> {
         if(!id_empresa || id_empresa <= 0){
             throw new Error("El id de la empresa es requerido");
         }
@@ -44,11 +44,11 @@ export class ServiceCliente {
         if (!cedula?.trim()) {
             throw new Error("La cedula del cliente es requerida");
         }
-        const cliente = await this.repository.obtenerClienteCedula(id_empresa, cedula);
+        const cliente = await this.repository.obtenerClienteCedula(id_empresa, cedula, client);
         return cliente;
     }
 
-    async crearCliente(cliente: ClienteInputDTO) {
+    async crearCliente(cliente: ClienteInputDTO, client?: DBClient) {
         if (!cliente.id_empresa) {
             throw new Error("El cliente debe pertenecer a una empresa");
         }
@@ -62,7 +62,7 @@ export class ServiceCliente {
             throw new Error("El apellido del cliente es requerido");
         }
 
-        const clienteEncontrado = await this.obtenerClienteCedula(cliente.id_empresa, cliente.cedula);
+        const clienteEncontrado = await this.obtenerClienteCedula(cliente.id_empresa, cliente.cedula, client);
         if(clienteEncontrado){
             throw new Error("El cliente ya existe, no puede ser creado nuevamente");
         }
@@ -94,7 +94,7 @@ export class ServiceCliente {
             throw new Error("La direccion debe tener menos de 300 caracteres");
         }
         
-        const data= await this.repository.crearCliente(cliente);
+        const data= await this.repository.crearCliente(cliente, client);
         return data;
     }
 

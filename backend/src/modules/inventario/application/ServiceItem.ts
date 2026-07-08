@@ -121,6 +121,11 @@ export class ServiceItem {
         });
     }
 
+    async existeItemPorNombre(nombre:string,id_empresa:number,id_item?:number):Promise<boolean>{
+        return await this.repository.existeItemPorNombre(nombre,id_empresa,id_item);
+    }
+
+
     async obtenerItems(id_empresa:number,client?:DBClient):Promise<Item[]>{
         await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa);
 

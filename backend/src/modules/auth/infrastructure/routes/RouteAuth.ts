@@ -18,6 +18,8 @@ import { ServicesBodega } from "../../../inventario/application/ServicesBodega";
 import { ServicesSesion } from "../../application/services/ServicesSesion";
 import { PrismaRepositorySesion } from "../repositories/PrismaRepositorySesion";
 import { ServicesEmail } from "../../application/services/ServicesEmail";
+import { PrismaRepositoryCliente } from "../../../clientes/infrastructure/repositories/PrismaRepositoryCliente";
+import { ServiceCliente } from "../../../clientes/application/ServicesCliente";
 
 const routerAuth = Router();
 
@@ -40,7 +42,10 @@ const serviceEmail = new ServicesEmail();
 const serviceAuth = new ServicesAuth(serviceUsuario, serviceSesion, serviceEmail);
 const controllerAuth = new ControllersAuth(serviceAuth, serviceUsuario);
 
-const serviceRegister = new ServicesRegister(serviceAccessCode, serviceEmpresa, serviceBodega, serviceRol, serviceUsuario);
+const repositoryCliente = new PrismaRepositoryCliente();
+const serviceCliente = new ServiceCliente(repositoryCliente, serviceEmpresa);
+
+const serviceRegister = new ServicesRegister(serviceAccessCode, serviceEmpresa, serviceBodega, serviceRol, serviceUsuario, serviceCliente);
 const controllerRegister = new ControllerRegister(serviceRegister);
 
 routerAuth.post('/validate-access-code', controllerAccessCode.validarCodigo);

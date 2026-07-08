@@ -24,10 +24,12 @@ export class ServicesDetalleVenta {
         if (!detalleVenta.id_item) {
             throw new Error("El id del item es requerido");
         }
-
+        console.log(detalleVenta);
+        console.log(id_empresa);
         const bodegaEmpresa = await this.servicesBodega.obtenerBodegaEmpresa(id_empresa, client);
+        console.log(bodegaEmpresa);
         if (detalleVenta.id_bodega !== bodegaEmpresa.id_bodega) {
-            throw new Error("La bodega seleccionada no existe para esta empresa");
+            throw new Error("La bodega seleccionada no existe para esta empresa detalle");
         }
 
         await this.servicesItem.obtenerItemEmpresa(detalleVenta.id_item, id_empresa, client);

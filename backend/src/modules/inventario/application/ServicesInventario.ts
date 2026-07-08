@@ -33,7 +33,7 @@ export class ServicesInventario {
         return data;
     }
 
-    async obtenerInventarioItem(id_item: number, id_bodega: number, id_empresa: number, client?: DBClient): Promise<InventarioDetalleDTO | null> {
+    async obtenerInventarioItem(id_item: number, id_bodega: number, id_empresa: number, client?: DBClient): Promise<InventarioDetalleDTO> {
         
         if(!id_item || id_item <=0) {
             throw new Error("Id de item inválido");
@@ -45,7 +45,9 @@ export class ServicesInventario {
             throw new Error("El item no existe en esta empresa");
         }
         const data = await this.repository.obtenerInventarioItem(id_item, id_bodega, client);
-
+        if (!data) {
+            throw new Error(`El producto ${item.nombre} no tiene inventario registrado en la bodega seleccionada`);
+        }
         return data;
     }
 
@@ -99,18 +101,15 @@ export class ServicesInventario {
         const data = await this.actualizarInventario(inventarioActual.id_inventario,inventario, client);
         return data;
     }
-
-    async retirarStock(id_item:number,id_bodega:number,cantidad:number,id_empresa:number,client?:DBClient):Promise<Inventario>{
-        const inventarioActual = await this.obtenerInventarioItem(id_item,id_bodega,id_empresa,client);
-        if (!inventarioActual) {
-            throw new Error("No se encontro inventario registrado para el item seleccionado");
+    
+    async retirarStock(id_inventario: number, cantidad: number, client?: DBClient): Promise<Inventario> {
+        const resultado = await this.repository.retirarStock(id_inventario, cantidad, client);
+        
+        if (resultado.count === 0) {
+            throw new Error("Stock insuficiente o modificado simultáneamente para el item seleccionado");
         }
-        const inventario:InventarioUpdateDTO = {
-            stock_actual:inventarioActual.stock_actual - cantidad,
-            stock_disponible:inventarioActual.stock_disponible - cantidad,
-            stock_reservado:inventarioActual.stock_reservado
-        }
-        const data = await this.actualizarInventario(inventarioActual.id_inventario,inventario, client);
-        return data;
+        
+        const data = await this.repository.obtenerInventarioId(id_inventario, client);
+        return data as Inventario;
     }
 }

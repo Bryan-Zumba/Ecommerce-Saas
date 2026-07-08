@@ -9,4 +9,5 @@ export interface IRepositoryInventario {
     obtenerInventarioId(id_inventario:number,client?:DBClient):Promise<Inventario | null>;
     crearInventario(inventario: InventarioInputDTO, client?: DBClient): Promise<Inventario>;
     actualizarInventario(id_inventario: number, inventario: InventarioUpdateDTO, client?: DBClient): Promise<Inventario>;
+    retirarStock(id_inventario: number, cantidad: number, client?: DBClient): Promise<{ count: number }>;
 }

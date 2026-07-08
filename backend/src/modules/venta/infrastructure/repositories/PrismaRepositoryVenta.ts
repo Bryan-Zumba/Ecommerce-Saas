@@ -4,6 +4,7 @@ import { IRepositoryVenta } from "../../domain/IRepositoryVenta";
 import { Venta } from "../../domain/Venta";
 import { VentaCreateDTO } from "../../domain/VentaInputDTO";
 import { Estado_venta } from "@prisma/client";
+import { CatalogoVentaDTO, CatalogoVentaRepositoryDTO } from "../../domain/CatalogoVentaDTO";
 
 export class PrismaRepositoryVenta implements IRepositoryVenta {
     async crearVenta(venta: VentaCreateDTO, client: DBClient = prisma): Promise<Venta> {
@@ -64,5 +65,25 @@ export class PrismaRepositoryVenta implements IRepositoryVenta {
             }
         });
         return data;
+    }
+
+    async obtenerCatalogoVenta(id_empresa: number, id_bodega: number, client: DBClient = prisma): Promise<CatalogoVentaRepositoryDTO[]> {
+        const items = await client.item.findMany({
+            where: {
+                id_empresa,
+                estado: true
+            },
+            include: {
+                categoria: true,
+                inventarios: {
+                    where: { id_bodega }
+                }
+            },
+            orderBy: {
+                nombre: 'asc'
+            }
+        });
+
+        return items;
     }
 }

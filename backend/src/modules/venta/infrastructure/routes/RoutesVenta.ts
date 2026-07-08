@@ -64,6 +64,7 @@ const servicesVenta = new ServicesVenta(
     servicesEmpresa,
     serviceCliente,
     serviceItem,
+    serviceBodega,
     serviceInventario,
     serviceMovimientoInventario,
     serviceMovimientoCaja
@@ -73,6 +74,7 @@ const servicesVenta = new ServicesVenta(
 const controllerVenta = new ControllersVenta(servicesVenta);
 
 // 5. Configuración de endpoints
+routesVenta.get("/catalogo", authMiddleware, controllerVenta.obtenerCatalogoVenta);
 routesVenta.post("/crear-venta", authMiddleware, controllerVenta.crearVenta);
 routesVenta.get("/obtener-ventas-empresa", authMiddleware, controllerVenta.obtenerVentasEmpresa);
 routesVenta.post("/:id_venta/cancelar", authMiddleware, controllerVenta.cancelarVenta);

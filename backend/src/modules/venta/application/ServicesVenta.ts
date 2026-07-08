@@ -9,15 +9,14 @@ import { ServicesDetalleVenta } from "./ServicesDetalleVenta";
 import { ServicesEmpresa } from "../../empresa/application/ServicesEmpresa";
 import { ServiceCliente } from "../../clientes/application/ServicesCliente";
 import { ServicesInventario } from "../../inventario/application/ServicesInventario";
+import { ServicesBodega } from "../../inventario/application/ServicesBodega";
 import { ServicesMovimiento_Inventario } from "../../inventario/application/ServicesMovimiento_Inventario";
 import { ServicesMovimientoCaja } from "../../caja/application/ServicesMovimientoCaja";
 import { ServiceItem } from "../../inventario/application/ServiceItem";
-import {
-    Estado_venta,
-    Tipo_movimiento_inventario,
-    Tipo_Movimiento_caja,
-    Tipo_Item
-} from "@prisma/client";
+import { Estado_venta, Tipo_movimiento_inventario, Tipo_Movimiento_caja, Tipo_Item } from "@prisma/client";
+import { InventarioDetalleDTO } from "../../inventario/domain/InventarioDetalleDTO";
+import { Item } from "../../inventario/domain/Item";
+import { CatalogoVentaDTO } from "../domain/CatalogoVentaDTO";
 
 export class ServicesVenta {
     private repository: IRepositoryVenta;
@@ -25,21 +24,60 @@ export class ServicesVenta {
     private serviceEmpresa: ServicesEmpresa;
     private serviceCliente: ServiceCliente;
     private serviceItem: ServiceItem;
+    private serviceBodega: ServicesBodega;
     private serviceInventario: ServicesInventario;
     private serviceMovimientoInventario: ServicesMovimiento_Inventario;
     private serviceMovimientoCaja: ServicesMovimientoCaja;
 
-    constructor(repository: IRepositoryVenta, serviceDetalleVenta: ServicesDetalleVenta, serviceEmpresa: ServicesEmpresa, serviceCliente: ServiceCliente,
-        serviceItem: ServiceItem, serviceInventario: ServicesInventario, serviceMovimientoInventario: ServicesMovimiento_Inventario,
-        serviceMovimientoCaja: ServicesMovimientoCaja) {
+    constructor(
+        repository: IRepositoryVenta, 
+        serviceDetalleVenta: ServicesDetalleVenta, 
+        serviceEmpresa: ServicesEmpresa, 
+        serviceCliente: ServiceCliente,
+        serviceItem: ServiceItem, 
+        serviceBodega: ServicesBodega,
+        serviceInventario: ServicesInventario, 
+        serviceMovimientoInventario: ServicesMovimiento_Inventario,
+        serviceMovimientoCaja: ServicesMovimientoCaja
+    ) {
         this.repository = repository;
         this.serviceDetalleVenta = serviceDetalleVenta;
         this.serviceEmpresa = serviceEmpresa;
         this.serviceCliente = serviceCliente;
         this.serviceItem = serviceItem;
+        this.serviceBodega = serviceBodega;
         this.serviceInventario = serviceInventario;
         this.serviceMovimientoInventario = serviceMovimientoInventario;
         this.serviceMovimientoCaja = serviceMovimientoCaja;
+    }
+
+    async obtenerCatalogoVenta(id_empresa: number): Promise<CatalogoVentaDTO[]> {
+        await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa);
+        const bodega = await this.serviceBodega.obtenerBodegaEmpresa(id_empresa);
+        const itemsRaw = await this.repository.obtenerCatalogoVenta(id_empresa, bodega.id_bodega);
+
+        return itemsRaw.map(item => {
+            const inv = item.inventarios[0];
+            return {
+                id_bodega: bodega.id_bodega,
+                stock_disponible: inv ? Number(inv.stock_disponible) : 0,
+                item: {
+                    id_item: item.id_item,
+                    nombre: item.nombre,
+                    descripcion: item.descripcion,
+                    costo: Number(item.costo),
+                    precio: Number(item.precio),
+                    tipo_item: item.tipo_item,
+                    imagen_url: item.imagen_url,
+                    estado: item.estado,
+                    categoria: {
+                        id_categoria: item.categoria.id_categoria,
+                        nombre: item.categoria.nombre,
+                        estado: item.categoria.estado
+                    }
+                }
+            };
+        });
     }
 
     async crearSolicitudVenta(solicitud: SolicitudVentaDTO): Promise<Venta> {
@@ -59,19 +97,27 @@ export class ServicesVenta {
             let total = new Decimal(0);
 
             // Validar de antemano el stock y la existencia de todos los items
+            type ItemProcesado = {
+                detalle: SolicitudVentaDTO["detalles"][number];
+                item: Item;
+                inventarioItem: InventarioDetalleDTO | null;
+            };
+
+            const itemsProcesados: ItemProcesado[] = [];
             for (const detalle of solicitud.detalles) {
                 const item = await this.serviceItem.obtenerItemEmpresa(detalle.id_item, id_empresa, tx);
+                let inventarioItem = null;
 
                 // Si es de tipo Producto, verificar stock disponible
                 if (item.tipo_item === Tipo_Item.Producto) {
-                    const inventarioItem = await this.serviceInventario.obtenerInventarioItem(detalle.id_item, detalle.id_bodega, id_empresa, tx);
-                    if (!inventarioItem) {
-                        throw new Error(`El producto ${item.nombre} no tiene inventario registrado en la bodega seleccionada`);
-                    }
+                    inventarioItem = await this.serviceInventario.obtenerInventarioItem(detalle.id_item, detalle.id_bodega, id_empresa, tx);
+                    
                     if (inventarioItem.stock_disponible < detalle.cantidad) {
                         throw new Error(`Stock insuficiente para el producto ${item.nombre}. Stock disponible: ${inventarioItem.stock_disponible}, solicitado: ${detalle.cantidad}`);
                     }
                 }
+
+                itemsProcesados.push({ detalle, item, inventarioItem });
 
                 const subtotal = new Decimal(detalle.precio_unitario).mul(detalle.cantidad);
                 total = total.add(subtotal);
@@ -94,8 +140,8 @@ export class ServicesVenta {
             }, tx);
 
             // 4. Crear los detalles de venta y descontar stock
-            for (const detalle of solicitud.detalles) {
-                const item = await this.serviceItem.obtenerItemEmpresa(detalle.id_item, id_empresa, tx);
+            for (const procesado of itemsProcesados) {
+                const { detalle, item, inventarioItem } = procesado;
 
                 // Guardar detalle en la base de datos a través del servicio de detalles
                 await this.serviceDetalleVenta.crearDetalleVenta({
@@ -104,13 +150,12 @@ export class ServicesVenta {
                 }, id_empresa, tx);
 
                 // Si es de tipo Producto, descontar de inventario y registrar movimiento
-                if (item!.tipo_item === Tipo_Item.Producto) {
-                    const inventarioItem = await this.serviceInventario.obtenerInventarioItem(detalle.id_item, detalle.id_bodega, id_empresa, tx);
-                    const stockAnterior = inventarioItem!.stock_actual;
+                if (item.tipo_item === Tipo_Item.Producto && inventarioItem) {
+                    const stockAnterior = inventarioItem.stock_actual;
                     const stockNuevo = stockAnterior - detalle.cantidad;
 
                     // Retirar stock del inventario físicamente
-                    await this.serviceInventario.retirarStock(detalle.id_item, detalle.id_bodega, detalle.cantidad, id_empresa, tx);
+                    await this.serviceInventario.retirarStock(inventarioItem.id_inventario, detalle.cantidad, tx);
 
                     // Registrar movimiento de inventario de venta
                     await this.serviceMovimientoInventario.crearMovimientoInventario({
@@ -173,7 +218,9 @@ export class ServicesVenta {
 
             for (const detalle of detallesVenta) {
                 const item = await this.serviceItem.obtenerItemEmpresa(detalle.id_item, id_empresa, tx);
+
                 if (item?.tipo_item === Tipo_Item.Producto && detalle.id_bodega) {
+                    
                     const inventarioItem = await this.serviceInventario.obtenerInventarioItem(detalle.id_item, detalle.id_bodega, id_empresa, tx);
                     const stockAnterior = inventarioItem ? inventarioItem.stock_actual : 0;
                     const stockNuevo = stockAnterior + detalle.cantidad;

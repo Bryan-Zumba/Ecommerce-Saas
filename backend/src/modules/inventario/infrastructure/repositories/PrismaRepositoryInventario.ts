@@ -108,4 +108,24 @@ export class PrismaRepositoryInventario implements IRepositoryInventario {
         })
         return data;
     }
+
+    async retirarStock(id_inventario: number, cantidad: number, client: DBClient = prisma): Promise<{ count: number }> {
+        const resultado = await client.inventario.updateMany({
+            where: {
+                id_inventario,
+                stock_disponible: {
+                    gte: cantidad
+                }
+            },
+            data: {
+                stock_actual: {
+                    decrement: cantidad
+                },
+                stock_disponible: {
+                    decrement: cantidad
+                }
+            }
+        });
+        return resultado;
+    }
 }

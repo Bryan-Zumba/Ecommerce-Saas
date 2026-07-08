@@ -29,6 +29,16 @@ export class ControllersVenta {
         }
     }
 
+    obtenerCatalogoVenta = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const id_empresa = Number(req.user?.id_empresa);
+            const catalogo = await this.service.obtenerCatalogoVenta(id_empresa);
+            return res.status(200).json({ success: true, message: "Catálogo obtenido exitosamente", catalogo });
+        } catch (error: any) {
+            return res.status(error.statusCode || 500).json({ success: false, message: error.message });
+        }
+    }
+
     obtenerVentasEmpresa = async (req: Request, res: Response): Promise<Response> => {
         try {
             const id_empresa = Number(req.user?.id_empresa);

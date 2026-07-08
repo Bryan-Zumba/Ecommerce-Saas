@@ -2,6 +2,7 @@ import { ServicesRol } from "../../../usuarios/application/ServicesRol";
 import { ServicesEmpresa } from "../../../empresa/application/ServicesEmpresa";
 import { ServicesAccessCode } from "./ServicesAccessCode";
 import { ServicesUsuarios } from "@/modules/usuarios/application/ServicesUsuarios";
+import { ServiceCliente } from "@/modules/clientes/application/ServicesCliente";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../../../core/database/prisma";
 import { ServicesBodega } from "../../../inventario/application/ServicesBodega";
@@ -12,13 +13,15 @@ export class ServicesRegister{
     private serviceBodega: ServicesBodega;
     private serviceRol : ServicesRol;
     private serviceUsuario: ServicesUsuarios;
+    private serviceCliente: ServiceCliente;
 
-    constructor(serviceAccessCode: ServicesAccessCode, serviceEmpresa: ServicesEmpresa, serviceBodega: ServicesBodega, serviceRol: ServicesRol, serviceUsuario:ServicesUsuarios){
+    constructor(serviceAccessCode: ServicesAccessCode, serviceEmpresa: ServicesEmpresa, serviceBodega: ServicesBodega, serviceRol: ServicesRol, serviceUsuario:ServicesUsuarios, serviceCliente: ServiceCliente){
         this.serviceAccessCode=serviceAccessCode;
         this.serviceEmpresa= serviceEmpresa;
         this.serviceBodega= serviceBodega;
         this.serviceRol= serviceRol;
         this.serviceUsuario=serviceUsuario;
+        this.serviceCliente = serviceCliente;
     }
 
     async registrarTienda(data:any){
@@ -59,6 +62,19 @@ export class ServicesRegister{
             console.timeEnd("6")
 
             console.time("7")
+            //Crear cliente Consumidor Final
+            await this.serviceCliente.crearCliente({
+                id_empresa: empresa.id_empresa,
+                cedula: "9999999999",
+                nombres: "Consumidor",
+                apellidos: "Final",
+                email: "consumidor@final.com",
+                telefono: "0999999999",
+                direccion: "S/N"
+            }, tx);
+            console.timeEnd("7")
+
+            console.time("8")
             return {
                 empresa: empresa,
                 bodega: bodega,

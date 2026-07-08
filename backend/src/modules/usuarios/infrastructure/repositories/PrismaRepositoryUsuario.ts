@@ -94,6 +94,10 @@ export class PrismaRepositoryUsuario implements IRepositoryUsuario{
         const data = await prisma.usuario.findUnique({
             where: {
                 id_usuario: id_usuario
+            },
+            include: {
+                empresa: true,
+                rol: true
             }
         })
         return data;

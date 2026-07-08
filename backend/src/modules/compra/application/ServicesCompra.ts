@@ -23,16 +23,9 @@ export class ServicesCompra{
     private serviceMovimientoInventario: ServicesMovimiento_Inventario;
     private serviceMovimientoCaja: ServicesMovimientoCaja;
 
-    constructor(
-        repository: IRepositoryCompra,
-        serviceDetalleCompra: ServicesDetalleCompra,
-        serviceEmpresa: ServicesEmpresa,
-        serviceProveedor: ServiceProveedor,
-        cloudinaryService: CloudinaryService,
-        serviceInventario: ServicesInventario,
-        serviceMovimientoInventario: ServicesMovimiento_Inventario,
-        serviceMovimientoCaja: ServicesMovimientoCaja
-    ){
+    constructor(repository: IRepositoryCompra, serviceDetalleCompra: ServicesDetalleCompra, serviceEmpresa: ServicesEmpresa, serviceProveedor: ServiceProveedor,
+        cloudinaryService: CloudinaryService, serviceInventario: ServicesInventario,
+        serviceMovimientoInventario: ServicesMovimiento_Inventario, serviceMovimientoCaja: ServicesMovimientoCaja) {
         this.repository = repository;
         this.serviceDetalleCompra = serviceDetalleCompra;
         this.serviceEmpresa = serviceEmpresa;
