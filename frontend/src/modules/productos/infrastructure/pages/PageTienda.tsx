@@ -2,16 +2,16 @@ import React, { useState, useMemo } from 'react';
 import { useProductos } from '../../application/useProductos';
 import { LocalstorageProductoRepository } from '../repositories/LocalstorageProductoRepository';
 import TarjetaProducto from '../components/TarjetaProducto';
-import Carrito from '@/modules/ventas/infrastructure/components/Carrito';
-import { useCarrito } from '@/shared/context/ContextoCarrito';
+import orden from '@/modules/ventas/components/orden';
+import { useOrdenVenta } from '@/modules/ventas/hooks/useOrdenVenta';
 import { obtenerNombreCategoria } from '../../domain/Producto';
 
 const repository = new LocalstorageProductoRepository();
 
 export const PageTienda: React.FC = () => {
   const { productos, cargando, error } = useProductos(repository);
-  const { carrito } = useCarrito();
-  const hayProductosEnCarrito = carrito.length > 0;
+  const { orden } = useOrdenVenta();
+  const hayProductosEnCarrito = orden.length > 0;
   const [estaCarritoAbierto, setEstaCarritoAbierto] = useState(false);
   const [busqueda, setBusqueda] = useState('');
 
@@ -32,11 +32,11 @@ export const PageTienda: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex overflow-x-hidden relative">
-      
+
       {/* AREA DE PRODUCTOS */}
       <div className={`flex-1 p-6 transition-all duration-300 ${hayProductosEnCarrito ? 'lg:pr-96' : ''}`}>
         <div className="max-w-6xl mx-auto">
-          
+
           {/* Encabezado */}
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 text-left">
             <div>
@@ -92,37 +92,37 @@ export const PageTienda: React.FC = () => {
 
       {/* BOTÓN FLOTANTE (Solo móvil) */}
       {hayProductosEnCarrito && !estaCarritoAbierto && (
-        <button 
+        <button
           onClick={() => setEstaCarritoAbierto(true)}
           className="lg:hidden fixed bottom-6 right-6 bg-emerald-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 transition-transform active:scale-90 hover:bg-emerald-700"
         >
           <div className="relative">
             <span className="text-xl">🛒</span>
             <span className="absolute -top-3 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">
-              {carrito.reduce((acc, item) => acc + item.quantity, 0)}
+              {orden.reduce((acc, item) => acc + item.quantity, 0)}
             </span>
           </div>
-          <span className="font-bold text-sm">Carrito</span>
+          <span className="font-bold text-sm">orden</span>
         </button>
       )}
 
       {/* CAPA DE FONDO (Overlay) */}
       {hayProductosEnCarrito && estaCarritoAbierto && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setEstaCarritoAbierto(false)}
         />
       )}
 
-      {/* BARRA LATERAL DEL CARRITO */}
+      {/* BARRA LATERAL DEL orden */}
       {hayProductosEnCarrito && (
-      <aside className={`
+        <aside className={`
         fixed top-0 right-0 h-screen bg-white shadow-2xl z-50 transition-transform duration-300 ease-in-out
         w-[85%] sm:w-80 lg:w-96 flex flex-col
         ${estaCarritoAbierto ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
       `}>
-        <Carrito />
-      </aside>
+          <PanelOrden />
+        </aside>
       )}
 
     </div>

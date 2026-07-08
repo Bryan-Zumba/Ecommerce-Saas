@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthGuard } from "./shared/guards/AuthGuard";
 
-import { ProveedorCarrito } from "@/shared/context/ContextoCarrito";
+import { ProveedorOrdenVenta } from "@/modules/ventas/hooks/useOrdenVenta";
 import Home from "./pages/Page_Inicio";
+// Prototipos desconectados temporalmente (dependen de servicioHistorial que no existe)
+// Los archivos .tsx se mantienen como referencia visual para la migración
 import { PageTienda } from "./modules/items/infrastructure/pages/PageTienda";
 import { PageGestionItems } from "./modules/inventario/pages/PageGestionItems";
 import { PageCategorias } from "./modules/inventario/pages/PageCategorias";
@@ -28,13 +30,17 @@ import { PageHistorialCompras } from "./modules/compras/pages/PageHistorialCompr
 import { PageMovimientosCaja } from "./modules/caja/pages/PageMovimientosCaja";
 import { PageGestionUsuarios } from "./modules/usuarios/pages/PageGestionUsuarios";
 import { PageConsultaRoles } from "./modules/usuarios/pages/PageConsultaRoles";
+import { PagePerfil } from "./modules/usuarios/pages/PagePerfil";
 import { PageGestionProveedores } from "./modules/proveedores/pages/PageGestionProveedores";
 import { AuthProvider } from "./shared/context/auth/AuthContext";
+import { PageCatalogoVenta } from "./modules/ventas/pages/PageCatalogoVenta";
+import PageGenerarOrden from "./modules/ventas/pages/PageGenerarOrden";
+import PageVentaExitosa from "./modules/ventas/pages/PageVentaExitosa";
 
 function App() {
   return (
     <BrowserRouter>
-      <ProveedorCarrito>
+      <ProveedorOrdenVenta>
         <AuthProvider>
           <Routes>
             {/* Rutas publicas */}
@@ -61,15 +67,19 @@ function App() {
                 <Route path="/proveedores" element={<PageGestionProveedores />} />
                 <Route path="/usuarios/gestion" element={<PageGestionUsuarios />} />
                 <Route path="/roles/consulta" element={<PageConsultaRoles />} />
+                <Route path="/perfil" element={<PagePerfil />} />
                 <Route path="/historial" element={<HistorialPersonal />} />
                 <Route path="/reportes" element={<PageReportes />} />
                 <Route path="/movimientos-caja" element={<PageMovimientosCaja />} />
                 <Route path="/cambiar-contrasena" element={<PageChangePassword />} />
+                <Route path="/ventas/catalogo" element={<PageCatalogoVenta />} />
+                <Route path="/ventas/generar-orden" element={<PageGenerarOrden />} />
+                <Route path="/ventas/success" element={<PageVentaExitosa />} />
               </Route>
             </Route>
           </Routes>
         </AuthProvider>
-      </ProveedorCarrito>
+      </ProveedorOrdenVenta>
     </BrowserRouter>
   );
 }

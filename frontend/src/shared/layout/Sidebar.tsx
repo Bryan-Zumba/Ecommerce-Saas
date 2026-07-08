@@ -1,7 +1,8 @@
 import { AuthService } from '@/modules/auth/services/AuthService';
 import { supabase } from '@/supabase';
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/shared/context/auth/AuthContext';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -11,12 +12,33 @@ interface SidebarProps {
 function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { usuario, logout } = useAuth();
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsProfileMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const primerNombre = usuario?.nombres?.split(' ')[0] || '';
+  const primerApellido = usuario?.apellidos?.split(' ')[0] || '';
+  const initiales = `${primerNombre.charAt(0)}${primerApellido.charAt(0)}`.toUpperCase();
+
 
   const menuGroups = [
     {
       title: 'Ventas y caja',
       items: [
-        { id: 'items', label: 'Tienda de items', icon: '🛒', path: '/items' },
+        { id: 'catalogo', label: 'Catálogo de Ventas (NUEVO)', icon: '✨', path: '/ventas/catalogo' },
+        { id: 'items', label: 'Tienda de items (VIEJO)', icon: '🛒', path: '/items' },
         { id: 'historial', label: 'Historial personal', icon: '📜', path: '/historial' },
       ]
     },
@@ -72,8 +94,8 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               <span className="text-xl font-bold">S</span>
             </div>
             <div className="text-left">
-              <h2 className="text-lg font-bold text-gray-800 leading-tight">SaaS Ecommerce</h2>
-              <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">
+              <h2 className="text-[16px] font-bold text-gray-800 leading-tight">SaaS Ecommerce</h2>
+              <span className="text-[12px] text-emerald-600 font-bold">
                 Maneja tu negocio en la nube
               </span>
             </div>
@@ -87,7 +109,7 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           </button>
         </div>
 
-        <nav className="flex-1 p-4 flex flex-col gap-5 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 p-3 flex flex-col gap-3 overflow-y-auto custom-scrollbar">
           <button
                     key={'inicio'}
                     onClick={() => {
@@ -95,19 +117,19 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                       setIsOpen(false);
                     }}
                     className={`
-                      flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold transition-all duration-200 cursor-pointer text-left
+                      flex items-center gap-3 px-3 py-1.5 rounded-xl font-bold transition-all duration-200 cursor-pointer text-left
                       ${location.pathname === '/'
                         ? 'bg-emerald-50 text-emerald-700 shadow-xs'
                         : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}
                     `}
                   >
                     <span className="text-lg">{'🏠'}</span>
-                    <span className="text-xs">{'Inicio'}</span>
+                    <span className="text-[12px]">{'Inicio'}</span>
                     {location.pathname === '/' && <div className="ml-auto w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />}
                   </button>
           {menuGroups.map((group, groupIdx) => (
             <div key={groupIdx} className="flex flex-col gap-1">
-              <p className="text-[10px] font-extrabold text-gray-450 px-3 mb-1.5 text-left border-l-2 border-emerald-500/30 pl-2">
+              <p className="text-[12px] font-bold text-gray-400 px-3 mb-1.5 text-left border-l-2 border-emerald-500/30 pl-2">
                 {group.title}
               </p>
 
@@ -121,14 +143,14 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                       setIsOpen(false);
                     }}
                     className={`
-                      flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold transition-all duration-200 cursor-pointer text-left
+                      flex items-center gap-3 px-3 py-1.5 rounded-xl font-bold transition-all duration-200 cursor-pointer text-left
                       ${isActive
                         ? 'bg-emerald-50 text-emerald-700 shadow-xs'
                         : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}
                     `}
                   >
                     <span className="text-lg">{item.icon}</span>
-                    <span className="text-xs">{item.label}</span>
+                    <span className="text-[12px]">{item.label}</span>
                     {isActive && <div className="ml-auto w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />}
                   </button>
                 );
@@ -137,27 +159,76 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-gray-50 no-print">
-          <div className="bg-gray-50 rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold">
-              BZ
+        <div className="p-4 border-t border-gray-50 no-print relative" ref={menuRef}>
+          <button
+            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+            className="w-full bg-gray-50 rounded-2xl p-4 flex items-center gap-3 hover:bg-gray-100 transition-colors cursor-pointer text-left"
+          >
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold shrink-0">
+              {initiales}
             </div>
-            <div className="flex-1 min-w-0 text-left">
-              <p className="text-sm font-bold text-gray-800 truncate">Bryan Zumba</p>
-              <p className="text-[10px] text-gray-500 truncate">Admin Account</p>
-              <a href="/auth/primer-acceso" className="text-[9px] text-emerald-600 hover:text-emerald-700 font-bold block mt-0.5">
-                [Probar primer acceso]
-              </a>
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-gray-800 truncate">{primerNombre} {primerApellido}</p>
+              <p className="text-[12px] text-gray-500 truncate">{usuario?.email || 'Admin Account'}</p>
             </div>
+            <div className="text-gray-400 shrink-0">
+              <i className={`fas fa-chevron-${isProfileMenuOpen ? 'down' : 'up'} text-xs`}></i>
+            </div>
+          </button>
 
-            <button
-              onClick={async () => {
-                await AuthService.logout();
-                navigate('/auth');
-              }}
-              className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
-              ↪️
-            </button>
+          {/* Menú Desplegable */}
+          <div className={`
+            absolute bottom-full left-4 right-4 mb-2 bg-white border border-gray-100 shadow-xl rounded-xl overflow-hidden z-[60]
+            transition-all duration-200 origin-bottom
+            ${isProfileMenuOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}
+          `}>
+            <div className="flex flex-col py-2">
+              <button
+                onClick={() => {
+                  navigate('/perfil');
+                  setIsProfileMenuOpen(false);
+                  setIsOpen(false);
+                }}
+                className="px-4 py-2.5 text-left text-[14px] text-gray-700 hover:bg-gray-50 hover:text-emerald-700 transition-colors flex items-center gap-2 font-medium"
+              >
+                <i className="fas fa-user w-5 text-center text-gray-400"></i> Mi perfil
+              </button>
+              
+              <button
+                onClick={() => {
+                  navigate('/perfil');
+                  setIsProfileMenuOpen(false);
+                  setIsOpen(false);
+                }}
+                className="px-4 py-2.5 text-left text-[14px] text-gray-700 hover:bg-gray-50 hover:text-emerald-700 transition-colors flex items-center gap-2 font-medium"
+              >
+                <i className="fas fa-edit w-5 text-center text-gray-400"></i> Editar información personal
+              </button>
+              
+              <button
+                onClick={() => {
+                  navigate('/cambiar-contrasena');
+                  setIsProfileMenuOpen(false);
+                  setIsOpen(false);
+                }}
+                className="px-4 py-2.5 text-left text-[14px] text-gray-700 hover:bg-gray-50 hover:text-emerald-700 transition-colors flex items-center gap-2 font-medium"
+              >
+                <i className="fas fa-key w-5 text-center text-gray-400"></i> Cambiar contraseña
+              </button>
+              
+              <div className="h-px bg-gray-100 my-1"></div>
+              
+              <button
+                onClick={async () => {
+                  setIsProfileMenuOpen(false);
+                  await logout();
+                  navigate('/auth');
+                }}
+                className="px-4 py-2.5 text-left text-[14px] text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 font-medium"
+              >
+                <i className="fas fa-sign-out-alt w-5 text-center"></i> Cerrar sesión
+              </button>
+            </div>
           </div>
         </div>
       </aside>

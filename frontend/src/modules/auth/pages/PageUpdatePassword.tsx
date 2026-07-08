@@ -76,8 +76,8 @@ export const PageChangePassword: React.FC = () => {
         
         {/* Header */}
         <div className="border-b border-gray-100 px-5 py-5 sm:px-8 sm:py-6">
-          <h1 className="text-xl font-bold text-gray-800">Cambiar Contraseña</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-[16px] font-bold text-gray-800">Cambiar contraseña</h1>
+          <p className="text-[12px] text-gray-500 mt-1">
             Actualiza tus credenciales para mantener tu cuenta segura.
           </p>
         </div>
@@ -96,7 +96,7 @@ export const PageChangePassword: React.FC = () => {
           <form onSubmit={handleSubmit} className="p-5 sm:p-8">
             
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs font-semibold rounded-r-xl">
+              <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-[12px] font-semibold rounded-r-xl">
                 <i className="fas fa-exclamation-circle mr-2" />
                 {error}
               </div>
@@ -104,8 +104,8 @@ export const PageChangePassword: React.FC = () => {
 
             {/* Contraseña Actual */}
             <div className="mb-5">
-              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                Contraseña Actual
+              <label className="block text-[12px] font-bold text-gray-400 mb-2">
+                Contraseña actual
               </label>
               <div className="relative">
                 <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -115,7 +115,7 @@ export const PageChangePassword: React.FC = () => {
                   required
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-12 pl-11 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-12 pl-11 w-full text-[14px] font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
                 <button
                   type="button"
@@ -129,8 +129,8 @@ export const PageChangePassword: React.FC = () => {
 
             {/* Nueva Contraseña */}
             <div className="mb-5">
-              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                Nueva Contraseña
+              <label className="block text-[12px] font-bold text-gray-400 mb-2">
+                Nueva contraseña
               </label>
               <div className="relative">
                 <i className="fas fa-key absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -140,7 +140,7 @@ export const PageChangePassword: React.FC = () => {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-12 pl-11 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-12 pl-11 w-full text-[14px] font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
                 <button
                   type="button"
@@ -154,8 +154,8 @@ export const PageChangePassword: React.FC = () => {
 
             {/* Confirmar Nueva Contraseña */}
             <div className="mb-6">
-              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                Confirmar Nueva Contraseña
+              <label className="block text-[12px] font-bold text-gray-400 mb-2">
+                Confirmar nueva contraseña
               </label>
               <div className="relative">
                 <i className="fas fa-shield-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -165,7 +165,7 @@ export const PageChangePassword: React.FC = () => {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-12 pl-11 w-full text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                  className="bg-gray-50 border border-gray-100 rounded-xl py-3 pr-12 pl-11 w-full text-[14px] font-medium text-gray-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
                 <button
                   type="button"
@@ -179,21 +179,21 @@ export const PageChangePassword: React.FC = () => {
 
             {/* Políticas de Seguridad */}
             <div className="bg-gray-50 rounded-2xl p-4 mb-6 border border-gray-100">
-              <p className="text-xs font-bold text-gray-500 mb-2">Requisitos de seguridad:</p>
+              <p className="text-[12px] font-bold text-gray-500 mb-2">Requisitos de seguridad:</p>
               <ul className="space-y-2">
-                <li className={`text-xs flex items-center font-medium ${hasMinLength ? 'text-emerald-600' : 'text-gray-400'}`}>
+                <li className={`text-[12px] flex items-center font-medium ${hasMinLength ? 'text-emerald-600' : 'text-gray-400'}`}>
                   <i className={`fas ${hasMinLength ? 'fa-check-circle' : 'fa-circle'} mr-2`} />
                   Al menos 8 caracteres
                 </li>
-                <li className={`text-xs flex items-center font-medium ${hasUpperCase ? 'text-emerald-600' : 'text-gray-400'}`}>
+                <li className={`text-[12px] flex items-center font-medium ${hasUpperCase ? 'text-emerald-600' : 'text-gray-400'}`}>
                   <i className={`fas ${hasUpperCase ? 'fa-check-circle' : 'fa-circle'} mr-2`} />
                   Al menos una letra mayúscula
                 </li>
-                <li className={`text-xs flex items-center font-medium ${hasNumber ? 'text-emerald-600' : 'text-gray-400'}`}>
+                <li className={`text-[12px] flex items-center font-medium ${hasNumber ? 'text-emerald-600' : 'text-gray-400'}`}>
                   <i className={`fas ${hasNumber ? 'fa-check-circle' : 'fa-circle'} mr-2`} />
                   Al menos un número
                 </li>
-                <li className={`text-xs flex items-center font-medium ${match ? 'text-emerald-600' : 'text-gray-400'}`}>
+                <li className={`text-[12px] flex items-center font-medium ${match ? 'text-emerald-600' : 'text-gray-400'}`}>
                   <i className={`fas ${match ? 'fa-check-circle' : 'fa-circle'} mr-2`} />
                   Las contraseñas coinciden
                 </li>
@@ -204,14 +204,14 @@ export const PageChangePassword: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/')}
-                className="bg-transparent text-gray-400 hover:text-gray-600 font-bold py-2.5 px-6 rounded-xl transition-all text-sm"
+                className="bg-transparent text-gray-400 hover:text-gray-600 font-bold py-2.5 px-6 rounded-xl transition-all text-[14px]"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white rounded-xl font-bold py-2.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98] text-sm"
+                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white rounded-xl font-bold py-2.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98] text-[14px]"
               >
                 {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
               </button>

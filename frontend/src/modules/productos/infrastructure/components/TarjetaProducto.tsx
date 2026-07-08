@@ -1,13 +1,13 @@
-import { useCarrito } from "@/shared/context/ContextoCarrito";
+import { useOrdenVenta } from "@/modules/ventas/hooks/useOrdenVenta";
 import { obtenerNombreCategoria } from "../../domain/Producto";
 
 /**
  * TarjetaProducto - Muestra la información de un producto individual.
  */
 function TarjetaProducto({ data }: { data: any }) {
-    const { agregarAlCarrito } = useCarrito();
+    const { agregarItem } = useOrdenVenta();
 
-    // Mapeamos el producto de la estructura de base de datos a lo que espera el carrito
+    // Mapeamos el producto de la estructura de base de datos a lo que espera el orden
     const productoParaCarrito = {
         id: data.id_productos,
         nombre: data.nombre,
@@ -19,7 +19,7 @@ function TarjetaProducto({ data }: { data: any }) {
 
     return (
       <div 
-        onClick={() => agregarAlCarrito(productoParaCarrito)} 
+        onClick={() => agregarItem(productoParaCarrito)} 
         className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:scale-[1.01] active:scale-95 transition-all duration-200 flex flex-col text-left"
       >
         <span className="bg-emerald-50 text-emerald-700 font-semibold text-[10px] px-2 py-0.5 rounded-full self-start mb-2">

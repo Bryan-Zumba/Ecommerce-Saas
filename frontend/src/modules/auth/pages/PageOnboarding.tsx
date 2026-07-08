@@ -62,6 +62,19 @@ export const PageOnboarding: React.FC = () => {
   };
 
   const handleCompletarConfiguracion = async (datosBod: DatosFormularioBodega) => {
+    const confirm = await Swal.fire({
+      title: '¿Confirmar registro?',
+      text: 'Se creará tu empresa, tu usuario administrador y la bodega principal. ¿Deseas continuar?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#059669',
+      cancelButtonColor: '#ef4444',
+      confirmButtonText: 'Sí, crear mi tienda',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!confirm.isConfirmed) return;
+
     setDatosBodega(datosBod);
     setErrorRegistro('');
     setIsRegistering(true);

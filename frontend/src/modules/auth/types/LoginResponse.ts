@@ -9,7 +9,20 @@ export interface LoginResponse {
             id_rol: number;
             nombres: string;
             apellidos: string;
+            telefono?: string | null;
             email: string;
+            ultimo_acceso?: string | null;
+            rol?: string;
+            empresa?: {
+                id_empresa: number;
+                nombre: string;
+                descripcion: string | null;
+                ruc: string | null;
+                direccion: string | null;
+                telefono: string | null;
+                email: string | null;
+                logo_url: string | null;
+            }
         }
     }
 }

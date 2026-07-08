@@ -18,6 +18,7 @@ export const PageAuth: React.FC = () => {
   const [recoveryError, setRecoveryError] = useState('');
   const [isSendingRecovery, setIsSendingRecovery] = useState(false);
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   //Estados para registro
   const [registerStep, setRegisterStep] = useState<'code' | 'form'>('code');
@@ -58,10 +59,14 @@ export const PageAuth: React.FC = () => {
   const handleLoginEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setIsLoggingIn(true);
+      setLoginError('');
       await login(email, password);
       navigate('/');
     } catch (error: any) {
       setLoginError(error.message)
+    } finally {
+      setIsLoggingIn(false);
     }
   }
 
@@ -532,9 +537,16 @@ export const PageAuth: React.FC = () => {
               </button>
               <button
                 type="submit"
-                className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+                disabled={isLoggingIn}
+                className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 disabled:cursor-not-allowed text-white rounded-xl font-bold py-3.5 px-8 transition-colors shadow-lg shadow-emerald-600/20 active:scale-[0.98] flex justify-center items-center"
               >
-                Iniciar Sesión
+                {isLoggingIn ? (
+                  <>
+                    <i className="fas fa-circle-notch fa-spin mr-2"></i> Iniciando Sesión...
+                  </>
+                ) : (
+                  'Iniciar Sesión'
+                )}
               </button>
               <button
                 type="button"

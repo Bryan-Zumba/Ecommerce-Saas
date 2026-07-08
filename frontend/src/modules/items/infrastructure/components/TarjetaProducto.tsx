@@ -1,10 +1,10 @@
 import React from "react";
-import { useCarrito } from "@/shared/context/ContextoCarrito";
+import { useOrdenVenta } from "@/modules/ventas/hooks/useOrdenVenta";
 import { obtenerStockDisponiblePorItem } from "../../application/inventarioItems";
 import { Item, obtenerNombreCategoria } from "../../domain/Item";
 
 function TarjetaProducto({ item }: { item: Item }) {
-  const { agregarAlCarrito } = useCarrito();
+  const { agregarItem } = useOrdenVenta();
   const esServicio = item.tipo_item === "Servicio";
   const stockDisponible = esServicio ? null : obtenerStockDisponiblePorItem(item.id_item);
   const estaDisponible = item.estado && (esServicio || (stockDisponible ?? 0) > 0);
@@ -12,7 +12,7 @@ function TarjetaProducto({ item }: { item: Item }) {
   const handleAgregar = () => {
     if (!estaDisponible) return;
 
-    agregarAlCarrito({
+    agregarItem({
       id: item.id_item,
       id_item: item.id_item,
       nombre: item.nombre,

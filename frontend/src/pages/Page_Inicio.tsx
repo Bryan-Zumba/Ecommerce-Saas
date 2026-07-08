@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/shared/context/auth/AuthContext';
 
 /**
  * Página de Inicio (Dashboard)
@@ -7,6 +8,9 @@ import { useNavigate } from 'react-router-dom';
  */
 function Home() {
   const navigate = useNavigate();
+  const { usuario } = useAuth();
+  
+  const primerNombre = usuario?.nombres?.split(' ')[0] || '';
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-6 lg:p-12 animate-in fade-in duration-700">
@@ -15,7 +19,7 @@ function Home() {
         {/* Cabecera de Bienvenida */}
         <header className="mb-12 text-left">
           <h1 className="text-5xl font-black text-gray-900 tracking-tight mb-4">
-            Bienvenido, <span className="text-emerald-600">Bryan</span>
+            Bienvenido, <span className="text-emerald-600">{primerNombre}</span>
           </h1>
           <p className="text-xl text-gray-500 font-medium max-w-2xl leading-relaxed">
             Tu sistema SaaS de Ecommerce está listo. ¿Qué tarea deseas realizar hoy para potenciar tu negocio?

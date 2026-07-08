@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }: any) => {
         await AuthService.logout();
         setUsuario(null);
         setMustChangePassword(null);
+        localStorage.removeItem('carritoVentaLocal');
     };
 
     useEffect(() => {

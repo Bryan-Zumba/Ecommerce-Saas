@@ -1,9 +1,28 @@
 import React from 'react';
 
+interface Operacion {
+  tipo: string;
+  ordenId: string;
+  fechaRegistro: string;
+  cajero?: string;
+  cliente?: { nombre: string; dni: string };
+  datosFactura?: { codigo: string };
+  productos: Array<{ nombre: string; quantity?: number; cantidad?: number; precio?: number; costoUnitario?: number }>;
+  subtotal: number;
+  iva: number;
+  total: number;
+  estado?: string;
+}
+
+interface ModalDetalleOperacionProps {
+  operacion: Operacion | null;
+  onClose: () => void;
+}
+
 /**
  * Modal premium para visualizar el detalle de cualquier operación (Venta o Stock)
  */
-function ModalDetalleOperacion({ operacion, onClose }) {
+function ModalDetalleOperacion({ operacion, onClose }: ModalDetalleOperacionProps) {
   if (!operacion) return null;
 
   const esVenta = operacion.tipo === 'venta';
@@ -20,7 +39,7 @@ function ModalDetalleOperacion({ operacion, onClose }) {
           </div>
           <button 
             onClick={onClose} 
-            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/20 transition-all active:scale-90"
+            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/20 transition-all active:scale-90 cursor-pointer"
           >
             ✕
           </button>
@@ -69,10 +88,10 @@ function ModalDetalleOperacion({ operacion, onClose }) {
                   {operacion.productos.map((item, idx) => (
                     <tr key={idx} className="hover:bg-gray-50/50 transition-colors">
                       <td className="px-5 py-4 font-bold text-gray-700">{item.nombre}</td>
-                      <td className="px-5 py-4 text-center font-mono text-gray-600">{item.quantity || item.cantidad}</td>
-                      <td className="px-5 py-4 text-right font-mono text-gray-600">${(item.precio || item.costoUnitario).toFixed(2)}</td>
+                      <td className="px-5 py-4 text-center font-mono text-gray-600">{item.quantity || item.cantidad || 0}</td>
+                      <td className="px-5 py-4 text-right font-mono text-gray-600">${(item.precio || item.costoUnitario || 0).toFixed(2)}</td>
                       <td className="px-5 py-4 text-right font-black text-gray-800 font-mono">
-                        ${((item.precio || item.costoUnitario) * (item.quantity || item.cantidad)).toFixed(2)}
+                        ${((item.precio || item.costoUnitario || 0) * (item.quantity || item.cantidad || 0)).toFixed(2)}
                       </td>
                     </tr>
                   ))}

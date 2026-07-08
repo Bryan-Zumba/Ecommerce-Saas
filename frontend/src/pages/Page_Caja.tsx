@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCarrito } from "@/shared/context/ContextoCarrito";
+import { useOrdenVenta } from "@/modules/ventas/hooks/useOrdenVenta";
 import { useClientes } from "@/modules/clientes/hooks/useClientes";
 import { TableClientes } from "@/modules/clientes/components/TableClientes";
 import FiltrosBusqueda from "@/modules/clientes/components/Busqueda";
@@ -9,7 +9,7 @@ import { ClienteResponse } from "@/modules/clientes/types/ClienteResponse";
 
 function Caja() {
   const navigate = useNavigate();
-  const { carrito, total, subtotal, iva } = useCarrito();
+  const { orden, total, subtotal, iva } = useOrdenVenta();
   const usuario = useAuth();
   const id_empresa = Number(usuario?.usuario?.id_empresa);
   type Cliente = ClienteResponse["clientes"][number];
@@ -75,11 +75,11 @@ function Caja() {
       .slice(0, 5);
   }, [clientes, busquedaCliente]);
 
-  if (carrito.length === 0) {
+  if (orden.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Carrito vacio</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">orden vacio</h2>
           <button onClick={() => navigate("/")} className="text-emerald-600 font-semibold hover:underline">
             Volver a la tienda
           </button>
@@ -212,7 +212,7 @@ function Caja() {
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
               <h2 className="text-2xl font-bold text-gray-800 mb-8 border-b border-gray-50 pb-4 text-left">Resumen de Orden</h2>
               <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                {carrito.map((item) => (
+                {orden.map((item) => (
                   <div key={item.id} className="flex gap-4 items-center">
                     <div className="w-14 h-14 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                       <img src={item.imagen} alt={item.nombre} className="w-full h-full object-cover" />

@@ -2,19 +2,19 @@ import React, { useMemo, useState } from "react";
 import { useItems } from "../../application/useItems";
 import { LocalstorageItemRepository } from "../repositories/LocalstorageItemRepository";
 import TarjetaProducto from "../components/TarjetaProducto";
-import Carrito from "@/modules/ventas/infrastructure/components/Carrito";
-import { useCarrito } from "@/shared/context/ContextoCarrito";
+import PanelOrden from "@/modules/ventas/components/PanelOrden";
+import { useOrdenVenta } from "@/modules/ventas/hooks/useOrdenVenta";
 import { obtenerNombreCategoria } from "../../domain/Item";
 
 const repository = new LocalstorageItemRepository();
 
 export const PageTienda: React.FC = () => {
   const { items, cargando, error } = useItems(repository);
-  const { carrito } = useCarrito();
-  const hayItemsEnCarrito = carrito.length > 0;
+  const { orden } = useOrdenVenta();
+  const hayItemsEnCarrito = orden.length > 0;
   const [estaCarritoAbierto, setEstaCarritoAbierto] = useState(false);
   const [busqueda, setBusqueda] = useState("");
-  const [orden, setOrden] = useState<'nombre-asc' | 'nombre-desc' | 'precio-asc' | 'precio-desc'>('nombre-asc');
+  const [ordenamiento, setOrdenamiento] = useState<'nombre-asc' | 'nombre-desc' | 'precio-asc' | 'precio-desc'>('nombre-asc');
 
   const itemsActivos = useMemo(() => {
     return items.filter((item) => item.estado);
@@ -33,13 +33,13 @@ export const PageTienda: React.FC = () => {
     }
 
     return [...result].sort((a, b) => {
-      if (orden === 'nombre-asc') return a.nombre.localeCompare(b.nombre);
-      if (orden === 'nombre-desc') return b.nombre.localeCompare(a.nombre);
-      if (orden === 'precio-asc') return a.precio - b.precio;
-      if (orden === 'precio-desc') return b.precio - a.precio;
+      if (ordenamiento === 'nombre-asc') return a.nombre.localeCompare(b.nombre);
+      if (ordenamiento === 'nombre-desc') return b.nombre.localeCompare(a.nombre);
+      if (ordenamiento === 'precio-asc') return a.precio - b.precio;
+      if (ordenamiento === 'precio-desc') return b.precio - a.precio;
       return 0;
     });
-  }, [itemsActivos, busqueda, orden]);
+  }, [itemsActivos, busqueda, ordenamiento]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex overflow-x-hidden relative">
@@ -65,12 +65,12 @@ export const PageTienda: React.FC = () => {
                 placeholder="Buscar item por nombre, tipo o categoria..."
               />
             </div>
-            
+
             <div className="flex items-center gap-2">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Ordenar:</label>
               <select
-                value={orden}
-                onChange={(e) => setOrden(e.target.value as any)}
+                value={ordenamiento}
+                onChange={(e) => setOrdenamiento(e.target.value as any)}
                 className="bg-white border border-gray-100 rounded-xl py-2.5 px-3 text-xs font-bold text-gray-750 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm cursor-pointer"
               >
                 <option value="nombre-asc">Nombre (A-Z)</option>
@@ -118,10 +118,10 @@ export const PageTienda: React.FC = () => {
           <div className="relative">
             <span className="text-xl">🛒</span>
             <span className="absolute -top-3 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">
-              {carrito.reduce((acc, item) => acc + item.quantity, 0)}
+              {orden.reduce((acc, item) => acc + item.quantity, 0)}
             </span>
           </div>
-          <span className="font-bold text-sm">Carrito</span>
+          <span className="font-bold text-sm">orden</span>
         </button>
       )}
 
@@ -140,7 +140,7 @@ export const PageTienda: React.FC = () => {
             ${estaCarritoAbierto ? "translate-x-0" : "translate-x-full lg:translate-x-0"}
           `}
         >
-          <Carrito />
+          <PanelOrden />
         </aside>
       )}
     </div>

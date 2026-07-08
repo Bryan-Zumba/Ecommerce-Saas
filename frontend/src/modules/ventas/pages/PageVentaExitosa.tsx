@@ -1,47 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/shared/context/auth/AuthContext";
 import { useOrdenVenta } from "@/modules/ventas/hooks/useOrdenVenta";
-import { servicioHistorial } from "@/modules/ventas/infrastructure/repositories/servicioHistorial";
-import { registrarSalidaInventario } from "@/modules/items/application/inventarioItems";
 
 /**
  * Página de Éxito (Confirmación de Venta)
- * Muestra el ticket de venta y guarda la operación en el historial.
+ * Muestra el ticket de venta.
  */
-function VentaExitosa() {
+const PageVentaExitosa: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    
+    // Obtener los datos del contexto
     const { orden, total, subtotal, iva, limpiarOrden } = useOrdenVenta();
     
-    const cliente = location.state?.customer || { nombre: "CONSUMIDOR FINAL", dni: "9999999999" };
+    const auth = useAuth();
+    const empresa = auth?.usuario?.empresa;
     
     const [ordenId] = useState(() => Math.floor(100000 + Math.random() * 900000));
     const [fecha] = useState(new Date().toLocaleString());
 
-    // Persistencia en el historial (se ejecuta una sola vez al montar)
-    const guardadoRef = useRef(false);
-
-    useEffect(() => {
-        if (orden.length > 0 && !guardadoRef.current) {
-            servicioHistorial.guardarOperacion({
-                tipo: 'venta',
-                ordenId,
-                fecha: fecha,
-                productos: [...orden],
-                subtotal,
-                iva,
-                total,
-                cliente: cliente,
-                cajero: "Bryan Zumba"
-            });
-            registrarSalidaInventario(orden);
-            guardadoRef.current = true;
-        }
-    }, [orden, ordenId, fecha, subtotal, iva, total, cliente]);
-
     const manejarNuevaVenta = () => {
         limpiarOrden();
-        navigate("/");
+        navigate("/ventas/catalogo"); // Volver al catálogo
     };
 
     const manejarImprimir = () => {
@@ -56,25 +37,62 @@ function VentaExitosa() {
           <div className="bg-emerald-100 text-emerald-700 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm">
             ✓
           </div>
-          <h1 className="text-3xl font-black text-gray-800 mb-2 tracking-tight">¡Venta Confirmada!</h1>
+          <h1 className="text-3xl font-black text-gray-800 mb-2 tracking-tight">¡Venta confirmada!</h1>
           <p className="text-gray-500 font-medium">La orden ha sido registrada correctamente en el sistema.</p>
         </div>
+
+        {/* Estilos específicos para impresión de ticket de 80mm */}
+        <style>
+          {`
+            @media print {
+              @page {
+                margin: 0;
+                size: 80mm auto;
+              }
+              body {
+                background: white;
+                margin: 0;
+                padding: 0;
+              }
+              .printable-ticket {
+                width: 80mm !important;
+                max-width: 80mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                padding: 5mm !important;
+                margin: 0 auto;
+              }
+            }
+          `}
+        </style>
 
         {/* TICKET DE VENTA (Capa impresa) */}
         <div className="bg-white w-full max-w-[400px] shadow-2xl p-8 border border-gray-200 printable-ticket relative overflow-hidden rounded-3xl lg:rounded-none">
           <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 print:hidden"/>
 
           <div className="text-center border-b-2 border-dashed border-gray-100 pb-6 mb-6">
-            <h2 className="text-xl font-black text-gray-900 uppercase tracking-tighter mb-1">Comprobante Interno</h2>
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">SaaS Ecommerce Solution</p>
+            {empresa?.logo_url && (
+              <img src={empresa.logo_url} alt="Logo Empresa" className="h-16 mx-auto mb-3 object-contain" />
+            )}
+            <h2 className="text-xl font-black text-gray-900 tracking-tighter mb-1">Comprobante de venta</h2>
+            <p className="text-[12px] text-gray-700 font-bold tracking-widest leading-none mb-1">
+              {empresa?.nombre || "SaaS Ecommerce Solution"}
+            </p>
+            {empresa?.ruc && (
+              <p className="text-[10px] text-gray-500 font-medium">RUC: {empresa.ruc}</p>
+            )}
+            {empresa?.direccion && (
+              <p className="text-[10px] text-gray-500 font-medium">{empresa.direccion}</p>
+            )}
             <div className="mt-4 flex justify-between text-[11px] font-mono text-gray-600">
-              <span>ORDEN: #{ordenId}</span>
+              <span>Orden: #{ordenId}</span>
               <span>{fecha}</span>
             </div>
           </div>
 
           <div className="space-y-4 mb-8">
-            <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase border-b border-gray-50 pb-2">
+            <div className="flex justify-between text-[11px] font-bold text-gray-500 border-b border-gray-50 pb-2">
               <span>Producto / Cant.</span>
               <span>Total</span>
             </div>
@@ -98,8 +116,8 @@ function VentaExitosa() {
               <span>IVA (15%)</span>
               <span>${iva.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-xl font-black text-gray-900 pt-2">
-              <span>TOTAL</span>
+            <div className="flex justify-between text-l font-black text-gray-900 pt-2">
+              <span>Total a pagar</span>
               <span className="text-emerald-600">${total.toFixed(2)}</span>
             </div>
           </div>
@@ -115,14 +133,14 @@ function VentaExitosa() {
         {/* ACCIONES */}
         <div className="print:hidden mt-8 flex flex-col sm:flex-row gap-4 w-full max-w-md">
           <button onClick={manejarImprimir} className="flex-1 bg-gray-800 hover:bg-black text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
-            𖖅 Imprimir Ticket
+             Imprimir ticket
           </button>
           <button onClick={manejarNuevaVenta} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 shadow-emerald-200">
-            + Nueva Venta
+            + Nueva venta
           </button>
         </div>
       </div>
     );
 }
 
-export default VentaExitosa;
+export default PageVentaExitosa;
