@@ -19,6 +19,10 @@ import { ServiceProveedor } from "../../../proveedor/application/ServiceProveedo
 import imageUploadMiddleware from "../../../../core/middleware/imageUploadMiddleware";
 import { PrismaRepositoryInventario } from "../../../inventario/infrastructure/repositories/PrismaRepositoryInventario";
 import { ServicesInventario } from "../../../inventario/application/ServicesInventario";
+import { PrismaRepositoryMovimiento_Inventario } from "../../../inventario/infrastructure/repositories/PrismaRepositoryMovimiento_Inventario";
+import { ServicesMovimiento_Inventario } from "../../../inventario/application/ServicesMovimiento_Inventario";
+import { PrismaRepositoryMovimiento_caja } from "../../../caja/infrastructure/repository/PrismaRepositoryMovimiento_caja";
+import { ServicesMovimientoCaja } from "../../../caja/application/ServicesMovimientoCaja";
 
 const routesCompra = Router();
 
@@ -41,10 +45,20 @@ const repositoryDetalleCompra = new PrismaRepositoryDetalleCompra();
 const repositoryCompra = new PrismaRepositoryCompra();
 const servicesDetalleCompra = new ServicesDetalleCompra(repositoryDetalleCompra, serviceBodega, serviceItem,repositoryCompra);
 
-const serviceCompra = new ServicesCompra(repositoryCompra, servicesDetalleCompra, servicesEmpresa, serviceProveedor,cloudinaryService)
+const repositoryMovimientoInventario = new PrismaRepositoryMovimiento_Inventario();
+const serviceMovimientoInventario = new ServicesMovimiento_Inventario(repositoryMovimientoInventario, serviceItem, serviceBodega);
+const repositoryMovimientoCaja = new PrismaRepositoryMovimiento_caja();
+const serviceMovimientoCaja = new ServicesMovimientoCaja(repositoryMovimientoCaja);
+
+const serviceCompra = new ServicesCompra(repositoryCompra, servicesDetalleCompra, servicesEmpresa, serviceProveedor,cloudinaryService,serviceInventario,
+    serviceMovimientoInventario,
+    serviceMovimientoCaja
+)
 const controllerCompra = new ControllersCompra(serviceCompra)
 
 routesCompra.post('/crear-solicitud-compra', authMiddleware,imageUploadMiddleware.single('imagen'),controllerCompra.crearSolicitudCompra);
 routesCompra.get('/obtener-compras-empresa', authMiddleware,controllerCompra.obtenerComprasEmpresa);
+routesCompra.post('/:id_compra/aprobar', authMiddleware, controllerCompra.aprobarCompra);
+routesCompra.post('/:id_compra/rechazar', authMiddleware, controllerCompra.rechazarCompra);
 
 export default routesCompra;

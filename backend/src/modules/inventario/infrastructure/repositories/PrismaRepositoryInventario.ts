@@ -17,6 +17,7 @@ export class PrismaRepositoryInventario implements IRepositoryInventario {
                 stock_actual: true,
                 stock_disponible: true,
                 stock_reservado: true,
+                fecha_ultima_actualizacion: true,
 
                 item: {
                     select: {
@@ -53,6 +54,7 @@ export class PrismaRepositoryInventario implements IRepositoryInventario {
                 stock_actual: true,
                 stock_disponible: true,
                 stock_reservado: true,
+                fecha_ultima_actualizacion: true,
 
                 item: {
                     select: {

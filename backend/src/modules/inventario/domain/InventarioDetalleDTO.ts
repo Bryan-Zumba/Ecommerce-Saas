@@ -8,6 +8,7 @@ export interface InventarioDetalleDTO {
     stock_actual: number;
     stock_disponible: number;
     stock_reservado: number;
+    fecha_ultima_actualizacion: Date;
 
     item: {
         id_item: number;

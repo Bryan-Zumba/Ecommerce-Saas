@@ -1,3 +1,4 @@
+import { DBClient } from "../../../core/database/DBClient";
 import { Proveedor } from "../../proveedor/domain/Proveedor";
 import { ProveedorInputDTO } from "../../proveedor/domain/ProveedorInputDTO";
 import { ProveedorUpdateDTO } from "../../proveedor/domain/ProveedorUpdateDTO";
@@ -5,7 +6,7 @@ import { ProveedorUpdateDTO } from "../../proveedor/domain/ProveedorUpdateDTO";
 export interface IRepositoryProveedor {
 
     obtenerProveedores(id_empresa: number): Promise<Proveedor[]>;
-    obtenerProveedorPorId(id_proveedor: number): Promise<Proveedor | null>;
+    obtenerProveedorPorId(id_proveedor: number, client?: DBClient): Promise<Proveedor | null>;
     crearProveedor(proveedor: ProveedorInputDTO): Promise<Proveedor>;
     actualizarProveedor(id_proveedor: number, proveedor: ProveedorUpdateDTO): Promise<Proveedor>;
     activarProveedor(id_proveedor: number): Promise<Proveedor>;

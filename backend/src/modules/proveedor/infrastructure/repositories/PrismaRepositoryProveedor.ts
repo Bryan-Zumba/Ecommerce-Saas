@@ -1,3 +1,4 @@
+import { DBClient } from "../../../../core/database/DBClient";
 import { prisma } from "../../../../core/database/prisma";
 import { IRepositoryProveedor } from "../../domain/IRepositoryProveedor";
 import { Proveedor } from "../../domain/Proveedor";
@@ -14,8 +15,8 @@ export class PrismaRepositoryProveedor implements IRepositoryProveedor {
         return proveedores;
     }
 
-    async obtenerProveedorPorId(id_proveedor: number): Promise<Proveedor | null> {
-        const proveedor = await prisma.proveedor.findUnique({
+    async obtenerProveedorPorId(id_proveedor: number, client: DBClient = prisma): Promise<Proveedor | null> {
+        const proveedor = await client.proveedor.findUnique({
             where: {
                 id_proveedor: id_proveedor,
             },

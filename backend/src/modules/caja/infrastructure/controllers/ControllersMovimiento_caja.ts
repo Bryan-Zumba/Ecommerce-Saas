@@ -11,7 +11,7 @@ export class ControllerMovimiento_caja{
     async obtenerMovimientos_cajaPorEmpresa(req: Request, res: Response){
         try{
             const id_empresa = Number(req.user?.id_empresa);
-            const movimientos_caja = await this.service.obtenerMovimientos_cajaPorCompra(id_empresa);
+            const movimientos_caja = await this.service.obtenerMovimientos_cajaPorEmpresa(id_empresa);
             return res.status(200).json(movimientos_caja);
         }catch(error: any){
             return res.status(error.statusCode || 500).json({ message: error.message });

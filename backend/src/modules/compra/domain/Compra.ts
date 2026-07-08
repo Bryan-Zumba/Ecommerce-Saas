@@ -14,4 +14,8 @@ export interface Compra{
     fecha_compra:Date;
     observacion?:string|null;
     estado_compra: Estado_compra;
+    proveedor?: {
+        id_proveedor: number;
+        nombre: string;
+    };
 }

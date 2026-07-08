@@ -7,4 +7,6 @@ export interface Movimiento_InventarioInputDTO {
     id_compra?: number | null;
     tipo_movimiento: Tipo_movimiento_inventario;
     cantidad: number;
+    stock_anterior?: number;
+    stock_nuevo?: number;
 }

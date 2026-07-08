@@ -4,11 +4,14 @@ import { IRepositoryCompra } from "../domain/IRepositoryCompra";
 import { normalizerDecimal } from "../../../shared/normalizerDecimal";
 import { CloudinaryService } from "../../../core/cloudinary/CloudinaryServices";
 import { DBClient } from "../../../core/database/DBClient";
-import { Estado_compra, Prisma } from "@prisma/client";
+import { Estado_compra, Prisma, Tipo_movimiento_inventario, Tipo_Movimiento_caja } from "@prisma/client";
 import { prisma } from "../../../core/database/prisma";
 import { ServicesDetalleCompra } from "./ServicesDetalleCompra";
 import { SolicitudCompraDTO } from "../domain/SolicitudCompraDTO";
 import { ServiceProveedor } from "@/modules/proveedor/application/ServiceProveedor";
+import { ServicesInventario } from "../../inventario/application/ServicesInventario";
+import { ServicesMovimiento_Inventario } from "../../inventario/application/ServicesMovimiento_Inventario";
+import { ServicesMovimientoCaja } from "../../caja/application/ServicesMovimientoCaja";
 
 export class ServicesCompra{
     private repository: IRepositoryCompra;
@@ -16,13 +19,28 @@ export class ServicesCompra{
     private serviceEmpresa: ServicesEmpresa;
     private serviceProveedor: ServiceProveedor;
     private cloudinaryService: CloudinaryService;
+    private serviceInventario: ServicesInventario;
+    private serviceMovimientoInventario: ServicesMovimiento_Inventario;
+    private serviceMovimientoCaja: ServicesMovimientoCaja;
 
-    constructor(repository: IRepositoryCompra, serviceDetalleCompra: ServicesDetalleCompra, serviceEmpresa: ServicesEmpresa, serviceProveedor: ServiceProveedor, cloudinaryService: CloudinaryService){
+    constructor(
+        repository: IRepositoryCompra,
+        serviceDetalleCompra: ServicesDetalleCompra,
+        serviceEmpresa: ServicesEmpresa,
+        serviceProveedor: ServiceProveedor,
+        cloudinaryService: CloudinaryService,
+        serviceInventario: ServicesInventario,
+        serviceMovimientoInventario: ServicesMovimiento_Inventario,
+        serviceMovimientoCaja: ServicesMovimientoCaja
+    ){
         this.repository = repository;
         this.serviceDetalleCompra = serviceDetalleCompra;
         this.serviceEmpresa = serviceEmpresa;
         this.serviceProveedor = serviceProveedor;
         this.cloudinaryService = cloudinaryService;
+        this.serviceInventario = serviceInventario;
+        this.serviceMovimientoInventario = serviceMovimientoInventario;
+        this.serviceMovimientoCaja = serviceMovimientoCaja;
     }
 
     //HU crear solicitud de ingreso de stock o compra de stock
@@ -92,35 +110,109 @@ export class ServicesCompra{
     }
 
     //HU Aprobar compra
-    async aprobarCompra(id_compra: number, client?: DBClient){
-        const compra = await this.obtenerCompraPorId(id_compra, client);
+    async aprobarCompra(id_compra: number, id_empresa: number) {
+        return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+            const compra = await this.obtenerCompraPorId(id_compra, tx);
 
-        if(compra.estado_compra == Estado_compra.Completada){
-            throw new Error("La compra ya se encuentra completada");
-        }
-        
-        if(compra.estado_compra == Estado_compra.Cancelada){
-            throw new Error("La compra se encuentra cancelada");
-        }
-        
-        const detallesCompra = await this.serviceDetalleCompra.obtenerDetalleCompraPorIdCompra(id_compra, compra.id_empresa);
-        
-        for (const detalle of detallesCompra) {
-            
-        }
-        
-        
+            if (compra.id_empresa !== id_empresa) {
+                throw new Error("La compra no pertenece a esta empresa");
+            }
+
+            if (compra.estado_compra === Estado_compra.Completada) {
+                throw new Error("La compra ya se encuentra completada");
+            }
+
+            if (compra.estado_compra === Estado_compra.Cancelada) {
+                throw new Error("La compra se encuentra cancelada");
+            }
+
+            const detallesCompra = await this.serviceDetalleCompra.obtenerDetalleCompraPorIdCompra(id_compra, id_empresa, tx);
+
+            if (detallesCompra.length <= 0) {
+                throw new Error("La compra seleccionada no tiene detalles registrados");
+            }
+
+            for (const detalle of detallesCompra) {
+                // Intentar buscar el inventario del producto en la bodega
+                const inventarioItem = await this.serviceInventario.obtenerInventarioItem(detalle.id_item, detalle.id_bodega, id_empresa, tx);
+                let stockAnterior = 0;
+
+                if (!inventarioItem) {
+                    // Si el inventario no está inicializado para el item + bodega, lo creamos con stock inicial 0
+                    await this.serviceInventario.crearInventario({
+                        id_item: detalle.id_item,
+                        id_bodega: detalle.id_bodega
+                    }, id_empresa, tx);
+                    stockAnterior = 0;
+                } else {
+                    stockAnterior = inventarioItem.stock_actual;
+                }
+
+                const stockNuevo = stockAnterior + detalle.cantidad;
+
+                // 1. Ingresar físicamente el stock
+                await this.serviceInventario.ingresarStock(detalle.id_item, detalle.id_bodega, detalle.cantidad, id_empresa, tx);
+
+                // 2. Registrar el movimiento de inventario de tipo Compra
+                await this.serviceMovimientoInventario.crearMovimientoInventario({
+                    id_item: detalle.id_item,
+                    id_bodega: detalle.id_bodega,
+                    id_compra: id_compra,
+                    tipo_movimiento: Tipo_movimiento_inventario.Compra,
+                    cantidad: detalle.cantidad,
+                    stock_anterior: stockAnterior,
+                    stock_nuevo: stockNuevo
+                }, id_empresa, tx);
+            }
+
+            // 3. Registrar el egreso en caja (id_turno_caja = 1 de forma temporal)
+            const id_turno_caja = 5;
+
+            await this.serviceMovimientoCaja.crearMovimiento_caja({
+                id_turno_caja,
+                id_venta: null,
+                id_compra: id_compra,
+                id_empresa,
+                tipo_movimiento: Tipo_Movimiento_caja.Egreso,
+                monto: compra.total,
+                referencia: `Factura: ${compra.codigo_factura}`
+            }, tx);
+
+            // 4. Cambiar el estado de la compra a Completada
+            return await this.actualizarEstadoCompraCompletada(id_compra, tx);
+        }, {
+            timeout: 60000,
+        });
+    }
+
+    //HU Rechazar compra
+    async rechazarCompra(id_compra: number, id_empresa: number) {
+        return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+            const compra = await this.obtenerCompraPorId(id_compra, tx);
+
+            if (compra.id_empresa !== id_empresa) {
+                throw new Error("La compra no pertenece a esta empresa");
+            }
+
+            if (compra.estado_compra === Estado_compra.Completada) {
+                throw new Error("No se puede rechazar una compra completada");
+            }
+
+            if (compra.estado_compra === Estado_compra.Cancelada) {
+                throw new Error("La compra ya se encuentra cancelada");
+            }
+
+            return await this.actualizarEstadoCompraCancelada(id_compra, tx);
+        }, {
+            timeout: 60000,
+        });
     }
 
     private async crearCompra(compra: CompraCreateDTO, client?: DBClient){
-        await this.serviceProveedor.obtenerProveedorPorId(compra.id_proveedor)
-        await this.serviceEmpresa.obtenerEmpresaPorId(compra.id_empresa);
-        //console.log(typeof compra.id_periodo_contable);
-        //console.log(compra.id_periodo_contable)
-        //validar aqui api de periodo contable
+        await this.serviceProveedor.obtenerProveedorPorId(compra.id_proveedor, client)
+        await this.serviceEmpresa.obtenerEmpresaPorId(compra.id_empresa, client);
+        
         if(!compra.id_periodo_contable){
-            //console.log(typeof compra.id_periodo_contable);
-            //console.log(compra.id_periodo_contable)
             throw new Error("El id del periodo contable es requerido");
         }
 
@@ -170,5 +262,34 @@ export class ServicesCompra{
             throw new Error("No se encontro la compra");
         }
         return compras;
+    }
+
+
+    async actualizarEstadoCompraCompletada(id_compra: number, client?: DBClient) {
+        const compra = await this.obtenerCompraPorId(id_compra, client);
+
+        if(compra.estado_compra == Estado_compra.Completada){
+            throw new Error("La compra ya se encuentra completada");
+        }
+        
+        if(compra.estado_compra == Estado_compra.Cancelada){
+            throw new Error("La compra se encuentra cancelada");
+        }
+        
+        return await this.repository.actualizarEstadoCompra(id_compra, Estado_compra.Completada, client);
+    }
+
+    async actualizarEstadoCompraCancelada(id_compra: number, client?: DBClient) {
+        const compra = await this.obtenerCompraPorId(id_compra, client);
+
+        if(compra.estado_compra == Estado_compra.Completada){
+            throw new Error("La compra no se puede cancelar porque ya se encuentra completada");
+        }
+        
+        if(compra.estado_compra == Estado_compra.Cancelada){
+            throw new Error("La compra ya se encuentra cancelada");
+        }
+        
+        return await this.repository.actualizarEstadoCompra(id_compra, Estado_compra.Cancelada, client);
     }
 }

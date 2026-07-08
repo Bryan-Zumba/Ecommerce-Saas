@@ -1,3 +1,4 @@
+import { DBClient } from "../../../core/database/DBClient";
 import { ServicesEmpresa } from "@/modules/empresa/application/ServicesEmpresa";
 import { IRepositoryProveedor } from "../domain/IRepositoryProveedor";
 import { Proveedor } from "../domain/Proveedor";
@@ -63,11 +64,11 @@ export class ServiceProveedor {
         return proveedores;
     }
 
-    async obtenerProveedorPorId(id_proveedor: number): Promise<Proveedor | null> {
+    async obtenerProveedorPorId(id_proveedor: number, client?: DBClient): Promise<Proveedor | null> {
         if(!id_proveedor || id_proveedor <=0){
             throw new Error("El id del proveedor es invalido");
         }
-        const proveedor = await this.repository.obtenerProveedorPorId(id_proveedor);
+        const proveedor = await this.repository.obtenerProveedorPorId(id_proveedor, client);
         if (!proveedor) {
             throw new Error("El proveedor no existe");
         }

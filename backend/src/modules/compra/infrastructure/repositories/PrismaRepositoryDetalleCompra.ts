@@ -16,6 +16,14 @@ export class PrismaRepositoryDetalleCompra implements IRepositoryDetalleCompra {
         const data = await client.detalle_Compra.findMany({
             where: {
                 id_compra: id_compra
+            },
+            include: {
+                item: {
+                    select: {
+                        nombre: true,
+                        imagen_url: true
+                    }
+                }
             }
         })
         return data;

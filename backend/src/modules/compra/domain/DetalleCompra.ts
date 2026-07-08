@@ -8,4 +8,8 @@ export interface DetalleCompra {
     cantidad: number;
     costo_unitario: Decimal;
     subtotal: Decimal;
+    item?: {
+        nombre: string;
+        imagen_url: string | null;
+    };
 }

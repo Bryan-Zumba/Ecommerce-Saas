@@ -33,12 +33,12 @@ export class ServicesInventario {
         return data;
     }
 
-    async obtenerInventarioItem(id_item: number, id_bodega: number, id_empresa: number, client?: DBClient): Promise<InventarioDetalleDTO > {
+    async obtenerInventarioItem(id_item: number, id_bodega: number, id_empresa: number, client?: DBClient): Promise<InventarioDetalleDTO | null> {
         
         if(!id_item || id_item <=0) {
             throw new Error("Id de item inválido");
         }
-        await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa);
+        await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa, client);
 
         const item = await this.repositoryItem.obtenerItemEmpresa(id_item, id_empresa, client);
         if (!item) {
@@ -46,9 +46,6 @@ export class ServicesInventario {
         }
         const data = await this.repository.obtenerInventarioItem(id_item, id_bodega, client);
 
-        if (data === null) {
-            throw new Error("No se encontro inventario registrado para el item seleccionado")
-        }
         return data;
     }
 
@@ -56,7 +53,7 @@ export class ServicesInventario {
         if(!inventario.id_item || inventario.id_item <=0) {
             throw new Error("Id de item inválido");
         }
-        await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa);
+        await this.serviceEmpresa.obtenerEmpresaPorId(id_empresa, client);
 
         const item = await this.repositoryItem.obtenerItemEmpresa(inventario.id_item, id_empresa, client);
         if (!item) {
@@ -91,6 +88,9 @@ export class ServicesInventario {
 
     async ingresarStock(id_item:number,id_bodega:number,cantidad:number,id_empresa:number,client?:DBClient):Promise<Inventario>{
         const inventarioActual = await this.obtenerInventarioItem(id_item,id_bodega,id_empresa,client);
+        if (!inventarioActual) {
+            throw new Error("No se encontro inventario registrado para el item seleccionado");
+        }
         const inventario:InventarioUpdateDTO = {
             stock_actual:inventarioActual.stock_actual + cantidad,
             stock_disponible:inventarioActual.stock_disponible + cantidad,
@@ -102,6 +102,9 @@ export class ServicesInventario {
 
     async retirarStock(id_item:number,id_bodega:number,cantidad:number,id_empresa:number,client?:DBClient):Promise<Inventario>{
         const inventarioActual = await this.obtenerInventarioItem(id_item,id_bodega,id_empresa,client);
+        if (!inventarioActual) {
+            throw new Error("No se encontro inventario registrado para el item seleccionado");
+        }
         const inventario:InventarioUpdateDTO = {
             stock_actual:inventarioActual.stock_actual - cantidad,
             stock_disponible:inventarioActual.stock_disponible - cantidad,

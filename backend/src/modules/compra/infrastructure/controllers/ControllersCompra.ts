@@ -41,4 +41,28 @@ export class ControllersCompra{
             return res.status(error.statusCode || 500).json({success:false,message: error.message });
         }
     }
+
+    aprobarCompra = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const id_compra = Number(req.params.id_compra);
+            const id_empresa = Number(req.user?.id_empresa);
+
+            const compraAprobada = await this.service.aprobarCompra(id_compra, id_empresa);
+            return res.status(200).json({ success: true, message: "Compra aprobada exitosamente", compra: compraAprobada });
+        } catch (error: any) {
+            return res.status(error.statusCode || 500).json({ success: false, message: error.message });
+        }
+    }
+
+    rechazarCompra = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const id_compra = Number(req.params.id_compra);
+            const id_empresa = Number(req.user?.id_empresa);
+
+            const compraRechazada = await this.service.rechazarCompra(id_compra, id_empresa);
+            return res.status(200).json({ success: true, message: "Compra rechazada exitosamente", compra: compraRechazada });
+        } catch (error: any) {
+            return res.status(error.statusCode || 500).json({ success: false, message: error.message });
+        }
+    }
 }
