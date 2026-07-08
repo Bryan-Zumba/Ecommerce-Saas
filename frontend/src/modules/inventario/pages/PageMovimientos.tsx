@@ -255,7 +255,7 @@ const PageMovimientosReal: React.FC<PageMovimientosProps> = ({ isSubcomponent = 
               <button
                 type="button"
                 onClick={limpiarFiltros}
-                className="px-4 py-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 text-xs font-black uppercase tracking-widest transition-colors"
+                className="px-4 py-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 text-xs font-bold tracking-wider transition-colors"
               >
                 Limpiar filtros
               </button>
@@ -265,7 +265,7 @@ const PageMovimientosReal: React.FC<PageMovimientosProps> = ({ isSubcomponent = 
               type="button"
               onClick={cargarMovimientosBodega}
               disabled={!bodega?.id_bodega || loading}
-              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black uppercase tracking-widest transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold tracking-wider transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {modoConsulta === 'item' ? 'Ver bodega completa' : 'Actualizar'}
             </button>
@@ -280,16 +280,16 @@ const PageMovimientosReal: React.FC<PageMovimientosProps> = ({ isSubcomponent = 
         ) : (
           <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-100">
+              <table className="min-w-full divide-y divide-gray-150">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Fecha</th>
-                    <th className="px-6 py-4 text-left text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Producto</th>
-                    <th className="px-6 py-4 text-left text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Bodega</th>
-                    <th className="px-6 py-4 text-center text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Tipo</th>
-                    <th className="px-6 py-4 text-right text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Stock</th>
-                    <th className="px-6 py-4 text-left text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Referencia</th>
-                    <th className="px-6 py-4 text-right text-[10px] font-extrabold text-gray-500 uppercase tracking-widest">Acciones</th>
+                    <th className="px-6 py-4 text-left text-sm font-extrabold text-gray-500 tracking-wider">Fecha</th>
+                    <th className="px-6 py-4 text-left text-sm font-extrabold text-gray-500 tracking-wider">Producto</th>
+                    <th className="px-6 py-4 text-left text-sm font-extrabold text-gray-500 tracking-wider">Bodega</th>
+                    <th className="px-6 py-4 text-center text-sm font-extrabold text-gray-500 tracking-wider">Tipo</th>
+                    <th className="px-6 py-4 text-right text-sm font-extrabold text-gray-500 tracking-wider">Stock</th>
+                    <th className="px-6 py-4 text-left text-sm font-extrabold text-gray-500 tracking-wider">Referencia</th>
+                    <th className="px-6 py-4 text-right text-sm font-extrabold text-gray-500 tracking-wider">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-50">
@@ -334,7 +334,7 @@ const PageMovimientosReal: React.FC<PageMovimientosProps> = ({ isSubcomponent = 
                               <button
                                 type="button"
                                 onClick={() => cargarHistorialProducto(movimiento)}
-                                className="px-3 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-[10px] font-black uppercase tracking-widest transition-colors"
+                                className="px-3 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-[10px] font-bold tracking-wider transition-colors"
                               >
                                 Historial
                               </button>
@@ -342,7 +342,7 @@ const PageMovimientosReal: React.FC<PageMovimientosProps> = ({ isSubcomponent = 
                                 type="button"
                                 onClick={() => abrirDetalle(movimiento.id_movimiento_inventario)}
                                 disabled={loadingDetalle && detalleCargandoId === movimiento.id_movimiento_inventario}
-                                className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest transition-colors disabled:opacity-60"
+                                className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold tracking-wider transition-colors disabled:opacity-60"
                               >
                                 {loadingDetalle && detalleCargandoId === movimiento.id_movimiento_inventario ? '...' : 'Detalle'}
                               </button>

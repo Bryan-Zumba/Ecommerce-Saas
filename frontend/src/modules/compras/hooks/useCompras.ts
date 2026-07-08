@@ -1,6 +1,7 @@
-﻿import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { CompraService } from '../services/CompraService';
 import { CompraEmpresa, DetalleCompra, EstadoCompra } from '../types/CompraTypes';
+import Swal from 'sweetalert2';
 
 export const useCompras = () => {
   const [compras, setCompras] = useState<CompraEmpresa[]>([]);
@@ -57,6 +58,89 @@ export const useCompras = () => {
     });
   }, [busqueda, compras, estadoFiltro]);
 
+  const aprobarCompra = useCallback(async (id_compra: number) => {
+    const confirmacion = await Swal.fire({
+      title: '¿Aprobar solicitud?',
+      text: 'Se sumará el stock a los productos y se registrará el egreso en caja.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Aprobar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#6b7280',
+    });
+
+    if (!confirmacion.isConfirmed) return;
+
+    Swal.fire({
+      title: 'Procesando...',
+      text: 'Aprobando la compra y actualizando inventarios.',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const response = await CompraService.aprobarCompra(id_compra);
+      if (response.success) {
+        await Swal.fire('¡Éxito!', 'La compra ha sido aprobada correctamente.', 'success');
+        // Refrescar compras
+        await fetchCompras();
+        setCompraSeleccionada(null);
+        setDetalleCompra([]);
+      } else {
+        Swal.fire('Error', response.message || 'No se pudo aprobar la compra', 'error');
+      }
+    } catch (err: any) {
+      Swal.fire('Error', err?.message || 'Error en la petición de aprobación', 'error');
+    }
+  }, [fetchCompras]);
+
+  const rechazarCompra = useCallback(async (id_compra: number) => {
+    const confirmacion = await Swal.fire({
+      title: '¿Rechazar solicitud?',
+      text: 'Se cancelará el registro de compra. Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Rechazar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+    });
+
+    if (!confirmacion.isConfirmed) return;
+
+    Swal.fire({
+      title: 'Procesando...',
+      text: 'Rechazando y cancelando la solicitud de compra.',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const response = await CompraService.rechazarCompra(id_compra);
+      if (response.success) {
+        await Swal.fire('Cancelada', 'La compra ha sido rechazada y cancelada.', 'success');
+        // Refrescar compras
+        await fetchCompras();
+        setCompraSeleccionada(null);
+        setDetalleCompra([]);
+      } else {
+        Swal.fire('Error', response.message || 'No se pudo rechazar la compra', 'error');
+      }
+    } catch (err: any) {
+      Swal.fire('Error', err?.message || 'Error en la petición de rechazo', 'error');
+    }
+  }, [fetchCompras]);
+
+  const deseleccionarCompra = useCallback(() => {
+    setCompraSeleccionada(null);
+    setDetalleCompra([]);
+  }, []);
+
   return {
     compras,
     comprasFiltradas,
@@ -71,6 +155,9 @@ export const useCompras = () => {
     setEstadoFiltro,
     fetchCompras,
     seleccionarCompra,
+    aprobarCompra,
+    rechazarCompra,
+    deseleccionarCompra,
   };
 };
 

@@ -26,7 +26,7 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         { id: 'gestion-items', label: 'Gestión de items', icon: '🛠️', path: '/gestion-items' },
         { id: 'gestion-categorias', label: 'Gestión categorías', icon: '📂', path: '/gestion-categorias' },
         { id: 'bodega', label: 'Configuración de bodega', icon: '🏬', path: '/bodega' },
-        { id: 'stock', label: 'Gestión de stock', icon: '📦', path: '/ingreso-stock' },
+        { id: 'inventario', label: 'Existencias (Inventario)', icon: '📦', path: '/inventario' },
         { id: 'monitoreo-inventario', label: 'Monitoreo de inventario', icon: '📋', path: '/monitoreo-inventario' },
         { id: 'solicitar-compra', label: 'Compras', icon: '🛒', path: '/compras' },
       ]
@@ -35,6 +35,7 @@ function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       title: 'Finanzas y balance',
       items: [
         { id: 'reportes', label: 'Balance y reportes', icon: '📊', path: '/reportes' },
+        { id: 'movimientos-caja', label: 'Movimientos de caja', icon: '💸', path: '/movimientos-caja' },
       ]
     },
     {

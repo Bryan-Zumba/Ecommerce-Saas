@@ -1,4 +1,4 @@
-﻿import { apiClient } from '@/core/apiClient';
+import { apiClient } from '@/core/apiClient';
 import {
   CompraResponse,
   ComprasEmpresaResponse,
@@ -33,6 +33,14 @@ export const CompraService = {
 
   obtenerDetalleCompra: async (id_compra: number): Promise<DetalleCompraResponse> => {
     return apiClient.get<DetalleCompraResponse>(`/api/detalle-compra/obtener-detalle-compra/${id_compra}`);
+  },
+
+  aprobarCompra: async (id_compra: number): Promise<{ success: boolean; message?: string }> => {
+    return apiClient.post<{ success: boolean; message?: string }>(`/api/compra/${id_compra}/aprobar`, {});
+  },
+
+  rechazarCompra: async (id_compra: number): Promise<{ success: boolean; message?: string }> => {
+    return apiClient.post<{ success: boolean; message?: string }>(`/api/compra/${id_compra}/rechazar`, {});
   },
 };
 

@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EstadoCompra } from '../types/CompraTypes';
 import { useCompras } from '../hooks/useCompras';
@@ -24,6 +24,9 @@ export const PageHistorialCompras: React.FC = () => {
     setEstadoFiltro,
     fetchCompras,
     seleccionarCompra,
+    aprobarCompra,
+    rechazarCompra,
+    deseleccionarCompra,
   } = useCompras();
 
   useEffect(() => {
@@ -78,7 +81,7 @@ export const PageHistorialCompras: React.FC = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_420px] gap-6 items-start">
+        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_520px] gap-6 items-start">
           <TablaCompras
             compras={comprasFiltradas}
             compraSeleccionada={compraSeleccionada}
@@ -89,6 +92,9 @@ export const PageHistorialCompras: React.FC = () => {
             compra={compraSeleccionada}
             detalles={detalleCompra}
             loading={loadingDetalle}
+            onAprobar={aprobarCompra}
+            onRechazar={rechazarCompra}
+            onCerrar={deseleccionarCompra}
           />
         </div>
       </main>

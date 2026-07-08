@@ -1,4 +1,4 @@
-﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthGuard } from "./shared/guards/AuthGuard";
 
 import { ProveedorCarrito } from "@/shared/context/ContextoCarrito";
@@ -21,9 +21,11 @@ import { PageChangePassword } from "./modules/auth/pages/PageUpdatePassword";
 import { PageResetPassword } from "./modules/auth/pages/PageRecoverPassword";
 
 import { PageMonitoreoInventario } from "./modules/inventario/pages/PageMonitoreoInventario";
+import { PageInventario } from "./modules/inventario/pages/PageInventario";
 import { PageCompras } from "./modules/compras/pages/PageCompras";
 import { PageSolicitudCompra } from "./modules/compras/pages/PageSolicitudCompra";
 import { PageHistorialCompras } from "./modules/compras/pages/PageHistorialCompras";
+import { PageMovimientosCaja } from "./modules/caja/pages/PageMovimientosCaja";
 import { PageGestionUsuarios } from "./modules/usuarios/pages/PageGestionUsuarios";
 import { PageConsultaRoles } from "./modules/usuarios/pages/PageConsultaRoles";
 import { PageGestionProveedores } from "./modules/proveedores/pages/PageGestionProveedores";
@@ -51,7 +53,7 @@ function App() {
                 <Route path="/success" element={<VentaExitosa />} />
                 <Route path="/clientes" element={<PageClientes />} />
                 <Route path="/bodega" element={<PageBodega />} />
-                <Route path="/ingreso-stock" element={<Page_GestionStock />} />
+                <Route path="/inventario" element={<PageInventario />} />
                 <Route path="/monitoreo-inventario" element={<PageMonitoreoInventario />} />
                 <Route path="/compras" element={<PageCompras />} />
                 <Route path="/compras/solicitar" element={<PageSolicitudCompra />} />
@@ -61,6 +63,7 @@ function App() {
                 <Route path="/roles/consulta" element={<PageConsultaRoles />} />
                 <Route path="/historial" element={<HistorialPersonal />} />
                 <Route path="/reportes" element={<PageReportes />} />
+                <Route path="/movimientos-caja" element={<PageMovimientosCaja />} />
                 <Route path="/cambiar-contrasena" element={<PageChangePassword />} />
               </Route>
             </Route>

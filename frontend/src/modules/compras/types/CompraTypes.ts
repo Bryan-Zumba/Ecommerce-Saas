@@ -1,4 +1,4 @@
-﻿export interface DetalleCompraInput {
+export interface DetalleCompraInput {
   id_bodega: number;
   id_item: number;
   cantidad: number;
@@ -38,6 +38,10 @@ export interface CompraEmpresa {
   fecha_compra: string;
   observacion?: string | null;
   estado_compra: EstadoCompra;
+  proveedor?: {
+    id_proveedor: number;
+    nombre: string;
+  };
 }
 
 export interface DetalleCompra {
@@ -49,8 +53,9 @@ export interface DetalleCompra {
   costo_unitario: number | string;
   subtotal: number | string;
   item?: {
-    id_item: number;
+    id_item?: number;
     nombre: string;
+    imagen_url?: string | null;
   };
   bodega?: {
     id_bodega: number;
